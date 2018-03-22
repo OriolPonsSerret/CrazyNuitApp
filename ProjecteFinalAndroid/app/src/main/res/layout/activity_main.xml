@@ -6,69 +6,111 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#FFE4C4"
+    android:orientation="vertical"
     tools:context="com.example.oriolpons.projectefinalandroid.MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="16dp"
+        android:paddingTop="23dp"
+        android:paddingLeft="30dp"
+        android:paddingRight="25dp">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="25sp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
             android:orientation="horizontal">
 
             <ImageButton
-                android:id="@+id/imageButton2"
-                android:layout_width="79dp"
+                android:id="@+id/btnAddCity"
+                android:layout_width="128dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:contentDescription="@cerca"
+                android:backgroundTint="@color/colorPrimary"
+                android:elevation="6dp"
+                android:src="@android:drawable/ic_menu_search"
                 app:srcCompat="@android:drawable/ic_menu_search" />
 
             <EditText
-                android:id="@+id/editText"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:id="@+id/edtUserName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="?android:attr/detailsElementBackground"
                 android:ems="10"
-                android:inputType="textPersonName"
-                android:text="Cerca" />
-
+                android:hint="Obten rutas por ciudades o locales"
+                android:inputType="text|textPersonName"
+                android:padding="5dp" />
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_marginTop="25sp"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/textView4"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="EXPLORA"
-                android:textColor="#000000"
-                android:textAlignment="center"
-                android:textSize="25sp" />
-
-        </LinearLayout>
-
-        <LinearLayout
+        <TextView
+            android:id="@+id/textView4"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_weight="1"
+            android:paddingTop="20dp"
+            android:text="EXPLORA"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="20sp" />
 
-            <ImageButton
-                android:id="@+id/imageButton5"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:contentDescription="@imageDisco"
-                app:srcCompat="@drawable/Pcha" />
-        </LinearLayout>
+        <ImageButton
+            android:id="@+id/imageButton5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingTop="10dp"
+            app:srcCompat="@drawable/pcha" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="0dp"
+        android:layout_weight="1"
+        android:background="@android:color/background_dark"
+        android:gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp" >
+
+        <ImageButton
+            android:id="@+id/imageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#00000000"
+            app:srcCompat="@drawable/home" />
+
+        <ImageButton
+            android:id="@+id/imageButton2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#00000000"
+            app:srcCompat="@drawable/favourite" />
+
+        <ImageButton
+            android:id="@+id/imageButton3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#00000000"
+            app:srcCompat="@drawable/routes" />
+
+        <ImageButton
+            android:id="@+id/imageButton4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#00000000"
+            app:srcCompat="@drawable/user" />
 
     </LinearLayout>
 
