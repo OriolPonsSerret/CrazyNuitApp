@@ -1,6 +1,8 @@
 package com.example.oriolpons.projectefinalandroid;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,7 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class loginActivity extends AppCompatActivity implements View.OnClickListener{
+public class loginActivity extends AppCompatActivity implements View.OnClickListener {
 
     Button btnLogin, btnRegister;
 
@@ -34,10 +36,13 @@ public class loginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View v) {
 
-        switch (v.getId())
-        {
-            case R.id.btnLogin: loginData(); break;
-            case R.id.btnRegister: registerUser(); break;
+        switch (v.getId()) {
+            case R.id.btnLogin:
+                loginData();
+                break;
+            case R.id.btnRegister:
+                registerUser();
+                break;
         }
     }
 
@@ -75,14 +80,44 @@ public class loginActivity extends AppCompatActivity implements View.OnClickList
 
         //if (bd.userExist(Email, Password)){
 
-       // }
-        Intent i = new Intent(this, MainActivity.class );
-        startActivity(i);
+        // }
+        Intent i = new Intent(this, MainActivity.class);
+        startActivityForResult(i, 1);
+        //startActivity(i);
     }
+
     private void registerUser() {
-        Intent i = new Intent(this, registerActivity.class );
+        Intent i = new Intent(this, registerActivity.class);
         startActivity(i);
     }
 
+    // public void onRestart()
+    // {
+    //}
+   @Override
+   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onRestart();
 
+       AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+       builder.setMessage("¿Estás seguro de volver a la pantalla de Iniciar Sesión?");
+       builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+           public void onClick(DialogInterface dialog, int id) {
+           }
+       });
+
+       builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+           public void onClick(DialogInterface dialog, int id) {
+               goBack();
+           }
+       });
+       builder.show();
+
+
+    }
+
+    private void goBack() {
+        Intent i = new Intent(this, MainActivity.class);
+        startActivityForResult(i, 1);
+    }
 }

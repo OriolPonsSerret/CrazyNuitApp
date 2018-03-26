@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="#FFE4C4"
+    android:background="@color/colorBackground"
     android:orientation="vertical"
     android:paddingTop="23dp"
     android:paddingLeft="30dp"
@@ -95,7 +95,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_weight="1"
-                android:text="ENTRAR" />
+                android:background="@drawable/button_custom"
+                android:text="ENTRAR"
+                android:textColor="@android:color/background_light" />
 
         </LinearLayout>
 
@@ -147,7 +149,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:layout_weight="1"
-                android:text="REGÍSTRATE" />
+                android:background="@drawable/button_custom"
+                android:text="REGÍSTRATE"
+                android:textColor="@android:color/background_light" />
         </LinearLayout>
 
     </LinearLayout>
