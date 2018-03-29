@@ -23,6 +23,9 @@
         <activity android:name=".registerActivity" />
         <activity android:name=".routesActivity" />
         <activity android:name=".profileActivity" />
+        <activity android:name=".myRoutesActivity" />
+        <activity android:name=".favRoutesActivity" />
+        <activity android:name=".editProfileActivity"></activity>
     </application>
 
 </manifest>

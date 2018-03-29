@@ -9,12 +9,14 @@ public class routes {
     private String name;
     private String description;
     private String creator;
+    private Double assessment;
 
-    public routes(long id, String name, String description, String creator) {
+    public routes(long id, String name, String description, String creator, Double assessment) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.creator = creator;
+        this.assessment = assessment;
     }
 
     public long getId() {
@@ -47,5 +49,13 @@ public class routes {
 
     public void setCreator(String creator) {
         this.creator = creator;
+    }
+
+    public Double getAssessment() {
+        return assessment;
+    }
+
+    public void setAssessment(Double assessment) {
+        this.assessment = assessment;
     }
 }

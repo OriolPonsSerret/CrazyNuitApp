@@ -15,10 +15,10 @@ import com.example.oriolpons.projectefinalandroid.adapter.adapterRoutes;
 
 import java.util.ArrayList;
 
-public class routesActivity extends AppCompatActivity implements View.OnClickListener{
+public class favRoutesActivity extends AppCompatActivity implements View.OnClickListener{
 
-    FloatingActionButton fltBtnFavourite;
-    ImageButton btnHome, btnRoutes, btnTopUsers, btnUserProfile, btnBack;
+    FloatingActionButton fltBtnGlobal;
+    ImageButton btnHome, btnTopUsers, btnRoutes, btnUserProfile, btnBack;
     Button btnMenu, btnMyRoutes, btnShort, btnHalfways, btnLong;
     ArrayList<routes> listRoutes;
     RecyclerView recyclerRoutes;
@@ -28,7 +28,8 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_routes);
+        setContentView(R.layout.activity_fav_routes);
+
 
         listRoutes = new ArrayList<>();
 
@@ -69,11 +70,11 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
         });
         recyclerRoutes.setAdapter(adapterRoutes);
 
-        fltBtnFavourite = (FloatingActionButton) findViewById(R.id.fltBtnFavourite);
-        fltBtnFavourite.setOnClickListener(new View.OnClickListener() {
+        fltBtnGlobal = (FloatingActionButton) findViewById(R.id.fltBtnGlobal);
+        fltBtnGlobal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            loadFavouriteRoutes();
+            finish();
             }
         });
 
@@ -81,9 +82,9 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
         btnRoutes.setEnabled(false);
     }
 
-    private void loadFavouriteRoutes() {
-          Intent i = new Intent(this, favRoutesActivity.class );
-          startActivity(i);
+    private void loadGlobalRoutes() {
+        Intent i = new Intent(this, routesActivity.class );
+        startActivity(i);
     }
 
     @Override
@@ -119,7 +120,6 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
         } else {
             finish();
         }
-
     }
 
     private void actionPressedShort() {
@@ -147,8 +147,8 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
         startActivity(i);
     }
     private void intentTopUsers() {
-       // Intent i = new Intent(this, topUsersActivity.class );
-       // startActivity(i);
+        // Intent i = new Intent(this, topUsersActivity.class );
+        // startActivity(i);
     }
     private void intentRoutes() {
         Intent i = new Intent(this, routesActivity.class );
@@ -164,7 +164,7 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
 
     private void exampleRoutes() {
 
-        for(int index = 0; index<= 8; index++){
+        for(int index = 0; index<= 2; index++){
 
             listRoutes.add(new routes(index,"Ruta " + index+ ".", "Una ruta muy entretenida.", "Persona " + index+ ".", index * 1.2));
         }
@@ -177,3 +177,4 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
 
     }
 }
+

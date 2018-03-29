@@ -15,11 +15,11 @@ import com.example.oriolpons.projectefinalandroid.adapter.adapterRoutes;
 
 import java.util.ArrayList;
 
-public class routesActivity extends AppCompatActivity implements View.OnClickListener{
+public class myRoutesActivity extends AppCompatActivity implements View.OnClickListener{
 
-    FloatingActionButton fltBtnFavourite;
-    ImageButton btnHome, btnRoutes, btnTopUsers, btnUserProfile, btnBack;
-    Button btnMenu, btnMyRoutes, btnShort, btnHalfways, btnLong;
+    FloatingActionButton fltBtnAdd;
+    ImageButton btnHome, btnTopUsers, btnRoutes, btnUserProfile, btnBack;
+    Button btnMenu, btnPublicRoutes, btnShort, btnHalfways, btnLong;
     ArrayList<routes> listRoutes;
     RecyclerView recyclerRoutes;
     private com.example.oriolpons.projectefinalandroid.adapter.adapterRoutes adapterRoutes;
@@ -28,7 +28,7 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_routes);
+        setContentView(R.layout.activity_my_routes);
 
         listRoutes = new ArrayList<>();
 
@@ -41,8 +41,9 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
         btnMenu.setOnClickListener(this);
         btnBack = (ImageButton) findViewById(R.id.btnBack);
         btnBack.setOnClickListener(this);
-        btnMyRoutes = (Button) findViewById(R.id.btnMyRoutes);
-        btnMyRoutes.setOnClickListener(this);
+        btnPublicRoutes = (Button) findViewById(R.id.btnPublicRoutes);
+        btnPublicRoutes.setOnClickListener(this);
+
 
         btnShort = (Button) findViewById(R.id.btnShort);
         btnShort.setOnClickListener(this);
@@ -69,11 +70,11 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
         });
         recyclerRoutes.setAdapter(adapterRoutes);
 
-        fltBtnFavourite = (FloatingActionButton) findViewById(R.id.fltBtnFavourite);
-        fltBtnFavourite.setOnClickListener(new View.OnClickListener() {
+        fltBtnAdd = (FloatingActionButton) findViewById(R.id.fltBtnAdd);
+        fltBtnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            loadFavouriteRoutes();
+            loadCreateRoutes();
             }
         });
 
@@ -81,9 +82,9 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
         btnRoutes.setEnabled(false);
     }
 
-    private void loadFavouriteRoutes() {
-          Intent i = new Intent(this, favRoutesActivity.class );
-          startActivity(i);
+    private void loadCreateRoutes() {
+      //  Intent i = new Intent(this, createRoutesActivity.class );
+      //  startActivity(i);
     }
 
     @Override
@@ -97,7 +98,7 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
             case R.id.btnUserProfile: intentUserProfile(); break;
             case R.id.btnMenu: actionShowHideMenu(); break;
             case R.id.btnBack: actionBack(); break;
-            case R.id.btnMyRoutes: actionMyRoutes(); break;
+            case R.id.btnPublicRoutes: finish(); break;
             case R.id.btnShort: actionPressedShort(); break;
             case R.id.btnHalfways: actionPressedHalfways(); break;
             case R.id.btnLong: actionPressedLong(); break;
@@ -119,7 +120,6 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
         } else {
             finish();
         }
-
     }
 
     private void actionPressedShort() {
@@ -138,17 +138,13 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
         btnLong.setEnabled(false);
     }
 
-    private void actionMyRoutes() {
-        Intent i = new Intent(this, myRoutesActivity.class );
-        startActivity(i);
-    }
     private void intentMain() {
-        Intent i = new Intent(this, MainActivity.class );
-        startActivity(i);
+       Intent i = new Intent(this, MainActivity.class );
+       startActivity(i);
     }
     private void intentTopUsers() {
-       // Intent i = new Intent(this, topUsersActivity.class );
-       // startActivity(i);
+        // Intent i = new Intent(this, favouriteActivity.class );
+        // startActivity(i);
     }
     private void intentRoutes() {
         Intent i = new Intent(this, routesActivity.class );
@@ -164,7 +160,7 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
 
     private void exampleRoutes() {
 
-        for(int index = 0; index<= 8; index++){
+        for(int index = 0; index<= 15; index++){
 
             listRoutes.add(new routes(index,"Ruta " + index+ ".", "Una ruta muy entretenida.", "Persona " + index+ ".", index * 1.2));
         }

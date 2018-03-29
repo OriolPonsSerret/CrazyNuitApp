@@ -1,96 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/colorBackground"
     android:orientation="vertical"
-    tools:context="com.example.oriolpons.projectefinalandroid.routesActivity">
-
-    <LinearLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="16dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingRight="265dp"
-            android:paddingTop="5dp">
-
-            <Button
-                android:id="@+id/btnFilter"
-                android:layout_width="match_parent"
-                android:layout_height="38dp"
-                android:background="@drawable/button_custom"
-                android:text="Filtros"
-                android:textColor="@android:color/background_light" />
-        </LinearLayout>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/RecyclerRoutes"
-            android:layout_width="match_parent"
-            android:layout_height="431dp"
-            android:paddingTop="3dp" />
-    </LinearLayout>
+    tools:context="com.example.oriolpons.projectefinalandroid.editProfileActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="75dp"
-        android:layout_weight="1"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal"
-        android:paddingBottom="5dp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp">
-
-        <Button
-            android:id="@+id/btnShort"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/button_custom"
-            android:text="Cortas"
-            android:textColor="@android:color/background_light" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal" />
-
-        <Button
-            android:id="@+id/btnHalfways"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/button_custom"
-            android:text="Medias"
-            android:textColor="@android:color/background_light" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal" />
-
-        <Button
-            android:id="@+id/btnLong"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/button_custom"
-            android:text="Largas"
-            android:textColor="@android:color/background_light" />
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="16dp"
+        android:paddingTop="5dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:id="@+id/linearLayout">
 
     </LinearLayout>
 
@@ -105,11 +32,11 @@
         android:paddingRight="110dp">
 
         <Button
-            android:id="@+id/btnMyRoutes"
+            android:id="@+id/btnAcceptChanges"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@drawable/button_custom"
-            android:text="Mis rutas"
+            android:text="Aceptar cambios"
             android:textColor="@android:color/background_light" />
     </LinearLayout>
 
@@ -153,13 +80,12 @@
                 android:paddingLeft="200dp" />
 
             <Button
-                android:id="@+id/btnMenu"
+                android:id="@+id/btn"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:background="@drawable/button_menu_int"
-                android:paddingLeft="20dp"
-                android:text="Menú" />
+                android:background="#00000000"
+                android:paddingLeft="20dp" />
         </LinearLayout>
 
         <LinearLayout
@@ -239,20 +165,5 @@
         </LinearLayout>
 
     </LinearLayout>
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fltBtnFavourite"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginEnd="14dp"
-        android:layout_marginTop="17dp"
-        android:layout_weight="1"
-        android:clickable="true"
-        android:visibility="visible"
-        app:backgroundTint="@color/colorPrimary"
-        app:rippleColor="@color/colorButtonPressed"
-        app:srcCompat="@drawable/favourite_icon" />
 
 </RelativeLayout>

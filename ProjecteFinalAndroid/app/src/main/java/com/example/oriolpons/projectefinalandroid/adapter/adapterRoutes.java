@@ -1,12 +1,14 @@
-package com.example.oriolpons.projectefinalandroid;
+package com.example.oriolpons.projectefinalandroid.adapter;
 
-import android.location.Location;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.oriolpons.projectefinalandroid.R;
+import com.example.oriolpons.projectefinalandroid.routes;
 
 import java.util.ArrayList;
 
@@ -35,9 +37,9 @@ public class adapterRoutes extends RecyclerView.Adapter<adapterRoutes.ViewHolder
 
     @Override
     public void onBindViewHolder(ViewHolderRoutes holder, int position) {
-        holder.txtRouteName.setText(listRoutes.get(position).getName());
-        holder.txtRouteDescription.setText(listRoutes.get(position).getDescription());
-        holder.txtRouteCreator.setText(listRoutes.get(position).getCreator());
+        holder.tvTitle.setText(listRoutes.get(position).getName());
+        holder.txtDescription.setText(listRoutes.get(position).getDescription());
+        holder.txtCreator.setText(listRoutes.get(position).getCreator());
     }
 
     @Override
@@ -58,15 +60,15 @@ public class adapterRoutes extends RecyclerView.Adapter<adapterRoutes.ViewHolder
 
     public class ViewHolderRoutes extends RecyclerView.ViewHolder {
 
-        TextView txtRouteName, txtRouteDescription, txtRouteCreator;
-        ImageView imagen;
+        TextView tvTitle, txtDescription, txtCreator;
+        ImageView icon;
 
         public ViewHolderRoutes(View itemView) {
             super(itemView);
-            txtRouteName = (TextView) itemView.findViewById(R.id.tvRouteName);
-            txtRouteDescription = (TextView) itemView.findViewById(R.id.tvDescription);
-            txtRouteCreator = (TextView) itemView.findViewById(R.id.tvCreator);
-           // imagen = (ImageView) itemView.findViewById(R.id.ivImagen);
+            tvTitle = (TextView) itemView.findViewById(R.id.tvTitle);
+            txtDescription = (TextView) itemView.findViewById(R.id.tvDescription);
+            txtCreator = (TextView) itemView.findViewById(R.id.tvCreator);
+           // icon = (ImageView) itemView.findViewById(R.id.icon);
         }
     }
 }

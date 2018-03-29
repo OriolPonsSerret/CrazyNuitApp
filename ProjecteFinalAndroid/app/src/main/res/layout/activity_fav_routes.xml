@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/colorBackground"
     android:orientation="vertical"
-    tools:context="com.example.oriolpons.projectefinalandroid.routesActivity">
+    tools:context="com.example.oriolpons.projectefinalandroid.favRoutesActivity">
 
     <LinearLayout
         android:id="@+id/linearLayout2"
@@ -110,7 +110,8 @@
             android:layout_height="wrap_content"
             android:background="@drawable/button_custom"
             android:text="Mis rutas"
-            android:textColor="@android:color/background_light" />
+            android:textColor="@android:color/background_light"
+            android:visibility="gone" />
     </LinearLayout>
 
     <LinearLayout
@@ -241,7 +242,7 @@
     </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fltBtnFavourite"
+        android:id="@+id/fltBtnGlobal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
@@ -253,6 +254,6 @@
         android:visibility="visible"
         app:backgroundTint="@color/colorPrimary"
         app:rippleColor="@color/colorButtonPressed"
-        app:srcCompat="@drawable/favourite_icon" />
+        app:srcCompat="@drawable/world_icon_white" />
 
 </RelativeLayout>

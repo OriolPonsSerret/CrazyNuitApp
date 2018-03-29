@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
-    ImageButton btnHome, btnFavourite, btnRoutes, btnUserProfile;
+    ImageButton btnHome, btnTopUsers, btnRoutes, btnUserProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,8 +19,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         btnHome = (ImageButton) findViewById(R.id.btnHome);
         btnHome.setOnClickListener(this);
-        btnFavourite = (ImageButton) findViewById(R.id.btnFavourite);
-        btnFavourite.setOnClickListener(this);
+        btnTopUsers = (ImageButton) findViewById(R.id.btnTopUsers);
+        btnTopUsers.setOnClickListener(this);
         btnRoutes = (ImageButton) findViewById(R.id.btnRoutes);
         btnRoutes.setOnClickListener(this);
         btnUserProfile = (ImageButton) findViewById(R.id.btnUserProfile);
@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId())
         {
             case R.id.btnHome: intentMain(); break;
-            case R.id.btnFavourite: intentFavourite(); break;
+            case R.id.btnTopUsers: intentTopUsers(); break;
             case R.id.btnRoutes: intentRoutes(); break;
             case R.id.btnUserProfile: intentUserProfile(); break;
         }
@@ -47,8 +47,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
        // finish();
     }
-    private void intentFavourite() {
-       // Intent i = new Intent(this, favouriteActivity.class );
+    private void intentTopUsers() {
+       // Intent i = new Intent(this, topUsersActivity.class );
        // startActivity(i);
     }
     private void intentRoutes() {
