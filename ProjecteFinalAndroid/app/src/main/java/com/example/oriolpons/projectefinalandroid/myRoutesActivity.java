@@ -83,8 +83,8 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void loadCreateRoutes() {
-      //  Intent i = new Intent(this, createRoutesActivity.class );
-      //  startActivity(i);
+        Intent i = new Intent(this, createEditRouteActivity.class );
+        startActivity(i);
     }
 
     @Override

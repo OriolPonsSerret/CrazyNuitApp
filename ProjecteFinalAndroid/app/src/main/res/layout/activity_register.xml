@@ -32,7 +32,7 @@
             android:background="?android:attr/detailsElementBackground"
             android:ems="10"
             android:hapticFeedbackEnabled="false"
-            android:hint="Introduce tu correo electrónico"
+            android:hint="Introduce tu nombre de usuario"
             android:inputType="text|textPersonName"
             android:padding="5dp" />
 
@@ -53,7 +53,7 @@
             android:layout_height="wrap_content"
             android:background="?android:attr/detailsElementBackground"
             android:ems="10"
-            android:hint="Introduce tu contraseña"
+            android:hint="Introduce tu correo electrónico"
             android:inputType="textEmailAddress"
             android:padding="5dp" />
 
@@ -75,7 +75,7 @@
             android:background="?android:attr/detailsElementBackground"
             android:ems="10"
             android:hapticFeedbackEnabled="false"
-            android:hint="Introduce tu correo electrónico"
+            android:hint="Introduce tu contraseña"
             android:inputType="textPassword"
             android:padding="5dp" />
 
@@ -96,7 +96,7 @@
             android:layout_height="wrap_content"
             android:background="?android:attr/detailsElementBackground"
             android:ems="10"
-            android:hint="Introduce tu contraseña"
+            android:hint="Repite tu contraseña"
             android:inputType="textPassword"
             android:padding="5dp" />
 

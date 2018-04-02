@@ -25,7 +25,10 @@
         <activity android:name=".profileActivity" />
         <activity android:name=".myRoutesActivity" />
         <activity android:name=".favRoutesActivity" />
-        <activity android:name=".editProfileActivity"></activity>
+        <activity android:name=".editProfileActivity" />
+        <activity android:name=".routesContentActivity" />
+        <activity android:name=".localContentActivity" />
+        <activity android:name=".createEditRouteActivity"></activity>
     </application>
 
 </manifest>

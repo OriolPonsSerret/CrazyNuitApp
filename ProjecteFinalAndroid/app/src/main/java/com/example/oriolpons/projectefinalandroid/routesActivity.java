@@ -25,6 +25,8 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
     private com.example.oriolpons.projectefinalandroid.adapter.adapterRoutes adapterRoutes;
     LinearLayout linearLayoutMenu;
 
+    private String routeName, routeDescription, routeAssessment, routeCreator;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +66,11 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
         adapterRoutes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                routeName = listRoutes.get(recyclerRoutes.getChildAdapterPosition(view)).getName();
+                routeDescription = listRoutes.get(recyclerRoutes.getChildAdapterPosition(view)).getDescription();
+                routeAssessment = listRoutes.get(recyclerRoutes.getChildAdapterPosition(view)).getAssessment() + "/5 - 1 votos";
+                routeCreator = listRoutes.get(recyclerRoutes.getChildAdapterPosition(view)).getCreator();
+                intentRouteContent();
             }
         });
         recyclerRoutes.setAdapter(adapterRoutes);
@@ -73,12 +79,23 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
         fltBtnFavourite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-            loadFavouriteRoutes();
+                loadFavouriteRoutes();
             }
         });
 
         exampleRoutes();
         btnRoutes.setEnabled(false);
+    }
+
+    private void intentRouteContent() {
+        Bundle bundle = new Bundle();
+        bundle.putString("name",routeName);
+        bundle.putString("description",routeDescription);
+        bundle.putString("assessment",routeAssessment);
+        bundle.putString("creator",routeCreator);
+        Intent intent = new Intent(this, routesContentActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     private void loadFavouriteRoutes() {

@@ -39,7 +39,7 @@ public class adapterRoutesProfile extends RecyclerView.Adapter<adapterRoutesProf
     public void onBindViewHolder(adapterRoutesProfile.ViewHolderRoutesProfile holder, int position) {
         holder.txtTitle.setText(listRoutes.get(position).getName());
         holder.txtDescription.setText(listRoutes.get(position).getDescription());
-        holder.txtAssessment.setText(listRoutes.get(position).getAssessment() + "/10 - 1 votos");
+        holder.txtAssessment.setText(listRoutes.get(position).getAssessment() + "/5 - 1 votos");
     }
 
     @Override

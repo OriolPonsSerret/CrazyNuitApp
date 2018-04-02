@@ -8,44 +8,43 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.oriolpons.projectefinalandroid.R;
-import com.example.oriolpons.projectefinalandroid.routes;
+import com.example.oriolpons.projectefinalandroid.local;
 
 import java.util.ArrayList;
 
 /**
- * Created on 26/03/2018.
+ * Created on 30/03/2018.
  */
 
-public class adapterRoutes extends RecyclerView.Adapter<adapterRoutes.ViewHolderRoutes> implements View.OnClickListener{
+public class adapterLocal extends RecyclerView.Adapter<adapterLocal.ViewHolderLocal> implements View.OnClickListener{
 
-    ArrayList<routes> listRoutes;
+    ArrayList<local> listLocal;
     private View.OnClickListener listener;
 
 
-    public adapterRoutes(ArrayList<routes> listRoutes) {
-        this.listRoutes = listRoutes;
+    public adapterLocal(ArrayList<local> listLocal) {
+        this.listLocal = listLocal;
     }
 
     @Override
-    public ViewHolderRoutes onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.design_recycler_routes,null,false);
+    public adapterLocal.ViewHolderLocal onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.design_recycler_routes_profile,null,false);
 
         view.setOnClickListener(this);
 
-        return new ViewHolderRoutes(view);
+        return new adapterLocal.ViewHolderLocal(view);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolderRoutes holder, int position) {
-        holder.tvTitle.setText(listRoutes.get(position).getName());
-        holder.txtDescription.setText(listRoutes.get(position).getDescription());
-        holder.txtCreator.setText(listRoutes.get(position).getCreator());
-        holder.txtAssessment.setText(listRoutes.get(position).getAssessment() + "/5 - 1 votos");
+    public void onBindViewHolder(adapterLocal.ViewHolderLocal holder, int position) {
+        holder.tvTitle.setText(listLocal.get(position).getName());
+        holder.txtDescription.setText(listLocal.get(position).getDescription());
+        holder.txtAssessment.setText(listLocal.get(position).getAssessment() + "/5 - 1 votos");
     }
 
     @Override
     public int getItemCount() {
-        return listRoutes.size();
+        return listLocal.size();
     }
 
     public void setOnClickListener(View.OnClickListener listener){
@@ -59,18 +58,18 @@ public class adapterRoutes extends RecyclerView.Adapter<adapterRoutes.ViewHolder
         }
     }
 
-    public class ViewHolderRoutes extends RecyclerView.ViewHolder {
+    public class ViewHolderLocal extends RecyclerView.ViewHolder {
 
         TextView tvTitle, txtDescription, txtCreator, txtAssessment;
         ImageView icon;
 
-        public ViewHolderRoutes(View itemView) {
+        public ViewHolderLocal(View itemView) {
             super(itemView);
             tvTitle = (TextView) itemView.findViewById(R.id.tvTitle);
             txtDescription = (TextView) itemView.findViewById(R.id.tvDescription);
             txtCreator = (TextView) itemView.findViewById(R.id.tvCreator);
             txtAssessment = (TextView) itemView.findViewById(R.id.tvAssessment);
-           // icon = (ImageView) itemView.findViewById(R.id.icon);
+            // icon = (ImageView) itemView.findViewById(R.id.icon);
         }
     }
 }

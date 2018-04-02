@@ -4,11 +4,19 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.oriolpons.projectefinalandroid.R;
+import com.example.oriolpons.projectefinalandroid.achievement;
+import com.example.oriolpons.projectefinalandroid.adapter.adapterAchievementProfile;
+import com.example.oriolpons.projectefinalandroid.adapter.adapterUser;
+import com.example.oriolpons.projectefinalandroid.user;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +37,8 @@ public class achievementProfileFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    ArrayList<achievement> listAchievements;
+    RecyclerView recyclerView;
 
     public achievementProfileFragment() {
         // Required empty public constructor
@@ -64,8 +74,26 @@ public class achievementProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_achievement_profile, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_achievement_profile,container,false);
+
+        listAchievements=new ArrayList<>();
+        recyclerView=view.findViewById(R.id.recyclerId);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        exampleAchievement();
+
+
+        adapterAchievementProfile Adapter = new adapterAchievementProfile(listAchievements);
+        Adapter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        recyclerView.setAdapter(Adapter);
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -105,5 +133,15 @@ public class achievementProfileFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+
+
+    private void exampleAchievement() {
+
+        listAchievements.add(new achievement(1,"Logro nº " + 1+ ".", "Mi primera ruta.", 1 + " ENERO"));
+        listAchievements.add(new achievement(2,"Logro nº " + 2+ ".", "Mi primer seguidor.", 6 + " ENERO"));
+        listAchievements.add(new achievement(3,"Logro nº " + 3+ ".", "Mi primera valoración.", 12 + " ENERO"));
+        listAchievements.add(new achievement(4,"Logro nº " + 4+ ".", "Mi primera ruta seguida.", 28 + " ENERO"));
     }
 }

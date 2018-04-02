@@ -175,7 +175,7 @@
             android:id="@+id/btnLogOut"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/button_custom"
+            android:background="@drawable/button_custom_warning"
             android:text="cerrar sesión"
             android:textColor="@android:color/background_light" />
     </LinearLayout>
@@ -310,5 +310,19 @@
         app:backgroundTint="@color/colorButtonGeneral"
         app:rippleColor="@color/colorButtonPressed"
         app:srcCompat="@drawable/edit_icon" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/btnFollow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="15dp"
+        android:clickable="true"
+        android:visibility="gone"
+        app:backgroundTint="@color/colorButtonGeneral"
+        app:rippleColor="@color/colorButtonPressed"
+        app:srcCompat="@drawable/follow_icon" />
 
 </RelativeLayout>

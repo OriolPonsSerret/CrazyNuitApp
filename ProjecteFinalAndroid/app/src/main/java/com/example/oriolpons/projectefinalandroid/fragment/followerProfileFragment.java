@@ -4,11 +4,17 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.oriolpons.projectefinalandroid.R;
+import com.example.oriolpons.projectefinalandroid.adapter.adapterUser;
+import com.example.oriolpons.projectefinalandroid.user;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +35,9 @@ public class followerProfileFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    ArrayList<user> listUsers;
+    RecyclerView recyclerView;
+
 
     public followerProfileFragment() {
         // Required empty public constructor
@@ -64,8 +73,26 @@ public class followerProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_follower_profile, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_follower_profile,container,false);
+
+        listUsers=new ArrayList<>();
+        recyclerView=view.findViewById(R.id.recyclerId);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        exampleUsers();
+
+
+        adapterUser Adapter = new adapterUser(listUsers);
+        Adapter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        recyclerView.setAdapter(Adapter);
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -105,5 +132,18 @@ public class followerProfileFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+
+
+
+
+
+    private void exampleUsers() {
+
+        for(int index = 4; index<= 7; index++){
+
+            listUsers.add(new user(index,"Usuario nº" + index+ ".", "El mejor usuario de esta app."));
+        }
     }
 }
