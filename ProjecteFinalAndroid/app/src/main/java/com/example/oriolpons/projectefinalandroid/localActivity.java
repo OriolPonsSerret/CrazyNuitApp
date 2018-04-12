@@ -1,7 +1,6 @@
 package com.example.oriolpons.projectefinalandroid;
 
 import android.content.Intent;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,47 +12,36 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 
-import com.example.oriolpons.projectefinalandroid.adapter.adapterRoutes;
+import com.example.oriolpons.projectefinalandroid.adapter.adapterLocal;
 
 import java.util.ArrayList;
 
-public class myRoutesActivity extends AppCompatActivity implements View.OnClickListener{
+public class localActivity extends AppCompatActivity implements View.OnClickListener{
 
-    FloatingActionButton fltBtnAdd;
     ImageButton btnHome, btnLocal, btnRoutes, btnUserProfile, btnBack;
-    Button btnMenu, btnPublicRoutes, btnShort, btnHalfways, btnLong;
-    ArrayList<routes> listRoutes;
-    RecyclerView recyclerRoutes;
-    private com.example.oriolpons.projectefinalandroid.adapter.adapterRoutes adapterRoutes;
+    Button btnMenu;
+    ArrayList<local> listLocals;
+    private com.example.oriolpons.projectefinalandroid.adapter.adapterLocal AdapterLocal;
+    RecyclerView recyclerLocals;
     LinearLayout linearLayoutMenu;
     Spinner spCity;
+
+    private String localName, localDescription, localAssessment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_routes);
+        setContentView(R.layout.activity_local);
 
-        listRoutes = new ArrayList<>();
-
-        recyclerRoutes = (RecyclerView) findViewById(R.id.RecyclerRoutes);
-        recyclerRoutes.setLayoutManager(new LinearLayoutManager(this));
+        listLocals = new ArrayList<>();
+        recyclerLocals = (RecyclerView) findViewById(R.id.RecyclerLocal);
+        recyclerLocals.setLayoutManager(new LinearLayoutManager(this));
 
         linearLayoutMenu = (LinearLayout) findViewById(R.id.linearLayoutMenu);
-
         btnMenu = (Button) findViewById(R.id.btnMenu);
         btnMenu.setOnClickListener(this);
         btnBack = (ImageButton) findViewById(R.id.btnBack);
         btnBack.setOnClickListener(this);
-        btnPublicRoutes = (Button) findViewById(R.id.btnPublicRoutes);
-        btnPublicRoutes.setOnClickListener(this);
-
-
-        btnShort = (Button) findViewById(R.id.btnShort);
-        btnShort.setOnClickListener(this);
-        btnHalfways = (Button) findViewById(R.id.btnHalfways);
-        btnHalfways.setOnClickListener(this);
-        btnLong = (Button) findViewById(R.id.btnLong);
-        btnLong.setOnClickListener(this);
 
         btnHome = (ImageButton) findViewById(R.id.btnHome);
         btnHome.setOnClickListener(this);
@@ -76,30 +64,21 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
         spCity.setAdapter(adapter);
 
 
-        adapterRoutes = new adapterRoutes(listRoutes);
-        adapterRoutes.setOnClickListener(new View.OnClickListener() {
+        AdapterLocal = new adapterLocal(listLocals);
+        AdapterLocal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                localName = listLocals.get(recyclerLocals.getChildAdapterPosition(view)).getName();
+                localDescription = listLocals.get(recyclerLocals.getChildAdapterPosition(view)).getDescription();
+                localAssessment = listLocals.get(recyclerLocals.getChildAdapterPosition(view)).getAssessment() + "/5 - 1 votos";
+                intentLocalContent();
             }
         });
-        recyclerRoutes.setAdapter(adapterRoutes);
+        recyclerLocals.setAdapter(AdapterLocal);
 
-        fltBtnAdd = (FloatingActionButton) findViewById(R.id.fltBtnAdd);
-        fltBtnAdd.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            loadCreateRoutes();
-            }
-        });
+        exampleLocal();
 
-        exampleRoutes();
-        btnRoutes.setEnabled(false);
-    }
-
-    private void loadCreateRoutes() {
-        Intent i = new Intent(this, createEditRouteActivity.class );
-        startActivity(i);
+        btnLocal.setEnabled(false);
     }
 
     @Override
@@ -113,10 +92,7 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
             case R.id.btnUserProfile: intentUserProfile(); break;
             case R.id.btnMenu: actionShowHideMenu(); break;
             case R.id.btnBack: actionBack(); break;
-            case R.id.btnPublicRoutes: finish(); break;
-            case R.id.btnShort: actionPressedShort(); break;
-            case R.id.btnHalfways: actionPressedHalfways(); break;
-            case R.id.btnLong: actionPressedLong(); break;
+
         }
     }
 
@@ -135,31 +111,16 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
         } else {
             finish();
         }
-    }
 
-    private void actionPressedShort() {
-        btnShort.setEnabled(false);
-        btnHalfways.setEnabled(true);
-        btnLong.setEnabled(true);
-    }
-    private void actionPressedHalfways() {
-        btnShort.setEnabled(true);
-        btnHalfways.setEnabled(false);
-        btnLong.setEnabled(true);
-    }
-    private void actionPressedLong() {
-        btnShort.setEnabled(true);
-        btnHalfways.setEnabled(true);
-        btnLong.setEnabled(false);
     }
 
     private void intentMain() {
-       Intent i = new Intent(this, MainActivity.class );
-       startActivity(i);
+        Intent i = new Intent(this, MainActivity.class );
+        startActivity(i);
     }
     private void intentLocal() {
-         Intent i = new Intent(this, localActivity.class );
-         startActivity(i);
+        Intent i = new Intent(this, localActivity.class );
+        startActivity(i);
     }
     private void intentRoutes() {
         Intent i = new Intent(this, routesActivity.class );
@@ -172,19 +133,21 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
 
 
 
-
-    private void exampleRoutes() {
-
-        for(int index = 0; index<= 15; index++){
-
-            listRoutes.add(new routes(index,"Ruta " + index+ ".", "Una ruta muy entretenida.", "Persona " + index+ ".", index * 1.2));
-        }
+    private void intentLocalContent() {
+        Bundle bundle = new Bundle();
+        bundle.putString("name", localName);
+        bundle.putString("description", localDescription);
+        bundle.putString("assessment", localAssessment);
+        Intent intent = new Intent(this, localContentActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
-    public void onRestart()
-    {
-        super.onRestart();
-        linearLayoutMenu.setVisibility(View.GONE);
+    private void exampleLocal() {
 
+        for(int index = 0; index<= 3; index++){
+
+            listLocals.add(new local(index,"local " + index+ ".", "Un local muy entretenido.",  index + 0.0));
+        }
     }
 }

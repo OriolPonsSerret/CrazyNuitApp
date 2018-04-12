@@ -102,14 +102,14 @@
             android:orientation="horizontal"></LinearLayout>
 
         <ImageButton
-            android:id="@+id/btnTopUsers"
+            android:id="@+id/btnLocal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/button_bottom_menu"
             android:paddingBottom="15dp"
             android:paddingTop="15dp"
-            app:srcCompat="@drawable/top_users_icon" />
+            app:srcCompat="@drawable/local_icon" />
 
         <LinearLayout
             android:layout_width="wrap_content"
