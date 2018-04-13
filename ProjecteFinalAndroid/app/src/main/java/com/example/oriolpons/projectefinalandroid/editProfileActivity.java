@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CalendarView;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
@@ -18,6 +20,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.oriolpons.projectefinalandroid.fragment.routesProfileFragment;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class editProfileActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -64,13 +69,13 @@ public class editProfileActivity extends AppCompatActivity implements View.OnCli
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = getLayoutInflater().inflate(R.layout.alert_edit_username,null);
 
+
         final EditText edtUserName = (EditText) view.findViewById(R.id.edtUserName);
         Button btnAccept = (Button) view.findViewById(R.id.btnAccept);
 
         btnAccept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TextView tv;
                 Context context = getApplicationContext();
                 CharSequence text = "";
                 int duration;
@@ -88,9 +93,8 @@ public class editProfileActivity extends AppCompatActivity implements View.OnCli
                 }
             }
         });
-
-        builder.setView(view);
         AlertDialog dialog = builder.create();
+        builder.setView(view);
         dialog.show();
     }
 
@@ -116,21 +120,20 @@ public class editProfileActivity extends AppCompatActivity implements View.OnCli
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = getLayoutInflater().inflate(R.layout.alert_edit_password,null);
 
-        final EditText edtPasswordDelete = (EditText) view.findViewById(R.id.edtPasswordDelete);
+        final EditText edtPasswordOld = (EditText) view.findViewById(R.id.edtPasswordOld);
         final EditText edtPasswordNew = (EditText) view.findViewById(R.id.edtPasswordNew);
         final EditText edtPasswordNewR = (EditText) view.findViewById(R.id.edtPasswordNewR);
-        Button btnAcceptDelete = (Button) view.findViewById(R.id.btnAcceptPassword);
+        Button btnAcceptPassword = (Button) view.findViewById(R.id.btnAcceptPassword);
 
-        btnAcceptDelete.setOnClickListener(new View.OnClickListener() {
+        btnAcceptPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TextView tv;
                 Context context = getApplicationContext();
                 CharSequence text = "";
                 int duration;
                 Toast mensaje;
 
-                if(!edtPasswordDelete.getText().toString().isEmpty()&&!edtPasswordNew.getText().toString().isEmpty()&&!edtPasswordNewR.getText().toString().isEmpty()){
+                if(!edtPasswordOld.getText().toString().isEmpty()&&!edtPasswordNew.getText().toString().isEmpty()&&!edtPasswordNewR.getText().toString().isEmpty()){
 
                 }
                 else{
@@ -148,8 +151,35 @@ public class editProfileActivity extends AppCompatActivity implements View.OnCli
     }
 
     private void actionEditDate() {
-       // Intent i = new Intent(this, editDateActivity.class );
-       // startActivity(i);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View view = getLayoutInflater().inflate(R.layout.alert_edit_date,null);
+
+        final DatePicker Calendar = (DatePicker) view.findViewById(R.id.dateCalendar);
+        Button btnAcceptPassword = (Button) view.findViewById(R.id.btnAcceptDate);
+
+        btnAcceptPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                TextView tv;
+                Context context = getApplicationContext();
+                CharSequence text = "";
+                int duration;
+                Toast mensaje;
+
+                int day = Calendar.getDayOfMonth();
+                int month = Calendar.getMonth() + 1;
+                int year = Calendar.getYear();
+
+                text = "Se han guardado los cambios.";
+                duration = 3;
+
+                mensaje = Toast.makeText(context, text, duration);
+                mensaje.show();
+            }
+        });
+        builder.setView(view);
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     private void actionDeleteAccount() {
