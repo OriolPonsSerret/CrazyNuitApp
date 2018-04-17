@@ -1,6 +1,7 @@
 package com.example.oriolpons.projectefinalandroid.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 import com.example.oriolpons.projectefinalandroid.R;
 import com.example.oriolpons.projectefinalandroid.adapter.adapterRoutesProfile;
 import com.example.oriolpons.projectefinalandroid.routes;
+import com.example.oriolpons.projectefinalandroid.routesContentActivity;
 
 import java.util.ArrayList;
 
@@ -37,6 +39,7 @@ public class routesProfileFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     ArrayList<routes> listRoutes;
     RecyclerView recyclerView;
+    private String routeName, routeDescription, routeAssessment, routeCreator;
 
 
     public routesProfileFragment() {
@@ -81,12 +84,15 @@ public class routesProfileFragment extends Fragment {
 
         exampleRoutes();
 
-
         adapterRoutesProfile Adapter = new adapterRoutesProfile(listRoutes);
         Adapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                routeName = listRoutes.get(recyclerView.getChildAdapterPosition(view)).getName();
+                routeDescription = listRoutes.get(recyclerView.getChildAdapterPosition(view)).getDescription();
+                routeAssessment = listRoutes.get(recyclerView.getChildAdapterPosition(view)).getAssessment() + "/5 - 1 votos";
+                routeCreator = listRoutes.get(recyclerView.getChildAdapterPosition(view)).getCreator();
+                intentRouteContent();
             }
         });
         recyclerView.setAdapter(Adapter);
@@ -139,12 +145,21 @@ public class routesProfileFragment extends Fragment {
 
 
 
-
+    private void intentRouteContent() {
+        Bundle bundle = new Bundle();
+        bundle.putString("name",routeName);
+        bundle.putString("description",routeDescription);
+        bundle.putString("assessment",routeAssessment);
+        bundle.putString("creator",routeCreator);
+        Intent intent = new Intent(getActivity(), routesContentActivity.class);
+        intent.putExtras(bundle);
+        getActivity().startActivity(intent);
+    }
     private void exampleRoutes() {
 
         for(int index = 0; index<= 8; index++){
 
-            listRoutes.add(new routes(index,"Ruta " + index+ ".", "Una ruta muy entretenida.", "Persona " + index+ ".", index * 1.2));
+            listRoutes.add(new routes(index,"Ruta " + index+ ".", "Una ruta muy entretenida.", "Nombre Usuario", index * 1.2));
         }
     }
 

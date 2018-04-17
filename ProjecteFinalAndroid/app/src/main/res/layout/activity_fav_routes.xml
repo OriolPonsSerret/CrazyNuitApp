@@ -50,61 +50,8 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/RecyclerRoutes"
             android:layout_width="match_parent"
-            android:layout_height="431dp"
+            android:layout_height="511dp"
             android:paddingTop="3dp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="75dp"
-        android:layout_weight="1"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal"
-        android:paddingBottom="5dp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp">
-
-        <Button
-            android:id="@+id/btnShort"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/button_custom"
-            android:text="Cortas"
-            android:textColor="@android:color/background_light" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal" />
-
-        <Button
-            android:id="@+id/btnHalfways"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/button_custom"
-            android:text="Medias"
-            android:textColor="@android:color/background_light" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal" />
-
-        <Button
-            android:id="@+id/btnLong"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/button_custom"
-            android:text="Largas"
-            android:textColor="@android:color/background_light" />
-
     </LinearLayout>
 
     <LinearLayout

@@ -1,6 +1,7 @@
 package com.example.oriolpons.projectefinalandroid.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.example.oriolpons.projectefinalandroid.R;
 import com.example.oriolpons.projectefinalandroid.adapter.adapterUser;
+import com.example.oriolpons.projectefinalandroid.profileActivity;
 import com.example.oriolpons.projectefinalandroid.user;
 
 import java.util.ArrayList;
@@ -35,9 +37,9 @@ public class followerProfileFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
-    ArrayList<user> listUsers;
-    RecyclerView recyclerView;
-
+    private ArrayList<user> listUsers;
+    private RecyclerView recyclerView;
+    private String userName;
 
     public followerProfileFragment() {
         // Required empty public constructor
@@ -87,7 +89,8 @@ public class followerProfileFragment extends Fragment {
         Adapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                userName = listUsers.get(recyclerView.getChildAdapterPosition(view)).getName();
+                intentUserProfile();
             }
         });
         recyclerView.setAdapter(Adapter);
@@ -137,7 +140,14 @@ public class followerProfileFragment extends Fragment {
 
 
 
-
+    private void intentUserProfile() {
+        Bundle bundle = new Bundle();
+        bundle.putString("type","another");
+        bundle.putString("userName",userName);
+        Intent intent = new Intent(getActivity(), profileActivity.class);
+        intent.putExtras(bundle);
+        getActivity().startActivity(intent);
+    }
 
     private void exampleUsers() {
 

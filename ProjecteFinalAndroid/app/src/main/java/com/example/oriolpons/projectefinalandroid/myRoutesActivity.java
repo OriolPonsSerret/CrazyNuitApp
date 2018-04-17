@@ -21,10 +21,11 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
 
     FloatingActionButton fltBtnAdd;
     ImageButton btnHome, btnLocal, btnRoutes, btnUserProfile, btnBack;
-    Button btnMenu, btnPublicRoutes, btnShort, btnHalfways, btnLong;
+    Button btnMenu, btnPublicRoutes;
     ArrayList<routes> listRoutes;
     RecyclerView recyclerRoutes;
     private com.example.oriolpons.projectefinalandroid.adapter.adapterRoutes adapterRoutes;
+    private String routeName, routeDescription, routeAssessment, routeCreator;
     LinearLayout linearLayoutMenu;
     Spinner spCity;
 
@@ -46,14 +47,6 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
         btnBack.setOnClickListener(this);
         btnPublicRoutes = (Button) findViewById(R.id.btnPublicRoutes);
         btnPublicRoutes.setOnClickListener(this);
-
-
-        btnShort = (Button) findViewById(R.id.btnShort);
-        btnShort.setOnClickListener(this);
-        btnHalfways = (Button) findViewById(R.id.btnHalfways);
-        btnHalfways.setOnClickListener(this);
-        btnLong = (Button) findViewById(R.id.btnLong);
-        btnLong.setOnClickListener(this);
 
         btnHome = (ImageButton) findViewById(R.id.btnHome);
         btnHome.setOnClickListener(this);
@@ -80,7 +73,11 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
         adapterRoutes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                routeName = listRoutes.get(recyclerRoutes.getChildAdapterPosition(view)).getName();
+                routeDescription = listRoutes.get(recyclerRoutes.getChildAdapterPosition(view)).getDescription();
+                routeAssessment = listRoutes.get(recyclerRoutes.getChildAdapterPosition(view)).getAssessment() + "/5 - 1 votos";
+                routeCreator = listRoutes.get(recyclerRoutes.getChildAdapterPosition(view)).getCreator();
+                intentRouteContent();
             }
         });
         recyclerRoutes.setAdapter(adapterRoutes);
@@ -114,12 +111,18 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
             case R.id.btnMenu: actionShowHideMenu(); break;
             case R.id.btnBack: actionBack(); break;
             case R.id.btnPublicRoutes: finish(); break;
-            case R.id.btnShort: actionPressedShort(); break;
-            case R.id.btnHalfways: actionPressedHalfways(); break;
-            case R.id.btnLong: actionPressedLong(); break;
         }
     }
-
+    private void intentRouteContent() {
+        Bundle bundle = new Bundle();
+        bundle.putString("name",routeName);
+        bundle.putString("description",routeDescription);
+        bundle.putString("assessment",routeAssessment);
+        bundle.putString("creator",routeCreator);
+        Intent intent = new Intent(this, routesContentActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
+    }
     private void actionShowHideMenu() {
 
         if (linearLayoutMenu.getVisibility() == View.VISIBLE) {
@@ -137,22 +140,6 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
-    private void actionPressedShort() {
-        btnShort.setEnabled(false);
-        btnHalfways.setEnabled(true);
-        btnLong.setEnabled(true);
-    }
-    private void actionPressedHalfways() {
-        btnShort.setEnabled(true);
-        btnHalfways.setEnabled(false);
-        btnLong.setEnabled(true);
-    }
-    private void actionPressedLong() {
-        btnShort.setEnabled(true);
-        btnHalfways.setEnabled(true);
-        btnLong.setEnabled(false);
-    }
-
     private void intentMain() {
        Intent i = new Intent(this, MainActivity.class );
        startActivity(i);
@@ -166,7 +153,11 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
         startActivity(i);
     }
     private void intentUserProfile() {
-        Intent i = new Intent(this, profileActivity.class );
+        Bundle bundle = new Bundle();
+        bundle.putString("type","me");
+        bundle.putString("userName","user");
+        Intent i = new Intent(this, profileActivity.class);
+        i.putExtras(bundle);
         startActivity(i);
     }
 

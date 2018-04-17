@@ -21,7 +21,7 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
 
     FloatingActionButton fltBtnFavourite;
     ImageButton btnHome, btnRoutes, btnLocal, btnUserProfile, btnBack;
-    Button btnMenu, btnMyRoutes, btnShort, btnHalfways, btnLong;
+    Button btnMenu, btnMyRoutes;
     ArrayList<routes> listRoutes;
     RecyclerView recyclerRoutes;
     private com.example.oriolpons.projectefinalandroid.adapter.adapterRoutes adapterRoutes;
@@ -48,13 +48,6 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
         btnBack.setOnClickListener(this);
         btnMyRoutes = (Button) findViewById(R.id.btnMyRoutes);
         btnMyRoutes.setOnClickListener(this);
-
-        btnShort = (Button) findViewById(R.id.btnShort);
-        btnShort.setOnClickListener(this);
-        btnHalfways = (Button) findViewById(R.id.btnHalfways);
-        btnHalfways.setOnClickListener(this);
-        btnLong = (Button) findViewById(R.id.btnLong);
-        btnLong.setOnClickListener(this);
 
         btnHome = (ImageButton) findViewById(R.id.btnHome);
         btnHome.setOnClickListener(this);
@@ -129,9 +122,6 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
             case R.id.btnMenu: actionShowHideMenu(); break;
             case R.id.btnBack: actionBack(); break;
             case R.id.btnMyRoutes: actionMyRoutes(); break;
-            case R.id.btnShort: actionPressedShort(); break;
-            case R.id.btnHalfways: actionPressedHalfways(); break;
-            case R.id.btnLong: actionPressedLong(); break;
         }
     }
 
@@ -153,22 +143,6 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
 
     }
 
-    private void actionPressedShort() {
-        btnShort.setEnabled(false);
-        btnHalfways.setEnabled(true);
-        btnLong.setEnabled(true);
-    }
-    private void actionPressedHalfways() {
-        btnShort.setEnabled(true);
-        btnHalfways.setEnabled(false);
-        btnLong.setEnabled(true);
-    }
-    private void actionPressedLong() {
-        btnShort.setEnabled(true);
-        btnHalfways.setEnabled(true);
-        btnLong.setEnabled(false);
-    }
-
     private void actionMyRoutes() {
         Intent i = new Intent(this, myRoutesActivity.class );
         startActivity(i);
@@ -186,7 +160,11 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
         startActivity(i);
     }
     private void intentUserProfile() {
-        Intent i = new Intent(this, profileActivity.class );
+        Bundle bundle = new Bundle();
+        bundle.putString("type","me");
+        bundle.putString("userName","user");
+        Intent i = new Intent(this, profileActivity.class);
+        i.putExtras(bundle);
         startActivity(i);
     }
 

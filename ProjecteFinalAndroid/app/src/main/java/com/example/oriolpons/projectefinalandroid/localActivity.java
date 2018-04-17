@@ -1,6 +1,8 @@
 package com.example.oriolpons.projectefinalandroid;
 
+import android.content.Context;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,9 +10,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.example.oriolpons.projectefinalandroid.adapter.adapterLocal;
 
@@ -19,7 +25,7 @@ import java.util.ArrayList;
 public class localActivity extends AppCompatActivity implements View.OnClickListener{
 
     ImageButton btnHome, btnLocal, btnRoutes, btnUserProfile, btnBack;
-    Button btnMenu;
+    Button btnMenu, btnFilterLocal;
     ArrayList<local> listLocals;
     private com.example.oriolpons.projectefinalandroid.adapter.adapterLocal AdapterLocal;
     RecyclerView recyclerLocals;
@@ -36,6 +42,9 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
         listLocals = new ArrayList<>();
         recyclerLocals = (RecyclerView) findViewById(R.id.RecyclerLocal);
         recyclerLocals.setLayoutManager(new LinearLayoutManager(this));
+
+        btnFilterLocal = (Button) findViewById(R.id.btnFilterLocal);
+        btnFilterLocal.setOnClickListener(this);
 
         linearLayoutMenu = (LinearLayout) findViewById(R.id.linearLayoutMenu);
         btnMenu = (Button) findViewById(R.id.btnMenu);
@@ -92,6 +101,7 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
             case R.id.btnUserProfile: intentUserProfile(); break;
             case R.id.btnMenu: actionShowHideMenu(); break;
             case R.id.btnBack: actionBack(); break;
+            case R.id.btnFilterLocal: actionFilterLocal(); break;
 
         }
     }
@@ -127,11 +137,49 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
         startActivity(i);
     }
     private void intentUserProfile() {
-        Intent i = new Intent(this, profileActivity.class );
+        Bundle bundle = new Bundle();
+        bundle.putString("type","me");
+        bundle.putString("userName","user");
+        Intent i = new Intent(this, profileActivity.class);
+        i.putExtras(bundle);
         startActivity(i);
     }
 
+    private void actionFilterLocal() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View view = getLayoutInflater().inflate(R.layout.alert_filter_local,null);
 
+        final EditText edtDescription = (EditText) view.findViewById(R.id.edtFilterLocalName);
+        final RadioButton rbtnAsc = (RadioButton) view.findViewById(R.id.rbtnAsc);
+        final RadioButton rbtnDes = (RadioButton) view.findViewById(R.id.rbtnDes);
+        final CheckBox ckbxRestaurant = (CheckBox) view.findViewById(R.id.ckbxRestaurant);
+        final CheckBox ckbxPub = (CheckBox) view.findViewById(R.id.ckbxPub);
+        final CheckBox ckbxDisco = (CheckBox) view.findViewById(R.id.ckbxDisco);
+        Button btnFilterLocal = (Button) view.findViewById(R.id.btnFilterLocal);
+
+        btnFilterLocal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = getApplicationContext();
+                CharSequence text = "";
+                int duration;
+                Toast mensaje;
+
+
+
+
+
+                text = "Se han aplicado los filtros.";
+                duration = 3;
+
+                mensaje = Toast.makeText(context, text, duration);
+                mensaje.show();
+            }
+        });
+        builder.setView(view);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
 
     private void intentLocalContent() {
         Bundle bundle = new Bundle();

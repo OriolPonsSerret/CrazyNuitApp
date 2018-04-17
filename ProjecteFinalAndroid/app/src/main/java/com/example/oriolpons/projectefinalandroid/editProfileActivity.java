@@ -83,6 +83,12 @@ public class editProfileActivity extends AppCompatActivity implements View.OnCli
 
                 if(!edtUserName.getText().toString().isEmpty()){
 
+
+                    text = "Se han guardado los cambios.";
+                    duration = 3;
+
+                    mensaje = Toast.makeText(context, text, duration);
+                    mensaje.show();
                 }
                 else{
                     text = "El campo no puede estar vacio.";
@@ -93,8 +99,8 @@ public class editProfileActivity extends AppCompatActivity implements View.OnCli
                 }
             }
         });
-        AlertDialog dialog = builder.create();
         builder.setView(view);
+        AlertDialog dialog = builder.create();
         dialog.show();
     }
 
@@ -108,7 +114,20 @@ public class editProfileActivity extends AppCompatActivity implements View.OnCli
         btnAcceptDescription.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Context context = getApplicationContext();
+                CharSequence text = "";
+                int duration;
+                Toast mensaje;
 
+
+
+
+
+                text = "Se han guardado los cambios.";
+                duration = 3;
+
+                mensaje = Toast.makeText(context, text, duration);
+                mensaje.show();
             }
         });
         builder.setView(view);
@@ -135,6 +154,11 @@ public class editProfileActivity extends AppCompatActivity implements View.OnCli
 
                 if(!edtPasswordOld.getText().toString().isEmpty()&&!edtPasswordNew.getText().toString().isEmpty()&&!edtPasswordNewR.getText().toString().isEmpty()){
 
+                    text = "Se han guardado los cambios.";
+                    duration = 3;
+
+                    mensaje = Toast.makeText(context, text, duration);
+                    mensaje.show();
                 }
                 else{
                     text = "Todos los campos son obligatorios.";
@@ -200,6 +224,12 @@ public class editProfileActivity extends AppCompatActivity implements View.OnCli
 
                 if(!edtPasswordDelete.getText().toString().isEmpty()){
 
+
+                    text = "Se han guardado los cambios.";
+                    duration = 3;
+
+                    mensaje = Toast.makeText(context, text, duration);
+                    mensaje.show();
                 }
                 else{
                     text = "Debes confirmar tu contraseña para eliminar la cuenta.";

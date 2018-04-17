@@ -56,7 +56,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startActivity(i);
     }
     private void intentUserProfile() {
-        Intent i = new Intent(this, profileActivity.class );
+        Bundle bundle = new Bundle();
+        bundle.putString("type","me");
+        bundle.putString("userName","user");
+        Intent i = new Intent(this, profileActivity.class);
+        i.putExtras(bundle);
         startActivity(i);
     }
 
