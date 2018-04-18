@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.oriolpons.projectefinalandroid.adapter.adapterRoutesProfile;
@@ -29,15 +30,15 @@ public class profileActivity extends AppCompatActivity implements View.OnClickLi
                                                                                       , followingProfileFragment.OnFragmentInteractionListener
                                                                                       , achievementProfileFragment.OnFragmentInteractionListener{
 
-    FloatingActionButton btnEditProfile;
-    ImageButton btnBack, btnHome, btnTopUsers, btnRoutes, btnUserProfile;
-    Button btnMenu, btnLogOut, btnRoutesProfile, btnFollowersProfile, btnFollowingProfile, btnAchievementProfile;
-    LinearLayout linearLayoutMenu;
-    routesProfileFragment routesProfile;
-    followerProfileFragment followerProfile;
-    followingProfileFragment followingProfile;
-    achievementProfileFragment achievementProfile;
-
+    private FloatingActionButton btnEditProfile, btnFollow;
+    private ImageButton btnBack, btnHome, btnLocal, btnRoutes, btnUserProfile;
+    private Button btnMenu, btnLogOut, btnRoutesProfile, btnFollowersProfile, btnFollowingProfile, btnAchievementProfile;
+    private LinearLayout linearLayoutMenu;
+    private routesProfileFragment routesProfile;
+    private followerProfileFragment followerProfile;
+    private followingProfileFragment followingProfile;
+    private achievementProfileFragment achievementProfile;
+    private TextView tvUserName, tvUserDescription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,8 +62,8 @@ public class profileActivity extends AppCompatActivity implements View.OnClickLi
 
         btnHome = (ImageButton) findViewById(R.id.btnHome);
         btnHome.setOnClickListener(this);
-        btnTopUsers = (ImageButton) findViewById(R.id.btnTopUsers);
-        btnTopUsers.setOnClickListener(this);
+        btnLocal = (ImageButton) findViewById(R.id.btnLocal);
+        btnLocal.setOnClickListener(this);
         btnRoutes = (ImageButton) findViewById(R.id.btnRoutes);
         btnRoutes.setOnClickListener(this);
         btnUserProfile = (ImageButton) findViewById(R.id.btnUserProfile);
@@ -77,9 +78,13 @@ public class profileActivity extends AppCompatActivity implements View.OnClickLi
             }
         });
 
+        btnFollow = (FloatingActionButton) findViewById(R.id.btnFollow);
+        btnFollow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
-        //Si me encuentro en el perfil de otro usuario, el botón no se bloquea.
-        btnUserProfile.setEnabled(false);
+            }
+        });
 
         btnRoutesProfile = (Button) findViewById(R.id.btnRoutesProfile);
         btnRoutesProfile.setOnClickListener(this);
@@ -89,6 +94,24 @@ public class profileActivity extends AppCompatActivity implements View.OnClickLi
         btnFollowingProfile.setOnClickListener(this);
         btnAchievementProfile = (Button) findViewById(R.id.btnAchievementProfile);
         btnAchievementProfile.setOnClickListener(this);
+
+
+        tvUserName = (TextView) findViewById(R.id.tvUserName);
+
+        String type = this.getIntent().getExtras().getString("type");
+        String userName = this.getIntent().getExtras().getString("userName");
+
+        tvUserName.setText(userName);
+
+        if (type.equals("another")){
+            btnUserProfile.setEnabled(true);
+            btnLogOut.setVisibility(View.GONE);
+            btnEditProfile.setVisibility(View.GONE);
+            btnFollow.setVisibility(View.VISIBLE);
+        }
+        else{
+            btnUserProfile.setEnabled(false);
+        }
 
         btnRoutesProfile.setEnabled(false);
         buttonSelected();
@@ -103,7 +126,7 @@ public class profileActivity extends AppCompatActivity implements View.OnClickLi
         {
             case R.id.btnLogOut: intentLogOut(); break;
             case R.id.btnHome: intentMain(); break;
-            case R.id.btnTopUsers: intentTopUsers(); break;
+            case R.id.btnLocal: intentLocal(); break;
             case R.id.btnRoutes: intentRoutes(); break;
             case R.id.btnUserProfile: intentUserProfile(); break;
             case R.id.btnMenu: actionShowHideMenu(); break;
@@ -219,17 +242,21 @@ public class profileActivity extends AppCompatActivity implements View.OnClickLi
         Intent i = new Intent(this, MainActivity.class );
         startActivity(i);
     }
-    private void intentTopUsers() {
-        // Intent i = new Intent(this, topUsersActivity.class );
-        // startActivity(i);
+    private void intentLocal() {
+         Intent i = new Intent(this, localActivity.class );
+         startActivity(i);
     }
     private void intentRoutes() {
         Intent i = new Intent(this, routesActivity.class );
         startActivity(i);
     }
     private void intentUserProfile() {
-      //  Intent i = new Intent(this, profileActivity.class );
-      //  startActivity(i);
+        Bundle bundle = new Bundle();
+        bundle.putString("type","me");
+        bundle.putString("userName","user");
+        Intent i = new Intent(this, profileActivity.class);
+        i.putExtras(bundle);
+        startActivity(i);
     }
 
 

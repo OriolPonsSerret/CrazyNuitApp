@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingTop="40dp"
+    android:paddingBottom="20dp"
+    android:paddingLeft="20dp"
+    android:paddingRight="20dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:background="@android:color/black"
+        android:orientation="vertical"
+        android:padding="1dp">
+
+        <EditText
+            android:id="@+id/edtPasswordDelete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="?android:attr/detailsElementBackground"
+            android:ems="10"
+            android:hapticFeedbackEnabled="false"
+            android:hint="Introduce tu contraseña"
+            android:inputType="textPassword"
+            android:padding="5dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingTop="40dp"
+        android:paddingLeft="70dp"
+        android:paddingRight="70dp">
+
+        <Button
+            android:id="@+id/btnAcceptDelete"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:background="@drawable/button_custom"
+            android:text="ELIMINAR CUENTA"
+            android:textColor="@android:color/background_light" />
+    </LinearLayout>
+
+</LinearLayout>

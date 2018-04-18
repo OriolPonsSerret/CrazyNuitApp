@@ -22,76 +22,36 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingRight="265dp"
             android:paddingTop="5dp">
 
-            <Button
-                android:id="@+id/btnFilter"
-                android:layout_width="match_parent"
-                android:layout_height="38dp"
-                android:background="@drawable/button_custom"
-                android:text="Filtros"
-                android:textColor="@android:color/background_light" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnFilter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="38dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_custom"
+                    android:text="Filtros"
+                    android:textColor="@android:color/background_light" />
+
+                <Spinner
+                    android:id="@+id/spCity"
+                    android:layout_width="240dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
         </LinearLayout>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/RecyclerRoutes"
             android:layout_width="match_parent"
-            android:layout_height="431dp"
+            android:layout_height="498dp"
             android:paddingTop="3dp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="75dp"
-        android:layout_weight="1"
-        android:gravity="center_horizontal"
-        android:orientation="horizontal"
-        android:paddingBottom="5dp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp">
-
-        <Button
-            android:id="@+id/btnShort"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/button_custom"
-            android:text="Cortas"
-            android:textColor="@android:color/background_light" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal" />
-
-        <Button
-            android:id="@+id/btnHalfways"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/button_custom"
-            android:text="Medias"
-            android:textColor="@android:color/background_light" />
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="horizontal" />
-
-        <Button
-            android:id="@+id/btnLong"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/button_custom"
-            android:text="Largas"
-            android:textColor="@android:color/background_light" />
-
     </LinearLayout>
 
     <LinearLayout
@@ -193,14 +153,14 @@
                 android:orientation="horizontal" />
 
             <ImageButton
-                android:id="@+id/btnTopUsers"
+                android:id="@+id/btnLocal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:background="@drawable/button_bottom_menu"
                 android:paddingBottom="15dp"
                 android:paddingTop="15dp"
-                app:srcCompat="@drawable/top_users_icon" />
+                app:srcCompat="@drawable/local_icon" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
