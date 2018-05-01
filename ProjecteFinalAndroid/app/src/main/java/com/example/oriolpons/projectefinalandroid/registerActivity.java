@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 public class registerActivity extends AppCompatActivity{
 
-    Button btnRegister;
+    private Button btnRegister;
    // EditText edtUserName, edtEmail, edtPassword, edtPasswordR;
 
     @Override

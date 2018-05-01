@@ -1,21 +1,20 @@
-package com.example.oriolpons.projectefinalandroid;
+package com.example.oriolpons.projectefinalandroid.Models;
 
 /**
- * Created on 26/03/2018.
+ * Created on 30/03/2018.
  */
 
-public class routes {
+public class local {
+
     private long id;
     private String name;
     private String description;
-    private String creator;
     private Double assessment;
 
-    public routes(long id, String name, String description, String creator, Double assessment) {
+    public local(long id, String name, String description, Double assessment) {
         this.id = id;
         this.name = name;
         this.description = description;
-        this.creator = creator;
         this.assessment = assessment;
     }
 
@@ -41,14 +40,6 @@ public class routes {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getCreator() {
-        return creator;
-    }
-
-    public void setCreator(String creator) {
-        this.creator = creator;
     }
 
     public Double getAssessment() {

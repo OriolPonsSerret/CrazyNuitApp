@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 public class loginActivity extends AppCompatActivity implements View.OnClickListener {
 
-    Button btnLogin, btnRegister;
+    private Button btnLogin, btnRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -5,11 +5,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -17,20 +19,26 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.oriolpons.projectefinalandroid.adapter.adapterRoutesProfile;
-import com.example.oriolpons.projectefinalandroid.fragment.achievementProfileFragment;
-import com.example.oriolpons.projectefinalandroid.fragment.followerProfileFragment;
-import com.example.oriolpons.projectefinalandroid.fragment.followingProfileFragment;
-import com.example.oriolpons.projectefinalandroid.fragment.routesProfileFragment;
+import com.example.oriolpons.projectefinalandroid.Fragments.achievementProfileFragment;
+import com.example.oriolpons.projectefinalandroid.Fragments.followerProfileFragment;
+import com.example.oriolpons.projectefinalandroid.Fragments.followingProfileFragment;
+import com.example.oriolpons.projectefinalandroid.Fragments.routesProfileFragment;
+import com.example.oriolpons.projectefinalandroid.Models.local;
 
-import java.util.ArrayList;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 public class profileActivity extends AppCompatActivity implements View.OnClickListener, routesProfileFragment.OnFragmentInteractionListener
                                                                                       , followerProfileFragment.OnFragmentInteractionListener
                                                                                       , followingProfileFragment.OnFragmentInteractionListener
                                                                                       , achievementProfileFragment.OnFragmentInteractionListener{
 
-    private FloatingActionButton btnEditProfile, btnFollow;
+    private FloatingActionButton btnEditProfile, btnFollow, btnUnfollow;
     private ImageButton btnBack, btnHome, btnLocal, btnRoutes, btnUserProfile;
     private Button btnMenu, btnLogOut, btnRoutesProfile, btnFollowersProfile, btnFollowingProfile, btnAchievementProfile;
     private LinearLayout linearLayoutMenu;
@@ -39,6 +47,13 @@ public class profileActivity extends AppCompatActivity implements View.OnClickLi
     private followingProfileFragment followingProfile;
     private achievementProfileFragment achievementProfile;
     private TextView tvUserName, tvUserDescription;
+    private JSONObject data = null;
+    private StringBuffer json;
+    private String URL;
+
+
+    private long id = 0;
+    private String name = "", description = "", bornDate = "", email = "", telephone = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,9 +97,18 @@ public class profileActivity extends AppCompatActivity implements View.OnClickLi
         btnFollow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                followOrUnfollow();
             }
         });
+
+        btnUnfollow = (FloatingActionButton) findViewById(R.id.btnUnfollow);
+        btnUnfollow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                followOrUnfollow();
+            }
+        });
+
 
         btnRoutesProfile = (Button) findViewById(R.id.btnRoutesProfile);
         btnRoutesProfile.setOnClickListener(this);
@@ -135,6 +159,16 @@ public class profileActivity extends AppCompatActivity implements View.OnClickLi
             case R.id.btnFollowersProfile: actionSelectedFollowers(); break;
             case R.id.btnFollowingProfile: actionSelectedFollowing(); break;
             case R.id.btnAchievementProfile: actionSelectedAchievement(); break;
+        }
+    }
+    private void followOrUnfollow() {
+        if (btnUnfollow.getVisibility() == View.GONE){
+            btnFollow.setVisibility(View.GONE);
+            btnUnfollow.setVisibility(View.VISIBLE);
+        }
+        else{
+            btnUnfollow.setVisibility(View.GONE);
+            btnFollow.setVisibility(View.VISIBLE);
         }
     }
 
@@ -271,5 +305,82 @@ public class profileActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     public void onFragmentInteraction(Uri uri) {
 
+    }
+
+
+    private void getJSON() {
+
+        new AsyncTask<Void, Void, Void>() {
+
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+
+            }
+
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    URL url = new URL(URL);//------------------------------------------------------------<<<<<<<<<<<<<< URL <<<<<<
+
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+                    BufferedReader reader =
+                            new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+                    json = new StringBuffer(1024);
+                    String tmp = "";
+
+                    while ((tmp = reader.readLine()) != null)
+                        json.append(tmp).append("\n");
+                    reader.close();
+
+                    data = new JSONObject(json.toString());
+
+                    if (data.getInt("cod") != 200) {
+                        System.out.println("Cancelled");
+                        return null;
+                    }
+
+
+                } catch (Exception e) {
+
+                    //System.out.println("Exception " + e.getMessage());
+                    // mostrarOpcion();
+                    return null;
+                }
+
+                return null;
+            }
+            @Override
+            protected void onPostExecute(Void Void) {
+                if (data != null) {
+                    Log.d("my weather received", data.toString());
+
+                    try {
+                        readData();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+        }.execute();
+    }
+
+    private void readData() throws JSONException {
+
+
+        id = (long) data.get("idusuaris");
+        name = (String) data.get("Nom");
+        //description = (String) data.get("Descripcio");
+        bornDate = (String) data.get("DataNaixement");
+        email = (String) data.get("correu_electronic");
+        telephone = (String) data.get("telefon");
+
+        tvUserName.setText(name);
+        //tvUserDescription.setText(description);
     }
 }

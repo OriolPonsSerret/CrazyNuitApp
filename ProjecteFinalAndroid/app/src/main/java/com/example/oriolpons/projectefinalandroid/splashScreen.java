@@ -1,12 +1,13 @@
 package com.example.oriolpons.projectefinalandroid;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ProgressBar;
 
-public class splashScreen extends AppCompatActivity {
-    ProgressBar progressBar;
+public class splashScreen extends Activity {
+    private ProgressBar progressBar;
     int progressStatus = 0;
 
     @Override

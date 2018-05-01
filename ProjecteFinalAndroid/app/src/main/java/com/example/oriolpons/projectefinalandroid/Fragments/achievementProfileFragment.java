@@ -1,7 +1,6 @@
-package com.example.oriolpons.projectefinalandroid.fragment;
+package com.example.oriolpons.projectefinalandroid.Fragments;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,21 +11,20 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.oriolpons.projectefinalandroid.R;
-import com.example.oriolpons.projectefinalandroid.adapter.adapterUser;
-import com.example.oriolpons.projectefinalandroid.profileActivity;
-import com.example.oriolpons.projectefinalandroid.user;
+import com.example.oriolpons.projectefinalandroid.achievement;
+import com.example.oriolpons.projectefinalandroid.Adapters.adapterAchievementProfile;
 
 import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link followerProfileFragment.OnFragmentInteractionListener} interface
+ * {@link achievementProfileFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link followerProfileFragment#newInstance} factory method to
+ * Use the {@link achievementProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class followerProfileFragment extends Fragment {
+public class achievementProfileFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -37,11 +35,10 @@ public class followerProfileFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
-    private ArrayList<user> listUsers;
-    private RecyclerView recyclerView;
-    private String userName;
+    ArrayList<achievement> listAchievements;
+    RecyclerView recyclerView;
 
-    public followerProfileFragment() {
+    public achievementProfileFragment() {
         // Required empty public constructor
     }
 
@@ -51,11 +48,11 @@ public class followerProfileFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment followerProfileFragment.
+     * @return A new instance of fragment achievementProfileFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static followerProfileFragment newInstance(String param1, String param2) {
-        followerProfileFragment fragment = new followerProfileFragment();
+    public static achievementProfileFragment newInstance(String param1, String param2) {
+        achievementProfileFragment fragment = new achievementProfileFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -76,21 +73,20 @@ public class followerProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_follower_profile,container,false);
+        View view = inflater.inflate(R.layout.fragment_achievement_profile,container,false);
 
-        listUsers=new ArrayList<>();
+        listAchievements=new ArrayList<>();
         recyclerView=view.findViewById(R.id.recyclerId);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        exampleUsers();
+        exampleAchievement();
 
 
-        adapterUser Adapter = new adapterUser(listUsers);
+        adapterAchievementProfile Adapter = new adapterAchievementProfile(listAchievements);
         Adapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                userName = listUsers.get(recyclerView.getChildAdapterPosition(view)).getName();
-                intentUserProfile();
+
             }
         });
         recyclerView.setAdapter(Adapter);
@@ -139,21 +135,11 @@ public class followerProfileFragment extends Fragment {
 
 
 
+    private void exampleAchievement() {
 
-    private void intentUserProfile() {
-        Bundle bundle = new Bundle();
-        bundle.putString("type","another");
-        bundle.putString("userName",userName);
-        Intent intent = new Intent(getActivity(), profileActivity.class);
-        intent.putExtras(bundle);
-        getActivity().startActivity(intent);
-    }
-
-    private void exampleUsers() {
-
-        for(int index = 4; index<= 7; index++){
-
-            listUsers.add(new user(index,"Usuario nº" + index+ ".", "El mejor usuario de esta app."));
-        }
+        listAchievements.add(new achievement(1,"Logro nº " + 1+ ".", "Mi primera ruta.", 1 + " ENERO"));
+        listAchievements.add(new achievement(2,"Logro nº " + 2+ ".", "Mi primer seguidor.", 6 + " ENERO"));
+        listAchievements.add(new achievement(3,"Logro nº " + 3+ ".", "Mi primera valoración.", 12 + " ENERO"));
+        listAchievements.add(new achievement(4,"Logro nº " + 4+ ".", "Mi primera ruta seguida.", 28 + " ENERO"));
     }
 }

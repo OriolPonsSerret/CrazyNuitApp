@@ -1,4 +1,4 @@
-package com.example.oriolpons.projectefinalandroid.adapter;
+package com.example.oriolpons.projectefinalandroid.Adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;

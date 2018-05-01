@@ -1,33 +1,22 @@
 package com.example.oriolpons.projectefinalandroid;
 
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CalendarView;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.oriolpons.projectefinalandroid.fragment.routesProfileFragment;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 public class editProfileActivity extends AppCompatActivity implements View.OnClickListener{
 
-    ImageButton btnBack;
-    Button btnDeleteAccount, btnUserName, btnDescription, btnPassword, btnDate;
+    private ImageButton btnBack;
+    private Button btnDeleteAccount, btnUserName, btnDescription, btnPassword, btnDate;
+    private AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +62,10 @@ public class editProfileActivity extends AppCompatActivity implements View.OnCli
         final EditText edtUserName = (EditText) view.findViewById(R.id.edtUserName);
         Button btnAccept = (Button) view.findViewById(R.id.btnAccept);
 
+        builder.setView(view);
+        dialog = builder.create();
+        dialog.show();
+
         btnAccept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,11 +90,11 @@ public class editProfileActivity extends AppCompatActivity implements View.OnCli
                     mensaje = Toast.makeText(context, text, duration);
                     mensaje.show();
                 }
+
+                dialog.cancel();
             }
         });
-        builder.setView(view);
-        AlertDialog dialog = builder.create();
-        dialog.show();
+
     }
 
     private void actionEditDescription() {
@@ -110,6 +103,10 @@ public class editProfileActivity extends AppCompatActivity implements View.OnCli
 
         final EditText edtDescription = (EditText) view.findViewById(R.id.edtDescription);
         Button btnAcceptDescription = (Button) view.findViewById(R.id.btnAcceptDescription);
+
+        builder.setView(view);
+        dialog = builder.create();
+        dialog.show();
 
         btnAcceptDescription.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,11 +125,11 @@ public class editProfileActivity extends AppCompatActivity implements View.OnCli
 
                 mensaje = Toast.makeText(context, text, duration);
                 mensaje.show();
+
+                dialog.cancel();
             }
         });
-        builder.setView(view);
-        AlertDialog dialog = builder.create();
-        dialog.show();
+
     }
 
     private void actionEditPassword() {
@@ -143,6 +140,10 @@ public class editProfileActivity extends AppCompatActivity implements View.OnCli
         final EditText edtPasswordNew = (EditText) view.findViewById(R.id.edtPasswordNew);
         final EditText edtPasswordNewR = (EditText) view.findViewById(R.id.edtPasswordNewR);
         Button btnAcceptPassword = (Button) view.findViewById(R.id.btnAcceptPassword);
+
+        builder.setView(view);
+        dialog = builder.create();
+        dialog.show();
 
         btnAcceptPassword.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -167,11 +168,11 @@ public class editProfileActivity extends AppCompatActivity implements View.OnCli
                     mensaje = Toast.makeText(context, text, duration);
                     mensaje.show();
                 }
+
+                dialog.cancel();
             }
         });
-        builder.setView(view);
-        AlertDialog dialog = builder.create();
-        dialog.show();
+
     }
 
     private void actionEditDate() {
@@ -180,6 +181,10 @@ public class editProfileActivity extends AppCompatActivity implements View.OnCli
 
         final DatePicker Calendar = (DatePicker) view.findViewById(R.id.dateCalendar);
         Button btnAcceptPassword = (Button) view.findViewById(R.id.btnAcceptDate);
+
+        builder.setView(view);
+        dialog = builder.create();
+        dialog.show();
 
         btnAcceptPassword.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -199,11 +204,11 @@ public class editProfileActivity extends AppCompatActivity implements View.OnCli
 
                 mensaje = Toast.makeText(context, text, duration);
                 mensaje.show();
+
+                dialog.cancel();
             }
         });
-        builder.setView(view);
-        AlertDialog dialog = builder.create();
-        dialog.show();
+
     }
 
     private void actionDeleteAccount() {
@@ -212,6 +217,10 @@ public class editProfileActivity extends AppCompatActivity implements View.OnCli
 
         final EditText edtPasswordDelete = (EditText) view.findViewById(R.id.edtPasswordDelete);
         Button btnAcceptPassword = (Button) view.findViewById(R.id.btnAcceptDelete);
+
+        builder.setView(view);
+        dialog = builder.create();
+        dialog.show();
 
         btnAcceptPassword.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -238,11 +247,11 @@ public class editProfileActivity extends AppCompatActivity implements View.OnCli
                     mensaje = Toast.makeText(context, text, duration);
                     mensaje.show();
                 }
+
+                dialog.cancel();
             }
         });
-        builder.setView(view);
-        AlertDialog dialog = builder.create();
-        dialog.show();
+
     }
     private void actionBack() {
         finish();

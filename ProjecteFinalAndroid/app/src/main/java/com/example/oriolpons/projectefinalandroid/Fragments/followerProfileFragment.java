@@ -1,4 +1,4 @@
-package com.example.oriolpons.projectefinalandroid.fragment;
+package com.example.oriolpons.projectefinalandroid.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,24 +12,21 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.oriolpons.projectefinalandroid.R;
-import com.example.oriolpons.projectefinalandroid.adapter.adapterRoutesProfile;
-import com.example.oriolpons.projectefinalandroid.adapter.adapterUser;
+import com.example.oriolpons.projectefinalandroid.Adapters.adapterUser;
 import com.example.oriolpons.projectefinalandroid.profileActivity;
-import com.example.oriolpons.projectefinalandroid.routes;
-import com.example.oriolpons.projectefinalandroid.routesContentActivity;
-import com.example.oriolpons.projectefinalandroid.user;
+import com.example.oriolpons.projectefinalandroid.Models.user;
 
 import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link followingProfileFragment.OnFragmentInteractionListener} interface
+ * {@link followerProfileFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link followingProfileFragment#newInstance} factory method to
+ * Use the {@link followerProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class followingProfileFragment extends Fragment {
+public class followerProfileFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -44,7 +41,7 @@ public class followingProfileFragment extends Fragment {
     private RecyclerView recyclerView;
     private String userName;
 
-    public followingProfileFragment() {
+    public followerProfileFragment() {
         // Required empty public constructor
     }
 
@@ -54,11 +51,11 @@ public class followingProfileFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment followingProfileFragment.
+     * @return A new instance of fragment followerProfileFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static followingProfileFragment newInstance(String param1, String param2) {
-        followingProfileFragment fragment = new followingProfileFragment();
+    public static followerProfileFragment newInstance(String param1, String param2) {
+        followerProfileFragment fragment = new followerProfileFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -79,7 +76,7 @@ public class followingProfileFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_following_profile,container,false);
+        View view = inflater.inflate(R.layout.fragment_follower_profile,container,false);
 
         listUsers=new ArrayList<>();
         recyclerView=view.findViewById(R.id.recyclerId);
@@ -100,7 +97,6 @@ public class followingProfileFragment extends Fragment {
 
         return view;
     }
-
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -144,9 +140,6 @@ public class followingProfileFragment extends Fragment {
 
 
 
-
-
-
     private void intentUserProfile() {
         Bundle bundle = new Bundle();
         bundle.putString("type","another");
@@ -158,7 +151,7 @@ public class followingProfileFragment extends Fragment {
 
     private void exampleUsers() {
 
-        for(int index = 0; index<= 3; index++){
+        for(int index = 4; index<= 7; index++){
 
             listUsers.add(new user(index,"Usuario nº" + index+ ".", "El mejor usuario de esta app."));
         }
