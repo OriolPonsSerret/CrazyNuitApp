@@ -1,7 +1,9 @@
 package com.example.oriolpons.projectefinalandroid;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,25 +11,34 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.Toast;
 
-import com.example.oriolpons.projectefinalandroid.adapter.adapterRoutes;
+import com.example.oriolpons.projectefinalandroid.Models.routes;
+import com.example.oriolpons.projectefinalandroid.Adapters.adapterRoutes;
 
 import java.util.ArrayList;
 
 public class myRoutesActivity extends AppCompatActivity implements View.OnClickListener{
 
-    FloatingActionButton fltBtnAdd;
-    ImageButton btnHome, btnLocal, btnRoutes, btnUserProfile, btnBack;
-    Button btnMenu, btnPublicRoutes;
-    ArrayList<routes> listRoutes;
-    RecyclerView recyclerRoutes;
-    private com.example.oriolpons.projectefinalandroid.adapter.adapterRoutes adapterRoutes;
+    private FloatingActionButton fltBtnAdd;
+    private ImageButton btnHome, btnLocal, btnRoutes, btnUserProfile, btnBack;
+    private Button btnMenu, btnPublicRoutes, btnFilter;
+    private ArrayList<routes> listRoutes;
+    private RecyclerView recyclerRoutes;
+    private com.example.oriolpons.projectefinalandroid.Adapters.adapterRoutes adapterRoutes;
     private String routeName, routeDescription, routeAssessment, routeCreator;
-    LinearLayout linearLayoutMenu;
-    Spinner spCity;
+    private LinearLayout linearLayoutMenu;
+    private Spinner spCity;
+    private String url = "", typeOfRouteFilter = "";
+    private long id;
+    private double assessment;
+    private AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +51,9 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
         recyclerRoutes.setLayoutManager(new LinearLayoutManager(this));
 
         linearLayoutMenu = (LinearLayout) findViewById(R.id.linearLayoutMenu);
+
+        btnFilter = (Button) findViewById(R.id.btnFilter);
+        btnFilter.setOnClickListener(this);
 
         btnMenu = (Button) findViewById(R.id.btnMenu);
         btnMenu.setOnClickListener(this);
@@ -111,8 +125,60 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
             case R.id.btnMenu: actionShowHideMenu(); break;
             case R.id.btnBack: actionBack(); break;
             case R.id.btnPublicRoutes: finish(); break;
+            case R.id.btnFilter: actionFilterRoute(); break;
         }
     }
+
+    private void actionFilterRoute() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View view = getLayoutInflater().inflate(R.layout.alert_filter_route,null);
+
+        final EditText edtFilterName = (EditText) view.findViewById(R.id.edtFilterRouteName);
+        final RadioButton rbtnAsc = (RadioButton) view.findViewById(R.id.rbtnAsc);
+        final RadioButton rbtnDes = (RadioButton) view.findViewById(R.id.rbtnDes);
+        final RadioButton ckbxShort = (RadioButton) view.findViewById(R.id.ckbxShort);
+        final RadioButton ckbxHalfways = (RadioButton) view.findViewById(R.id.ckbxHalfways);
+        final RadioButton ckbxLong = (RadioButton) view.findViewById(R.id.ckbxLong);
+        Button btnFilterRoute = (Button) view.findViewById(R.id.btnFilterRoute);
+
+        builder.setView(view);
+        dialog = builder.create();
+        dialog.show();
+
+        btnFilterRoute.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = getApplicationContext();
+                CharSequence text = "";
+                int duration;
+                Toast mensaje;
+
+
+                if (ckbxShort.isChecked()){
+                    typeOfRouteFilter = "short";
+                }
+                else{
+                    if (ckbxHalfways.isChecked()){
+                        typeOfRouteFilter = "halfways";
+                    }else{
+
+                    }
+                    if (ckbxLong.isChecked()){
+                        typeOfRouteFilter = "long";
+                    }
+                }
+
+                text = "Se han aplicado los filtros.";
+                duration = 3;
+
+                mensaje = Toast.makeText(context, text, duration);
+                mensaje.show();
+
+                dialog.cancel();
+            }
+        });
+    }
+
     private void intentRouteContent() {
         Bundle bundle = new Bundle();
         bundle.putString("name",routeName);

@@ -11,25 +11,25 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".splashScreen">
+        <activity android:name=".splashScreen" android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity" />
-        <activity android:name=".loginActivity" />
-        <activity android:name=".registerActivity" />
-        <activity android:name=".routesActivity" />
-        <activity android:name=".profileActivity" />
-        <activity android:name=".myRoutesActivity" />
-        <activity android:name=".favRoutesActivity" />
-        <activity android:name=".editProfileActivity" />
-        <activity android:name=".routesContentActivity" />
-        <activity android:name=".localContentActivity" />
-        <activity android:name=".createEditRouteActivity" />
-        <activity android:name=".localActivity"></activity>
+        <activity android:name=".MainActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".loginActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".registerActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".routesActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".profileActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".myRoutesActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".favRoutesActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".editProfileActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".routesContentActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".localContentActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".createEditRouteActivity" android:screenOrientation="portrait"/>
+        <activity android:name=".localActivity" android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

@@ -52,11 +52,11 @@
 
                 <TextView
                     android:id="@+id/textView10"
-                    android:layout_width="87dp"
+                    android:layout_width="130dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:layout_weight="1"
-                    android:text="Zona:  "
+                    android:text="Dirección:  "
                     android:textColor="@android:color/black"
                     android:textStyle="bold" />
 
@@ -68,117 +68,181 @@
                     android:layout_weight="1"
                     android:text="Tipo de via/ Nombre via, Portal" />
             </LinearLayout>
-
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingTop="20dp">
+                android:paddingTop="2dp">
 
-                <RatingBar
-                    android:id="@+id/rbAssessment"
-                    style="@style/Widget.AppCompat.RatingBar.Indicator"
-                    android:layout_width="66dp"
+                <TextView
+                    android:id="@+id/textView11"
+                    android:layout_width="159dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
                     android:layout_weight="1"
-                    android:numStars="5"
-                    android:rating="0"
-                    tools:style="@style/Widget.AppCompat.RatingBar.Indicator" />
+                    android:text="Puntuación: "
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tvAssessment"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
                     android:layout_weight="1"
-                    android:paddingLeft="15dp"
-                    android:paddingTop="6dp"
-                    android:text="0/5 - 0 votos"
-                    android:textSize="18sp" />
-
+                    android:text="Tipo de via/ Nombre via, Portal" />
             </LinearLayout>
         </LinearLayout>
+
+
     </LinearLayout>
+
     <LinearLayout
-        android:id="@+id/ll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="5dp"
+        android:layout_marginBottom="0dp"
         android:layout_weight="1"
-        android:gravity="center_horizontal"
-        android:paddingLeft="25dp"
-        android:paddingRight="25dp"
         android:orientation="vertical">
 
-
-        <TextView
-            android:id="@+id/textView6"
+        <LinearLayout
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/button_back_int"
+                android:paddingLeft="20dp"
+                android:paddingRight="44dp"
+                app:srcCompat="?android:attr/homeAsUpIndicator" />
+            <!--
+            <Button
+                android:id="@+id/btnBack"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/button_back_int"
+                android:paddingRight="20dp"
+                android:text="Menú" />
+-->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:paddingLeft="200dp" />
+
+            <Button
+                android:id="@+id/btn"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="#00000000"
+                android:paddingLeft="20dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearLayoutMenu"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#7F000000"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal"
+            android:paddingBottom="5dp"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:paddingTop="5dp"
+            android:visibility="gone">
+
+
+            <ImageButton
+                android:id="@+id/btnHome"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/button_bottom_menu"
+                android:paddingBottom="15dp"
+                android:paddingTop="15dp"
+                app:srcCompat="@drawable/home_icon" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal" />
+
+            <ImageButton
+                android:id="@+id/btnTopUsers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/button_bottom_menu"
+                android:paddingBottom="15dp"
+                android:paddingTop="15dp"
+                app:srcCompat="@drawable/top_users_icon" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal" >
+
+                <ImageButton
+                    android:id="@+id/btnRoutes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_bottom_menu"
+                    android:paddingBottom="15dp"
+                    android:paddingTop="15dp"
+                    app:srcCompat="@drawable/routes_icon" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="horizontal">
+
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/btnUserProfile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/button_bottom_menu"
+                android:paddingBottom="15dp"
+                android:paddingTop="15dp"
+                app:srcCompat="@drawable/user_icon" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="0dp"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:gravity="center_vertical|center_horizontal|center" >
+
+        <RatingBar
+            android:id="@+id/rbAssessment"
+            style="@style/Widget.AppCompat.RatingBar.Indicator"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Valorar"
-            android:textAlignment="center"
-            android:textColor="@android:color/black"
-            android:textSize="24sp"
-            android:textStyle="bold" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/btn1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Mal" />
-
-                <Button
-                    android:id="@+id/btn2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Regular" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/btn3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Bien" />
-
-                <Button
-                    android:id="@+id/btn4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Muy Bien" />
-
-                <Button
-                    android:id="@+id/btn5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Excelente" />
-            </LinearLayout>
-        </LinearLayout>
+            android:layout_weight="1"
+            android:numStars="5"
+            android:rating="4"
+            tools:style="@style/Widget.AppCompat.RatingBar.Indicator" />
 
     </LinearLayout>
 </RelativeLayout>

@@ -1,25 +1,28 @@
 package com.example.oriolpons.projectefinalandroid;
 
 import android.content.Intent;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.example.oriolpons.projectefinalandroid.adapter.adapterLocal;
-import com.example.oriolpons.projectefinalandroid.adapter.adapterRoutes;
+import com.example.oriolpons.projectefinalandroid.Models.local;
+import com.example.oriolpons.projectefinalandroid.Adapters.adapterLocal;
 
 import java.util.ArrayList;
 
-public class routesContentActivity extends AppCompatActivity {
+public class routesContentActivity extends AppCompatActivity implements View.OnClickListener{
 
-    TextView txtTitle, txtDescription, txtAssessment, txtCreator;
-    ArrayList<local> listLocals;
-    private com.example.oriolpons.projectefinalandroid.adapter.adapterLocal AdapterLocal;
-    RecyclerView recyclerLocals;
+    private FloatingActionButton btnAddFav, btnRemoveFav;
+    private TextView txtTitle, txtDescription, txtAssessment, txtCreator;
+    private ImageButton btnBack;
+    private ArrayList<local> listLocals;
+    private com.example.oriolpons.projectefinalandroid.Adapters.adapterLocal AdapterLocal;
+    private RecyclerView recyclerLocals;
 
     private String localName, localDescription, localAssessment;
 
@@ -36,6 +39,9 @@ public class routesContentActivity extends AppCompatActivity {
         txtDescription = (TextView) findViewById(R.id.tvDescription);
         txtAssessment = (TextView) findViewById(R.id.tvAssessment);
         txtCreator = (TextView) findViewById(R.id.tvCreator);
+
+        btnBack = (ImageButton) findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(this);
 
         String routeName = this.getIntent().getExtras().getString("name");
         String routeDescription = this.getIntent().getExtras().getString("description");
@@ -59,7 +65,43 @@ public class routesContentActivity extends AppCompatActivity {
         });
         recyclerLocals.setAdapter(AdapterLocal);
 
+        btnAddFav = (FloatingActionButton) findViewById(R.id.btnAddFav);
+        btnAddFav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addOrRemoveFav();
+            }
+        });
+
+        btnRemoveFav = (FloatingActionButton) findViewById(R.id.btnRemoveFav);
+        btnRemoveFav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addOrRemoveFav();
+            }
+        });
+
         exampleLocal();
+    }
+
+    @Override
+    public void onClick(View v) {
+
+        switch (v.getId())
+        {
+            case R.id.btnBack: finish(); break;
+        }
+    }
+
+    private void addOrRemoveFav() {
+        if (btnRemoveFav.getVisibility() == View.GONE){
+            btnAddFav.setVisibility(View.GONE);
+            btnRemoveFav.setVisibility(View.VISIBLE);
+        }
+        else{
+            btnRemoveFav.setVisibility(View.GONE);
+            btnAddFav.setVisibility(View.VISIBLE);
+        }
     }
 
     private void intentLocalContent() {

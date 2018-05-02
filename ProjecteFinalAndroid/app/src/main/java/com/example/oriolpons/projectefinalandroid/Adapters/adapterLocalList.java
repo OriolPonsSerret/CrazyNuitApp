@@ -1,4 +1,4 @@
-package com.example.oriolpons.projectefinalandroid.adapter;
+package com.example.oriolpons.projectefinalandroid.Adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.oriolpons.projectefinalandroid.R;
-import com.example.oriolpons.projectefinalandroid.local;
+import com.example.oriolpons.projectefinalandroid.Models.local;
 
 import java.util.ArrayList;
 
@@ -16,27 +16,27 @@ import java.util.ArrayList;
  * Created on 05/04/2018.
  */
 
-public class adapterLocalAdd  extends RecyclerView.Adapter<adapterLocalAdd.ViewHolderLocalAdd> implements View.OnClickListener{
+public class adapterLocalList extends RecyclerView.Adapter<adapterLocalList.ViewHolderLocalList> implements View.OnClickListener{
 
     ArrayList<local> listLocal;
     private View.OnClickListener listener;
 
 
-    public adapterLocalAdd(ArrayList<local> listLocal) {
+    public adapterLocalList(ArrayList<local> listLocal) {
         this.listLocal = listLocal;
     }
 
     @Override
-    public adapterLocalAdd.ViewHolderLocalAdd onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.design_recycler_local_add,null,false);
+    public adapterLocalList.ViewHolderLocalList onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.design_recycler_local_remove,null,false);
 
         view.setOnClickListener(this);
 
-        return new adapterLocalAdd.ViewHolderLocalAdd(view);
+        return new adapterLocalList.ViewHolderLocalList(view);
     }
 
     @Override
-    public void onBindViewHolder(adapterLocalAdd.ViewHolderLocalAdd holder, int position) {
+    public void onBindViewHolder(adapterLocalList.ViewHolderLocalList holder, int position) {
         holder.tvTitle.setText(listLocal.get(position).getName());
     }
 
@@ -56,12 +56,12 @@ public class adapterLocalAdd  extends RecyclerView.Adapter<adapterLocalAdd.ViewH
         }
     }
 
-    public class ViewHolderLocalAdd extends RecyclerView.ViewHolder {
+    public class ViewHolderLocalList extends RecyclerView.ViewHolder {
 
         TextView tvTitle;
         ImageView icon;
 
-        public ViewHolderLocalAdd(View itemView) {
+        public ViewHolderLocalList(View itemView) {
             super(itemView);
             tvTitle = (TextView) itemView.findViewById(R.id.tvTitle);
             // icon = (ImageView) itemView.findViewById(R.id.icon);

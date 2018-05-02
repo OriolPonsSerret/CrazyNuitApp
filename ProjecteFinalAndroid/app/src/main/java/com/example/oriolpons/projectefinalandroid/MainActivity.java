@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
-    ImageButton btnHome, btnLocal, btnRoutes, btnUserProfile;
+    private ImageButton btnHome, btnLocal, btnRoutes, btnUserProfile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

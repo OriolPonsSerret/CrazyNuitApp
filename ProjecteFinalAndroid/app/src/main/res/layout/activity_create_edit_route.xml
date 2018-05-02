@@ -40,181 +40,120 @@
             android:inputType="text|textPersonName"
             android:padding="5dp" />
 
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:paddingTop="10dp">
-
-            <TextView
-                android:id="@+id/textView1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="5dp"
-                android:text="DESCRIPCIÓN DE LA RUTA"
-                android:textColor="@android:color/black"
-                android:textSize="20dp"
-                android:textStyle="bold" />
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="?android:attr/detailsElementBackground"
-                android:gravity="top|left"
-                android:hint="Describe de que trata la ruta..."
-                android:inputType="textMultiLine"
-                android:lines="4"
-                android:maxLines="10"
-                android:minLines="4"
-                android:scrollbars="vertical" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:paddingBottom="8dp"
-            android:paddingTop="14dp">
-
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="5dp"
-                android:text="LOCALES EN TU RUTA"
-                android:textColor="@android:color/black"
-                android:textSize="20dp"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:paddingBottom="8dp">
-
-                <ImageButton
-                    android:id="@+id/btnFilter1"
-                    android:layout_width="128dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/button_custom"
-                    android:elevation="6dp"
-                    android:src="@android:drawable/ic_menu_search"
-                    app:srcCompat="@android:drawable/ic_menu_search" />
-
-                <EditText
-                    android:id="@+id/edtFilter1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="?android:attr/detailsElementBackground"
-                    android:ems="10"
-                    android:hint="Filtra por el nombre del local"
-                    android:inputType="text|textPersonName"
-                    android:padding="5dp"
-                    android:textAlignment="textStart"
-                    android:textSize="17sp" />
-            </LinearLayout>
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/RecyclerAdd"
-                android:layout_width="match_parent"
-                android:layout_height="75dp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:paddingTop="4dp">
-
-            <TextView
-                android:id="@+id/textView3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="5dp"
-                android:text="LISTA DE LOCALES"
-                android:textColor="@android:color/black"
-                android:textSize="20dp"
-                android:textStyle="bold" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="horizontal"
-                android:paddingBottom="8dp">
-
-                <ImageButton
-                    android:id="@+id/btnFilter2"
-                    android:layout_width="128dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/button_custom"
-                    android:elevation="6dp"
-                    android:src="@android:drawable/ic_menu_search"
-                    app:srcCompat="@android:drawable/ic_menu_search" />
-
-                <EditText
-                    android:id="@+id/edtFilter2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:background="?android:attr/detailsElementBackground"
-                    android:ems="10"
-                    android:hint="Filtra por el nombre del local"
-                    android:inputType="text|textPersonName"
-                    android:padding="5dp"
-                    android:textAlignment="textStart"
-                    android:textSize="17sp" />
-            </LinearLayout>
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/RecyclerList"
-                android:layout_width="match_parent"
-                android:layout_height="75dp" />
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="14dp"
-        android:layout_weight="1"
-        android:orientation="horizontal"
-        android:paddingLeft="110dp"
-        android:paddingRight="110dp">
-
-        <Button
-            android:id="@+id/btnAccept"
+        <TextView
+            android:id="@+id/textView1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/button_custom"
-            android:text="Aceptar"
-            android:textColor="@android:color/background_light" />
-    </LinearLayout>
+            android:paddingBottom="5dp"
+            android:text="DESCRIPCIÓN DE LA RUTA"
+            android:textColor="@android:color/black"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:paddingTop="10dp"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="14dp"
-        android:layout_weight="1"
-        android:orientation="horizontal"
-        android:paddingLeft="330dp"
-        android:paddingRight="20dp">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/detailsElementBackground"
+            android:gravity="top|left"
+            android:hint="Describe de que trata la ruta..."
+            android:inputType="textMultiLine"
+            android:lines="4"
+            android:maxLines="10"
+            android:minLines="4" />
 
-        <ImageButton
-            android:id="@+id/btnDelete"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:background="@drawable/button_custom_warning"
-            android:src="@drawable/delete_icon" />
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="5dp"
+            android:paddingTop="10dp"
+            android:text="LOCALES EN LA RUTA"
+            android:textColor="@android:color/black"
+            android:textSize="20dp"
+            android:textStyle="bold" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/btnFilter1"
+                android:layout_width="128dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/button_custom"
+                android:src="@android:drawable/ic_menu_search"
+                app:srcCompat="@android:drawable/ic_menu_search" />
+
+            <EditText
+                android:id="@+id/edtFilter1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="?android:attr/detailsElementBackground"
+                android:ems="10"
+                android:hint="Filtra por el nombre del local"
+                android:inputType="text|textPersonName"
+                android:padding="5dp"
+                android:textAlignment="textStart"
+                android:textSize="17sp" />
+
+
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/RecyclerAdd"
+            android:layout_width="match_parent"
+            android:layout_height="100dp" />
+
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="5dp"
+            android:text="LISTA DE LOCALES"
+            android:textColor="@android:color/black"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:paddingTop="4dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:paddingBottom="8dp">
+
+            <ImageButton
+                android:id="@+id/btnFilter2"
+                android:layout_width="128dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/button_custom"
+                android:elevation="6dp"
+                android:src="@android:drawable/ic_menu_search"
+                app:srcCompat="@android:drawable/ic_menu_search" />
+
+            <EditText
+                android:id="@+id/edtFilter2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="?android:attr/detailsElementBackground"
+                android:ems="10"
+                android:hint="Filtra por el nombre del local"
+                android:inputType="text|textPersonName"
+                android:padding="5dp"
+                android:textAlignment="textStart"
+                android:textSize="17sp" />
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/RecyclerList"
+            android:layout_width="match_parent"
+            android:layout_height="100dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -300,17 +239,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="horizontal" />
+                android:orientation="horizontal" >
 
-            <ImageButton
-                android:id="@+id/btnRoutes"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/button_bottom_menu"
-                android:paddingBottom="15dp"
-                android:paddingTop="15dp"
-                app:srcCompat="@drawable/routes_icon" />
+                <ImageButton
+                    android:id="@+id/btnRoutes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_bottom_menu"
+                    android:paddingBottom="15dp"
+                    android:paddingTop="15dp"
+                    app:srcCompat="@drawable/routes_icon" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -333,7 +273,46 @@
         </LinearLayout>
 
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="14dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:paddingLeft="110dp"
+        android:paddingRight="0dp">
 
+        <Button
+            android:id="@+id/btnAccept"
+            android:layout_width="187dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_custom"
+            android:text="Aceptar"
+            android:textColor="@android:color/background_light" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:paddingLeft="0dp" />
+
+        <ImageButton
+            android:id="@+id/btnDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:background="@drawable/button_custom_warning"
+            android:src="@drawable/delete_icon" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:paddingLeft="0dp" />
+    </LinearLayout>
 </RelativeLayout>
 
 <!--

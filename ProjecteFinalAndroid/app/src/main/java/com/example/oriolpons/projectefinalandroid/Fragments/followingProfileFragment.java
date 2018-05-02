@@ -1,4 +1,4 @@
-package com.example.oriolpons.projectefinalandroid.fragment;
+package com.example.oriolpons.projectefinalandroid.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,21 +12,21 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.oriolpons.projectefinalandroid.R;
-import com.example.oriolpons.projectefinalandroid.adapter.adapterRoutesProfile;
-import com.example.oriolpons.projectefinalandroid.routes;
-import com.example.oriolpons.projectefinalandroid.routesContentActivity;
+import com.example.oriolpons.projectefinalandroid.Adapters.adapterUser;
+import com.example.oriolpons.projectefinalandroid.profileActivity;
+import com.example.oriolpons.projectefinalandroid.Models.user;
 
 import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link routesProfileFragment.OnFragmentInteractionListener} interface
+ * {@link followingProfileFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link routesProfileFragment#newInstance} factory method to
+ * Use the {@link followingProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class routesProfileFragment extends Fragment {
+public class followingProfileFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -37,12 +37,11 @@ public class routesProfileFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
-    ArrayList<routes> listRoutes;
-    RecyclerView recyclerView;
-    private String routeName, routeDescription, routeAssessment, routeCreator;
+    private ArrayList<user> listUsers;
+    private RecyclerView recyclerView;
+    private String userName;
 
-
-    public routesProfileFragment() {
+    public followingProfileFragment() {
         // Required empty public constructor
     }
 
@@ -52,11 +51,11 @@ public class routesProfileFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment routesProfileFragment.
+     * @return A new instance of fragment followingProfileFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static routesProfileFragment newInstance(String param1, String param2) {
-        routesProfileFragment fragment = new routesProfileFragment();
+    public static followingProfileFragment newInstance(String param1, String param2) {
+        followingProfileFragment fragment = new followingProfileFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -76,29 +75,29 @@ public class routesProfileFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_routes_profile,container,false);
 
-        listRoutes=new ArrayList<>();
+        View view = inflater.inflate(R.layout.fragment_following_profile,container,false);
+
+        listUsers=new ArrayList<>();
         recyclerView=view.findViewById(R.id.recyclerId);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        exampleRoutes();
+        exampleUsers();
 
-        adapterRoutesProfile Adapter = new adapterRoutesProfile(listRoutes);
+
+        adapterUser Adapter = new adapterUser(listUsers);
         Adapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                routeName = listRoutes.get(recyclerView.getChildAdapterPosition(view)).getName();
-                routeDescription = listRoutes.get(recyclerView.getChildAdapterPosition(view)).getDescription();
-                routeAssessment = listRoutes.get(recyclerView.getChildAdapterPosition(view)).getAssessment() + "/5 - 1 votos";
-                routeCreator = listRoutes.get(recyclerView.getChildAdapterPosition(view)).getCreator();
-                intentRouteContent();
+                userName = listUsers.get(recyclerView.getChildAdapterPosition(view)).getName();
+                intentUserProfile();
             }
         });
         recyclerView.setAdapter(Adapter);
 
         return view;
     }
+
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
@@ -145,22 +144,20 @@ public class routesProfileFragment extends Fragment {
 
 
 
-    private void intentRouteContent() {
+    private void intentUserProfile() {
         Bundle bundle = new Bundle();
-        bundle.putString("name",routeName);
-        bundle.putString("description",routeDescription);
-        bundle.putString("assessment",routeAssessment);
-        bundle.putString("creator",routeCreator);
-        Intent intent = new Intent(getActivity(), routesContentActivity.class);
+        bundle.putString("type","another");
+        bundle.putString("userName",userName);
+        Intent intent = new Intent(getActivity(), profileActivity.class);
         intent.putExtras(bundle);
         getActivity().startActivity(intent);
     }
-    private void exampleRoutes() {
 
-        for(int index = 0; index<= 8; index++){
+    private void exampleUsers() {
 
-            listRoutes.add(new routes(index,"Ruta " + index+ ".", "Una ruta muy entretenida.", "Nombre Usuario", index * 1.2));
+        for(int index = 0; index<= 3; index++){
+
+            listUsers.add(new user(index,"Usuario nº" + index+ ".", "El mejor usuario de esta app."));
         }
     }
-
 }

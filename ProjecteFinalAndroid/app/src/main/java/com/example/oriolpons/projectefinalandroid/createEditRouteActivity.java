@@ -1,7 +1,6 @@
 package com.example.oriolpons.projectefinalandroid;
 
 import android.app.Activity;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -9,20 +8,20 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 
-import com.example.oriolpons.projectefinalandroid.adapter.adapterLocalAdd;
-import com.example.oriolpons.projectefinalandroid.adapter.adapterLocalList;
-import com.example.oriolpons.projectefinalandroid.adapter.adapterRoutes;
+import com.example.oriolpons.projectefinalandroid.Models.local;
+import com.example.oriolpons.projectefinalandroid.Adapters.adapterLocalAdd;
+import com.example.oriolpons.projectefinalandroid.Adapters.adapterLocalList;
 
 import java.util.ArrayList;
 
 public class createEditRouteActivity extends Activity implements View.OnClickListener{
 
-    ImageButton btnBack, btnDelete;
-    Button btnAccept;
-    ArrayList<local> listLocal, listLocalAdd;
-    RecyclerView RecyclerList, RecyclerAdd;
-    private com.example.oriolpons.projectefinalandroid.adapter.adapterLocalList adapterLocalList;
-    private com.example.oriolpons.projectefinalandroid.adapter.adapterLocalAdd adapterLocalAdd;
+    private ImageButton btnBack, btnDelete;
+    private Button btnAccept;
+    private ArrayList<local> listLocal, listLocalAdd;
+    private RecyclerView RecyclerList, RecyclerAdd;
+    private com.example.oriolpons.projectefinalandroid.Adapters.adapterLocalList adapterLocalList;
+    private com.example.oriolpons.projectefinalandroid.Adapters.adapterLocalAdd adapterLocalAdd;
     private String localName;
 
     @Override
@@ -47,7 +46,7 @@ public class createEditRouteActivity extends Activity implements View.OnClickLis
         btnDelete = (ImageButton) findViewById(R.id.btnDelete);
         btnDelete.setOnClickListener(this);
 
-        adapterLocalAdd = new adapterLocalAdd(listLocal);
+     adapterLocalAdd = new adapterLocalAdd(listLocal);
         adapterLocalAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -1,4 +1,4 @@
-package com.example.oriolpons.projectefinalandroid.adapter;
+package com.example.oriolpons.projectefinalandroid.Adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.oriolpons.projectefinalandroid.R;
-import com.example.oriolpons.projectefinalandroid.user;
+import com.example.oriolpons.projectefinalandroid.Models.user;
 
 import java.util.ArrayList;
 

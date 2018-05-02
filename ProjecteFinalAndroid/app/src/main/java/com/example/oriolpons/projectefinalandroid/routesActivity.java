@@ -1,7 +1,9 @@
 package com.example.oriolpons.projectefinalandroid;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,26 +11,44 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.Spinner;
+import android.widget.Toast;
 
-import com.example.oriolpons.projectefinalandroid.adapter.adapterRoutes;
-
+import com.example.oriolpons.projectefinalandroid.Models.routes;
+import com.example.oriolpons.projectefinalandroid.Adapters.adapterRoutes;
+/*
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+*/
 import java.util.ArrayList;
 
 public class routesActivity extends AppCompatActivity implements View.OnClickListener{
 
-    FloatingActionButton fltBtnFavourite;
-    ImageButton btnHome, btnRoutes, btnLocal, btnUserProfile, btnBack;
-    Button btnMenu, btnMyRoutes;
-    ArrayList<routes> listRoutes;
-    RecyclerView recyclerRoutes;
-    private com.example.oriolpons.projectefinalandroid.adapter.adapterRoutes adapterRoutes;
-    LinearLayout linearLayoutMenu;
-    Spinner spCity;
+    private FloatingActionButton fltBtnFavourite;
+    private ImageButton btnHome, btnRoutes, btnLocal, btnUserProfile, btnBack;
+    private Button btnMenu, btnMyRoutes, btnFilter;
+    private ArrayList<routes> listRoutes;
+    private RecyclerView recyclerRoutes;
+    private com.example.oriolpons.projectefinalandroid.Adapters.adapterRoutes adapterRoutes;
+    private LinearLayout linearLayoutMenu;
+    private Spinner spCity;
+    private StringBuffer json;
+    private String routeName, routeDescription, routeCreator, routeAssessment;
+    private String url = "", typeOfRouteFilter = "";
+    private long id;
+    private double assessment;
+    private AlertDialog dialog;
 
-    private String routeName, routeDescription, routeAssessment, routeCreator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +61,9 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
         recyclerRoutes.setLayoutManager(new LinearLayoutManager(this));
 
         linearLayoutMenu = (LinearLayout) findViewById(R.id.linearLayoutMenu);
+
+        btnFilter = (Button) findViewById(R.id.btnFilter);
+        btnFilter.setOnClickListener(this);
 
         btnMenu = (Button) findViewById(R.id.btnMenu);
         btnMenu.setOnClickListener(this);
@@ -90,7 +113,8 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spCity.setAdapter(adapter);
 
-        exampleRoutes();
+        loadFilters();
+        loadRoutes();
         btnRoutes.setEnabled(false);
     }
 
@@ -122,6 +146,7 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
             case R.id.btnMenu: actionShowHideMenu(); break;
             case R.id.btnBack: actionBack(); break;
             case R.id.btnMyRoutes: actionMyRoutes(); break;
+            case R.id.btnFilter: actionFilterRoute(); break;
         }
     }
 
@@ -141,6 +166,57 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
             finish();
         }
 
+    }
+
+    private void actionFilterRoute() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View view = getLayoutInflater().inflate(R.layout.alert_filter_route,null);
+
+        final EditText edtFilterName = (EditText) view.findViewById(R.id.edtFilterRouteName);
+        final RadioButton rbtnAsc = (RadioButton) view.findViewById(R.id.rbtnAsc);
+        final RadioButton rbtnDes = (RadioButton) view.findViewById(R.id.rbtnDes);
+        final RadioButton ckbxShort = (RadioButton) view.findViewById(R.id.ckbxShort);
+        final RadioButton ckbxHalfways = (RadioButton) view.findViewById(R.id.ckbxHalfways);
+        final RadioButton ckbxLong = (RadioButton) view.findViewById(R.id.ckbxLong);
+        Button btnFilterRoute = (Button) view.findViewById(R.id.btnFilterRoute);
+
+        builder.setView(view);
+        dialog = builder.create();
+        dialog.show();
+
+        btnFilterRoute.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = getApplicationContext();
+                CharSequence text = "";
+                int duration;
+                Toast mensaje;
+
+
+                if (ckbxShort.isChecked()){
+                    typeOfRouteFilter = "short";
+                }
+                else{
+                    if (ckbxHalfways.isChecked()){
+                        typeOfRouteFilter = "halfways";
+                    }else{
+
+                    }
+                    if (ckbxLong.isChecked()){
+                        typeOfRouteFilter = "long";
+                    }
+                }
+
+
+                text = "Se han aplicado los filtros.";
+                duration = 3;
+
+                mensaje = Toast.makeText(context, text, duration);
+                mensaje.show();
+
+                dialog.cancel();
+            }
+        });
     }
 
     private void actionMyRoutes() {
@@ -168,15 +244,78 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
         startActivity(i);
     }
 
+/*
+    private class AccesData extends AsyncTask<Void, Void, String> {
 
+        protected String doInBackground(Void... argumentos) {
 
+            StringBuffer bufferCadena = new StringBuffer("");
 
-    private void exampleRoutes() {
+            try {
+                HttpClient cliente = new DefaultHttpClient();
+                HttpGet peticion = new HttpGet(url);
+                // ejecuta una petición get
+                HttpResponse respuesta = cliente.execute(peticion);
+
+                //lee el resultado
+                BufferedReader entrada = new BufferedReader(new InputStreamReader(
+                        respuesta.getEntity().getContent()));
+                // Log.i("ResponseObject: ", respuesta.toString());
+
+                String separador = "";
+                String NL = System.getProperty("line.separator");
+                //almacena el resultado en bufferCadena
+
+                while ((separador = entrada.readLine()) != null) {
+                    bufferCadena.append(separador + NL);
+                }
+                entrada.close();
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                //e.printStackTrace();
+                Log.i("ResponseObject: ", e.toString());
+            }
+
+            return bufferCadena.toString();
+
+        }
+
+        protected void onPostExecute(String data) {
+            try {
+                JSONObject obj = new JSONObject(data);
+                JSONArray routesArray = obj.getJSONArray("routes");
+
+                for (int i = 0; i < routesArray.length(); i++) {
+                    JSONObject insideArray = routesArray.getJSONObject(i);
+                    id= insideArray.getLong("id");
+                    routeName= insideArray.getString("name");
+                    routeDescription= insideArray.getString("description");
+                    routeCreator= insideArray.getString("creator");
+                    assessment= insideArray.getDouble("assessment");
+                    listRoutes.add(new routes(id, routeName, routeDescription, routeCreator, assessment));
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }*/
+
+    private void loadFilters() {
+
+    }
+
+    private void loadRoutes() {
+        listRoutes.clear();
+      //  AccesData acces = new AccesData();
+      //  acces.execute();
 
         for(int index = 0; index<= 8; index++){
-
-            listRoutes.add(new routes(index,"Ruta " + index+ ".", "Una ruta muy entretenida.", "Persona " + index+ ".", index * 1.2));
+            listRoutes.add(new routes(index, "Ruta nº "+index, "Descripción del local.", "Creador " + index, index + 0.0));
+            //listRoutes.add(new routes(id, routeName, routeDescription, routeCreator, assessment));
         }
+
     }
 
     public void onRestart()

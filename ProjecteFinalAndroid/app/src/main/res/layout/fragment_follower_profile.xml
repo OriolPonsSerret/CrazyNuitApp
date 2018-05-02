@@ -2,7 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.oriolpons.projectefinalandroid.fragment.followerProfileFragment">
+    tools:context="com.example.oriolpons.projectefinalandroid.Fragments.followerProfileFragment">
 
 
     <LinearLayout
