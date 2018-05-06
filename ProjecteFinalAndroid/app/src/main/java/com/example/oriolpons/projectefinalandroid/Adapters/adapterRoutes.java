@@ -41,6 +41,22 @@ public class adapterRoutes extends RecyclerView.Adapter<adapterRoutes.ViewHolder
         holder.txtDescription.setText(listRoutes.get(position).getDescription());
         holder.txtCreator.setText(listRoutes.get(position).getCreator());
         holder.txtAssessment.setText(listRoutes.get(position).getAssessment() + "/5 - 1 votos");
+
+        if(listRoutes.get(position).getMeasure().equals("short")){
+            holder.icon.setImageResource(R.drawable.short_icon);
+        }
+        else{
+            if(listRoutes.get(position).getMeasure().equals("halfways")){
+                holder.icon.setImageResource(R.drawable.halfways_icon);
+            }
+            else{
+                if(listRoutes.get(position).getMeasure().equals("long")){
+                    holder.icon.setImageResource(R.drawable.long_icon);
+                }
+
+            }
+        }
+
     }
 
     @Override
@@ -70,7 +86,7 @@ public class adapterRoutes extends RecyclerView.Adapter<adapterRoutes.ViewHolder
             txtDescription = (TextView) itemView.findViewById(R.id.tvDescription);
             txtCreator = (TextView) itemView.findViewById(R.id.tvCreator);
             txtAssessment = (TextView) itemView.findViewById(R.id.tvAssessment);
-           // icon = (ImageView) itemView.findViewById(R.id.icon);
+            icon = (ImageView) itemView.findViewById(R.id.icon);
         }
     }
 }

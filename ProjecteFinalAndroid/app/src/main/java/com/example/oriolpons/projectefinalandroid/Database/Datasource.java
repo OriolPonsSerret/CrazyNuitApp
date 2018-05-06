@@ -90,7 +90,7 @@ public class Datasource {
 
         values.put(FILTERCONFIG_ID,"routes");
         values.put(FILTERCONFIG_ASCDESC,"asc");
-        values.put(FILTERCONFIG_TYPE,"cortas");
+        values.put(FILTERCONFIG_TYPE,"short");
         values.put(FILTERCONFIG_CITY,"Mataró");
         values.put(FILTERCONFIG_CITYPOSITION,0);
 

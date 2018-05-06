@@ -170,9 +170,9 @@ public class routesProfileFragment extends Fragment {
     }
     private void exampleRoutes() {
 
-        for(int index = 0; index<= 8; index++){
+        for(int index = 0; index<= 3; index++){
 
-            listRoutes.add(new routes(index,"Ruta " + index+ ".", "Una ruta muy entretenida.", "Nombre Usuario", index * 1.2));
+            listRoutes.add(new routes(index, "long","local " + index+ ".", "Una ruta muy entretenida.", "Creador " + index,  index + 0.0, 0));
         }
     }
 
@@ -252,7 +252,7 @@ public class routesProfileFragment extends Fragment {
            // creator = (String) data.get("creador");
            // assessmepuntuationnt = (String) data.get("puntuación");
 
-            listRoutes.add(new routes(id, name, description, creator, puntuation));
+            listRoutes.add(new routes(id, "long", name, description, creator, puntuation, 0));
         }
     }
 

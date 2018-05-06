@@ -43,7 +43,7 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
     private ImageButton btnHome, btnLocal, btnRoutes, btnUserProfile, btnBack;
     private Button btnMenu, btnFilterLocal;
     private ArrayList<local> listLocals;
-    private com.example.oriolpons.projectefinalandroid.Adapters.adapterLocal AdapterLocal;
+    private com.example.oriolpons.projectefinalandroid.Adapters.adapterLocal adapterLocal;
     private RecyclerView recyclerLocals;
     private LinearLayout linearLayoutMenu;
     private  Spinner spCity;
@@ -54,6 +54,7 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
     private Datasource bd;
     private String localName, localDescription, localAssessment, typeOfLocalFilter = "restaurants", assessmentFilter = "asc", cityOfLocalFilter= "Mataró", URL =  "http://localhost/ApiCrazyNuit/public/api/";
     private int cityOfLocalFilterPosition = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,8 +108,8 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
             }
         });
 
-        AdapterLocal = new adapterLocal(listLocals);
-        AdapterLocal.setOnClickListener(new View.OnClickListener() {
+        adapterLocal = new adapterLocal(listLocals);
+        adapterLocal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 localName = listLocals.get(recyclerLocals.getChildAdapterPosition(view)).getName();
@@ -117,7 +118,7 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
                 intentLocalContent();
             }
         });
-        recyclerLocals.setAdapter(AdapterLocal);
+        recyclerLocals.setAdapter(adapterLocal);
 
         filterConfig();
         clearData();
@@ -135,6 +136,7 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
             typeOfLocalFilter = cursor.getString(1);
             cityOfLocalFilter = cursor.getString(2);
             cityOfLocalFilterPosition = cursor.getInt(3);
+
         }
     }
 
@@ -276,7 +278,7 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
 
     public void clearData() {
         listLocals.clear(); //clear list
-        AdapterLocal.notifyDataSetChanged(); //let your adapter know about the changes and reload view.
+        adapterLocal.notifyDataSetChanged(); //let your adapter know about the changes and reload view.
     }
 
     private void intentLocalContent() {
@@ -296,10 +298,6 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
             listLocals.add(new local(index,typeOfLocalFilter,"local " + index+ ".", "Un local muy entretenido.",  index + 0.0, null, null, null, null,0, null,0));
         }
     }
-
-
-
-
 
     private void getJSON() {
 

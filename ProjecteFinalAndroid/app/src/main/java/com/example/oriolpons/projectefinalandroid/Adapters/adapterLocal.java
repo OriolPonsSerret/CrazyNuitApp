@@ -85,7 +85,7 @@ public class adapterLocal extends RecyclerView.Adapter<adapterLocal.ViewHolderLo
             txtDescription = (TextView) itemView.findViewById(R.id.tvDescription);
             txtCreator = (TextView) itemView.findViewById(R.id.tvCreator);
             txtAssessment = (TextView) itemView.findViewById(R.id.tvAssessment);
-             icon = (ImageView) itemView.findViewById(R.id.icon);
+            icon = (ImageView) itemView.findViewById(R.id.icon);
         }
     }
 }
