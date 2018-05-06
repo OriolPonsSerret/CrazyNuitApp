@@ -21,6 +21,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+
+
         String CREATE_TABLE =
                 "CREATE TABLE rememberme ( _id TEXT PRIMARY KEY, " +
                         "username TEXT, " +
@@ -31,10 +33,48 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         CREATE_TABLE =
                 "CREATE TABLE filterconfig ( _id TEXT, " +
                         "ascdesc TEXT, " +
-                        "type TEXT)";
+                        "type TEXT, " +
+                        "city TEXT, " +
+                        "cityposition INTEGER)";
 
+        db.execSQL(CREATE_TABLE);
+
+
+        CREATE_TABLE =
+                "CREATE TABLE bar ( _id INTEGER PRIMARY KEY, " +
+                        "name TEXT, NOT NULL" +
+                        "description TEXT, " +
+                        "assessment REAL," +
+                        "address TEXT, " +
+                        "opening_hours TEXT, " +
+                        "schedule_close TEXT, " +
+                        "gastronomy TEXT, " +
+                        "category INTEGER)";
         //db.execSQL(CREATE_TABLE);
 
+        CREATE_TABLE =
+                "CREATE TABLE pub ( _id INTEGER PRIMARY KEY, " +
+                        "name TEXT, NOT NULL" +
+                        "description TEXT, " +
+                        "assessment REAL," +
+                        "address TEXT, " +
+                        "opening_hours TEXT, " +
+                        "schedule_close TEXT)";
+        //db.execSQL(CREATE_TABLE);
+
+        CREATE_TABLE =
+                "CREATE TABLE disco ( _id INTEGER PRIMARY KEY, " +
+                        "name TEXT, NOT NULL" +
+                        "description TEXT, " +
+                        "assessment REAL," +
+                        "address TEXT, " +
+                        "opening_hours TEXT, " +
+                        "schedule_close TEXT)" +
+                        "entrance_price TEXT)";
+        //db.execSQL(CREATE_TABLE);
+
+
+/*
         CREATE_TABLE =
                 "CREATE TABLE local ( _id INTEGER PRIMARY KEY, " +
                         "type TEXT, NOT NULL" +
@@ -48,41 +88,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         "category INTEGER, " +
                         "entrance_price TEXT)";
 
-       // db.execSQL(CREATE_TABLE);
-
-
-
-        CREATE_TABLE =
-                "CREATE TABLE bar ( _id INTEGER PRIMARY KEY, " +
-                        "name TEXT, NOT NULL" +
-                        "description TEXT, " +
-                        "assessment REAL," +
-                        "address TEXT, " +
-                        "opening_hours TEXT, " +
-                        "schedule_close TEXT, " +
-                        "gastronomy TEXT, " +
-                        "category INTEGER)";
-        CREATE_TABLE =
-                "CREATE TABLE pub ( _id INTEGER PRIMARY KEY, " +
-                        "name TEXT, NOT NULL" +
-                        "description TEXT, " +
-                        "assessment REAL," +
-                        "address TEXT, " +
-                        "opening_hours TEXT, " +
-                        "schedule_close TEXT)";
-        CREATE_TABLE =
-                "CREATE TABLE disco ( _id INTEGER PRIMARY KEY, " +
-                        "name TEXT, NOT NULL" +
-                        "description TEXT, " +
-                        "assessment REAL," +
-                        "address TEXT, " +
-                        "opening_hours TEXT, " +
-                        "schedule_close TEXT)" +
-                        "entrance_price TEXT)";
-
-
-
+        db.execSQL(CREATE_TABLE);
+*/
     }
+
+
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)

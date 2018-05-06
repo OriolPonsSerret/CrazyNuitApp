@@ -118,7 +118,7 @@ public class routesContentActivity extends AppCompatActivity implements View.OnC
 
         for(int index = 0; index<= 3; index++){
 
-            listLocals.add(new local(index,"local " + index+ ".", "Un local muy entretenido.",  index + 0.0));
+            listLocals.add(new local(index,"restaurant","local " + index+ ".", "Un local muy entretenido.",  index + 0.0, null, null, null, null,0, null,0));
         }
     }
 }

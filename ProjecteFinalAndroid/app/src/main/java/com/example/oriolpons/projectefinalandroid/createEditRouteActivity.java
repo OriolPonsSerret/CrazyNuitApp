@@ -109,14 +109,14 @@ public class createEditRouteActivity extends Activity implements View.OnClickLis
 
     private void exampleRoutes() {
         for(int index = 0; index<= 3; index++){
-            listLocal.add(new local(index,"Local " + index+ ".", "En este local puedes jugar con gatos.", 4.0));
+            listLocal.add(new local(index,"restaurant","local " + index+ ".", "Un local muy entretenido.",  index + 0.0, null, null, null, null,0, null,0));
         }
     }
 
     private void addLocal() {
-        listLocalAdd.add(new local(0,localName, "En este local puedes jugar con gatos.", 4.0));
+        listLocalAdd.add(new local(0,"restaurant","local " + 0+ ".", "Un local muy entretenido.",  0 + 0.0, null, null, null, null,0, null,0));
     }
     private void removeLocal() {
-        listLocal.add(new local(0,localName, "En este local puedes jugar con gatos.", 4.0));
+        listLocal.add(new local(0,"restaurant","local " + 0+ ".", "Un local muy entretenido.",  0 + 0.0, null, null, null, null,0, null,0));
     }
 }
