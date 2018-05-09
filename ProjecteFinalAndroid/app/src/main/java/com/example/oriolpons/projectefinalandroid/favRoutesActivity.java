@@ -2,6 +2,7 @@ package com.example.oriolpons.projectefinalandroid;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -19,6 +21,7 @@ import android.widget.RadioButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.oriolpons.projectefinalandroid.Database.Datasource;
 import com.example.oriolpons.projectefinalandroid.Models.routes;
 import com.example.oriolpons.projectefinalandroid.Adapters.adapterRoutes;
 
@@ -35,17 +38,20 @@ public class favRoutesActivity extends AppCompatActivity implements View.OnClick
     private String routeName, routeDescription, routeAssessment, routeCreator;
     private LinearLayout linearLayoutMenu;
     private Spinner spCity;
-    private String url = "", typeOfRouteFilter = "";
     private long id;
     private double assessment;
     private AlertDialog dialog;
+
+    private Datasource bd;
+    private String assessmentFilter = "asc", typeOfRouteFilter = "short", cityOfRouteFilter= "Mataró", URL =  "http://localhost/ApiCrazyNuit/public/api/";
+    private int cityOfRouteFilterPosition = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fav_routes);
 
-
+        bd = new Datasource(this);
         listRoutes = new ArrayList<>();
 
         recyclerRoutes = (RecyclerView) findViewById(R.id.RecyclerRoutes);
@@ -99,12 +105,45 @@ public class favRoutesActivity extends AppCompatActivity implements View.OnClick
         };
         spCity = (Spinner) findViewById(R.id.spCity);
 
+        spCity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                cityOfRouteFilterPosition = position;
+                cityOfRouteFilter = spCity.getSelectedItem().toString();
+                bd.FilterConfigUpdate("routes", assessmentFilter, typeOfRouteFilter, cityOfRouteFilter, cityOfRouteFilterPosition);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+            }
+        });
+
+
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_spinner_dropdown_item, arraySpinnerCity);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spCity.setAdapter(adapter);
 
+        spCity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                cityOfRouteFilterPosition = position;
+                cityOfRouteFilter = spCity.getSelectedItem().toString();
+                bd.FilterConfigUpdate("routes", assessmentFilter, typeOfRouteFilter, cityOfRouteFilter, cityOfRouteFilterPosition);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // your code here
+            }
+        });
+
+        filterConfig();
+        clearData();
         exampleRoutes();
+
+        spCity.setSelection(cityOfRouteFilterPosition);
         btnRoutes.setEnabled(false);
     }
 
@@ -164,6 +203,29 @@ public class favRoutesActivity extends AppCompatActivity implements View.OnClick
         final RadioButton ckbxLong = (RadioButton) view.findViewById(R.id.ckbxLong);
         Button btnFilterRoute = (Button) view.findViewById(R.id.btnFilterRoute);
 
+        filterConfig();
+        if (assessmentFilter.equals("asc")){
+            rbtnAsc.setChecked(true);
+        }
+        else{
+            if (assessmentFilter.equals("desc")){
+                rbtnDes.setChecked(true);
+            }
+        }
+        if (typeOfRouteFilter.equals("short")) {
+            ckbxShort.setChecked(true);
+        }
+        else{
+            if (typeOfRouteFilter.equals("halfways")) {
+                ckbxHalfways.setChecked(true);
+            }
+            else{
+                if (typeOfRouteFilter.equals("long")) {
+                    ckbxLong.setChecked(true);
+                }
+            }
+        }
+
         builder.setView(view);
         dialog = builder.create();
         dialog.show();
@@ -176,6 +238,12 @@ public class favRoutesActivity extends AppCompatActivity implements View.OnClick
                 int duration;
                 Toast mensaje;
 
+                if (rbtnAsc.isChecked()){
+                    assessmentFilter = "asc";
+                }
+                else{
+                    assessmentFilter = "desc";
+                }
 
                 if (ckbxShort.isChecked()){
                     typeOfRouteFilter = "short";
@@ -190,6 +258,11 @@ public class favRoutesActivity extends AppCompatActivity implements View.OnClick
                         typeOfRouteFilter = "long";
                     }
                 }
+
+                clearData();
+                exampleRoutes();
+                bd.FilterConfigUpdate("routes", assessmentFilter, typeOfRouteFilter, cityOfRouteFilter, cityOfRouteFilterPosition);
+
 
                 text = "Se han aplicado los filtros.";
                 duration = 3;
@@ -228,14 +301,24 @@ public class favRoutesActivity extends AppCompatActivity implements View.OnClick
         startActivity(i);
     }
 
-
-
-
+    private void filterConfig() {
+        Cursor cursor = bd.filterConfigRoute();
+        while(cursor.moveToNext()){
+            assessmentFilter = cursor.getString(0);
+            typeOfRouteFilter = cursor.getString(1);
+            cityOfRouteFilter = cursor.getString(2);
+            cityOfRouteFilterPosition = cursor.getInt(3);
+        }
+    }
+    public void clearData() {
+        listRoutes.clear(); //clear list
+        adapterRoutes.notifyDataSetChanged(); //let your adapter know about the changes and reload view.
+    }
     private void exampleRoutes() {
 
-        for(int index = 0; index<= 2; index++){
+        for(int index = 0; index<= 3; index++){
 
-            listRoutes.add(new routes(index,"Ruta " + index+ ".", "Una ruta muy entretenida.", "Persona " + index+ ".", index * 1.2));
+            listRoutes.add(new routes(index, typeOfRouteFilter,"local " + index+ ".", "Una ruta muy entretenida.", "Creador " + index,  index + 0.0, 0));
         }
     }
 

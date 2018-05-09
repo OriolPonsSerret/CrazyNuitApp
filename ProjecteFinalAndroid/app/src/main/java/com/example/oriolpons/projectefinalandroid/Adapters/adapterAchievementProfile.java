@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.oriolpons.projectefinalandroid.R;
-import com.example.oriolpons.projectefinalandroid.achievement;
+import com.example.oriolpons.projectefinalandroid.Models.achievement;
 
 import java.util.ArrayList;
 

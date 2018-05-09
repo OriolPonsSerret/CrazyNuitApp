@@ -1,4 +1,4 @@
-package com.example.oriolpons.projectefinalandroid;
+package com.example.oriolpons.projectefinalandroid.Models;
 
 /**
  * Created on 02/04/2018.

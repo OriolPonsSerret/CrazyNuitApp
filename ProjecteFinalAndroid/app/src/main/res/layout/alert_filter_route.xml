@@ -120,20 +120,20 @@
                 android:text="Corta" />
 
             <RadioButton
-                android:id="@+id/ckbxLong"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:checked="false"
-                android:text="Larga" />
-
-            <RadioButton
                 android:id="@+id/ckbxHalfways"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:checked="false"
                 android:text="Media" />
+
+            <RadioButton
+                android:id="@+id/ckbxLong"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="false"
+                android:text="Larga" />
         </RadioGroup>
 
     </LinearLayout>

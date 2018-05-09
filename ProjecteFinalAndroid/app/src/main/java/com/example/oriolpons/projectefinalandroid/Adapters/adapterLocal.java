@@ -39,7 +39,23 @@ public class adapterLocal extends RecyclerView.Adapter<adapterLocal.ViewHolderLo
     public void onBindViewHolder(adapterLocal.ViewHolderLocal holder, int position) {
         holder.tvTitle.setText(listLocal.get(position).getName());
         holder.txtDescription.setText(listLocal.get(position).getDescription());
-        holder.txtAssessment.setText(listLocal.get(position).getAssessment() + "/5 - 1 votos");
+        holder.txtAssessment.setText(listLocal.get(position).getAssessment() + "/5");
+
+        if(listLocal.get(position).getType().charAt(0) == 'r'){
+            holder.icon.setImageResource(R.drawable.restaurant_icon);
+        }
+        else{
+            if(listLocal.get(position).getType().charAt(0) == 'p'){
+                holder.icon.setImageResource(R.drawable.pub_icon);
+            }
+            else{
+                if(listLocal.get(position).getType().charAt(0) == 'd'){
+                    holder.icon.setImageResource(R.drawable.disco_icon);
+                }
+
+            }
+        }
+
     }
 
     @Override
@@ -69,7 +85,7 @@ public class adapterLocal extends RecyclerView.Adapter<adapterLocal.ViewHolderLo
             txtDescription = (TextView) itemView.findViewById(R.id.tvDescription);
             txtCreator = (TextView) itemView.findViewById(R.id.tvCreator);
             txtAssessment = (TextView) itemView.findViewById(R.id.tvAssessment);
-            // icon = (ImageView) itemView.findViewById(R.id.icon);
+            icon = (ImageView) itemView.findViewById(R.id.icon);
         }
     }
 }

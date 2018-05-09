@@ -6,19 +6,29 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ProgressBar;
 
+import com.example.oriolpons.projectefinalandroid.Database.Datasource;
+
 public class splashScreen extends Activity {
     private ProgressBar progressBar;
     int progressStatus = 0;
+    private Datasource bd;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
+        bd = new Datasource(this);
 
         progressBar=(ProgressBar)findViewById(R.id.progressBar1);
 
-        loading();
+        if (bd.filterConfigVerification()) {
+        }
+        else{
+            bd.DefaultFilterConfigAdd();
+        }
 
+        loading();
     }
 
     private void loading() {

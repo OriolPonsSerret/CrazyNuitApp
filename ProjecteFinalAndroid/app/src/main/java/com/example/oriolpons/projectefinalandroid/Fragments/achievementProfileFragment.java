@@ -11,7 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.oriolpons.projectefinalandroid.R;
-import com.example.oriolpons.projectefinalandroid.achievement;
+import com.example.oriolpons.projectefinalandroid.Models.achievement;
 import com.example.oriolpons.projectefinalandroid.Adapters.adapterAchievementProfile;
 
 import java.util.ArrayList;
