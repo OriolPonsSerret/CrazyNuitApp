@@ -26,7 +26,6 @@ public class splashScreen extends Activity {
         }
         else{
             bd.DefaultFilterConfigAdd();
-
         }
 
         loading();

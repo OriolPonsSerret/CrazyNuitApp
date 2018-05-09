@@ -23,6 +23,17 @@ public class Datasource {
     public static final String FILTERCONFIG_CITY = "city";
     public static final String FILTERCONFIG_CITYPOSITION = "cityposition";
 
+    public static final String table_REMEMBERME= "rememberme";
+    public static final String REMEMBERME_ID = "_id";
+    public static final String REMEMBERME_EMAIL = "email";
+
+    public static final String table_USER= "user";
+    public static final String USER_ID = "_id";
+    public static final String USER_USERNAME = "username";
+    public static final String USER_DESCRIPTION = "description";
+    public static final String USER_EMAIL = "email";
+    public static final String USER_PHONENUMBER = "phonenumber";
+    public static final String USER_BIRTHDATE = "birthdate";
 
     private DatabaseHelper dbHelper;
     private SQLiteDatabase dbW, dbR;
@@ -43,12 +54,37 @@ public class Datasource {
         dbW.close();
         dbR.close();
     }
-/*
-    public Cursor filterConfigCount() {
+
+    // LOGIN SCREEN
+    public Cursor remembermeCount() {
         return dbR.rawQuery("SELECT COUNT(*) " +
-                " FROM " + table_FILTERCONFIG, null);
+                " FROM " + table_REMEMBERME, null);
     }
-*/
+
+    public Cursor remembermeGetUser() {
+        return dbR.rawQuery("SELECT " + REMEMBERME_ID + ", " + REMEMBERME_EMAIL +
+                " FROM " + table_REMEMBERME, null);
+    }
+
+    public void userRememberAdd(int id, String email) {
+        ContentValues values = new ContentValues();
+        values.put(REMEMBERME_ID,id);
+        values.put(REMEMBERME_EMAIL,email);
+
+        dbW.insert(table_REMEMBERME,null,values);
+    }
+
+    public void userRememberUpdate(int id, String email) {
+        ContentValues values = new ContentValues();
+        values.put(REMEMBERME_ID,id);
+        values.put(REMEMBERME_EMAIL,email);
+
+        dbW.update(table_FILTERCONFIG,values, FILTERCONFIG_ID + " = ?", new String[] { String.valueOf(id) });
+    }
+
+
+
+    // LOCAL AND ROUTE SERACHER SCREEN
     public boolean filterConfigVerification() {
         Cursor c = dbR.rawQuery("SELECT " + FILTERCONFIG_ID  +
                 " FROM " + table_FILTERCONFIG +

@@ -24,14 +24,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
         String CREATE_TABLE =
-                "CREATE TABLE rememberme ( _id TEXT PRIMARY KEY, " +
-                        "username TEXT, " +
+                "CREATE TABLE rememberme ( _id INTEGER, " +
                         "email TEXT)";
 
-       // db.execSQL(CREATE_TABLE);
+        db.execSQL(CREATE_TABLE);
 
         CREATE_TABLE =
-                "CREATE TABLE filterconfig ( _id TEXT, " +
+                "CREATE TABLE user ( _id INTEGER PRIMARY KEY, " +
+                        "username TEXT, " +
+                        "description TEXT, " +
+                        "email TEXT, " +
+                        "phonenumber INTEGER, " +
+                        "birthdate DATE)";
+
+        db.execSQL(CREATE_TABLE);
+
+        CREATE_TABLE =
+                "CREATE TABLE filterconfig ( _id TEXT PRIMARY KEY, " +
                         "ascdesc TEXT, " +
                         "type TEXT, " +
                         "city TEXT, " +
