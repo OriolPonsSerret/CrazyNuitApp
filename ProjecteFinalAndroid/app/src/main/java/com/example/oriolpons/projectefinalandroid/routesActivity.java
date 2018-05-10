@@ -13,7 +13,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -22,7 +21,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.oriolpons.projectefinalandroid.Database.Datasource;
-import com.example.oriolpons.projectefinalandroid.Models.local;
 import com.example.oriolpons.projectefinalandroid.Models.routes;
 import com.example.oriolpons.projectefinalandroid.Adapters.adapterRoutes;
 /*
@@ -53,7 +51,7 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
     private AlertDialog dialog;
 
     private Datasource bd;
-    private String assessmentFilter = "asc", typeOfRouteFilter = "short", cityOfRouteFilter= "Mataró", URL =  "http://localhost/ApiCrazyNuit/public/api/";
+    private String assessmentFilter = "ASC", typeOfRouteFilter = "short", cityOfRouteFilter= "Mataró", URL =  "http://localhost/ApiCrazyNuit/public/api/";
     private int cityOfRouteFilterPosition = 0;
 
     @Override
@@ -120,7 +118,7 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 cityOfRouteFilterPosition = position;
                 cityOfRouteFilter = spCity.getSelectedItem().toString();
-                bd.FilterConfigUpdate("routes", assessmentFilter, typeOfRouteFilter, cityOfRouteFilter, cityOfRouteFilterPosition);
+                bd.filterConfigUpdate("routes", assessmentFilter, typeOfRouteFilter, cityOfRouteFilter, cityOfRouteFilterPosition);
             }
 
             @Override
@@ -206,11 +204,11 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
         Button btnFilterRoute = (Button) view.findViewById(R.id.btnFilterRoute);
 
         filterConfig();
-        if (assessmentFilter.equals("asc")){
+        if (assessmentFilter.equals("ASC")){
             rbtnAsc.setChecked(true);
         }
         else{
-            if (assessmentFilter.equals("desc")){
+            if (assessmentFilter.equals("DESC")){
                 rbtnDes.setChecked(true);
             }
         }
@@ -242,10 +240,10 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
 
 
                 if (rbtnAsc.isChecked()){
-                    assessmentFilter = "asc";
+                    assessmentFilter = "ASC";
                 }
                 else{
-                    assessmentFilter = "desc";
+                    assessmentFilter = "DESC";
                 }
 
                 if (ckbxShort.isChecked()){
@@ -264,7 +262,7 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
 
                 clearData();
                 exampleRoutes();
-                bd.FilterConfigUpdate("routes", assessmentFilter, typeOfRouteFilter, cityOfRouteFilter, cityOfRouteFilterPosition);
+                bd.filterConfigUpdate("routes", assessmentFilter, typeOfRouteFilter, cityOfRouteFilter, cityOfRouteFilterPosition);
 
                 text = "Se han aplicado los filtros.";
                 duration = 3;

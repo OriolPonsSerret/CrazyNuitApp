@@ -50,8 +50,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
         CREATE_TABLE =
-                "CREATE TABLE bar ( _id INTEGER PRIMARY KEY, " +
-                        "name TEXT, NOT NULL" +
+                "CREATE TABLE restaurant ( _id INTEGER PRIMARY KEY, " +
+                        "name TEXT NOT NULL, " +
                         "description TEXT, " +
                         "assessment REAL," +
                         "address TEXT, " +
@@ -59,28 +59,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         "schedule_close TEXT, " +
                         "gastronomy TEXT, " +
                         "category INTEGER)";
-        //db.execSQL(CREATE_TABLE);
+        db.execSQL(CREATE_TABLE);
 
         CREATE_TABLE =
                 "CREATE TABLE pub ( _id INTEGER PRIMARY KEY, " +
-                        "name TEXT, NOT NULL" +
+                        "name TEXT NOT NULL, " +
                         "description TEXT, " +
-                        "assessment REAL," +
+                        "assessment REAL, " +
                         "address TEXT, " +
                         "opening_hours TEXT, " +
                         "schedule_close TEXT)";
-        //db.execSQL(CREATE_TABLE);
+        db.execSQL(CREATE_TABLE);
 
         CREATE_TABLE =
                 "CREATE TABLE disco ( _id INTEGER PRIMARY KEY, " +
-                        "name TEXT, NOT NULL" +
+                        "name TEXT NOT NULL, " +
                         "description TEXT, " +
-                        "assessment REAL," +
+                        "assessment REAL, " +
                         "address TEXT, " +
                         "opening_hours TEXT, " +
-                        "schedule_close TEXT)" +
-                        "entrance_price TEXT)";
-        //db.execSQL(CREATE_TABLE);
+                        "schedule_close TEXT, " +
+                        "entrance_price REAL)";
+        db.execSQL(CREATE_TABLE);
 
 
 /*

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -15,6 +16,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.oriolpons.projectefinalandroid.Database.Datasource;
+// import com.google.android.gms.auth.api.signin.GoogleSignIn;
+// import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+// import com.google.android.gms.auth.api.signin.GoogleSignInApi;
+// import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+// import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+// import com.google.android.gms.common.SignInButton;
+// import com.google.android.gms.common.api.ApiException;
+// import com.google.android.gms.tasks.Task;
 
 public class loginActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -42,8 +51,13 @@ public class loginActivity extends AppCompatActivity implements View.OnClickList
         edtPassword  = (EditText) findViewById(R.id.edtPassword);
         chbxRemember  = (CheckBox) findViewById(R.id.chbxRemember);
 
-
         I_have_a_remember_me();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
     }
 
     @Override
@@ -106,7 +120,7 @@ public class loginActivity extends AppCompatActivity implements View.OnClickList
             mensaje.show();
             return;
         }
-
+/*
         if(chbxRemember.isChecked()){
             if (quantity == 0){
                 bd.userRememberAdd(id, email);
@@ -115,10 +129,7 @@ public class loginActivity extends AppCompatActivity implements View.OnClickList
                 bd.userRememberUpdate(id, email);
             }
         }
-
-        //if (bd.userExist(Email, Password)){
-
-        // }
+*/
         Intent i = new Intent(this, MainActivity.class);
         startActivityForResult(i, 1);
         //startActivity(i);
@@ -129,9 +140,7 @@ public class loginActivity extends AppCompatActivity implements View.OnClickList
         startActivity(i);
     }
 
-    // public void onRestart()
-    // {
-    //}
+
    @Override
    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onRestart();
@@ -150,9 +159,8 @@ public class loginActivity extends AppCompatActivity implements View.OnClickList
            }
        });
        builder.show();
-
-
     }
+
 
     private void goBack() {
         Intent i = new Intent(this, MainActivity.class);
