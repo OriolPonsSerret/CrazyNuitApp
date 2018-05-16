@@ -82,6 +82,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         "entrance_price REAL)";
         db.execSQL(CREATE_TABLE);
 
+        CREATE_TABLE =
+                "CREATE TABLE routes ( _id INTEGER PRIMARY KEY, " +
+                        "route_lenght INTEGER NOT NULL, " +
+                        "name TEXT NOT NULL, " +
+                        "description TEXT, " +
+                        "assessment REAL, " +
+                        "creator TEXT NOT NULL, " +
+                        "city TEXT NOT NULL, " +
+                        "rute_locals TEXT, " +
+                        "route_date TEXT)";
+        db.execSQL(CREATE_TABLE);
 
 /*
         CREATE_TABLE =

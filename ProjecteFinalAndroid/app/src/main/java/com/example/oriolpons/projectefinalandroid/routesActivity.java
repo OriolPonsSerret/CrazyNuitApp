@@ -21,6 +21,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.oriolpons.projectefinalandroid.Database.Datasource;
+import com.example.oriolpons.projectefinalandroid.Models.local;
 import com.example.oriolpons.projectefinalandroid.Models.routes;
 import com.example.oriolpons.projectefinalandroid.Adapters.adapterRoutes;
 /*
@@ -45,14 +46,14 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
     private LinearLayout linearLayoutMenu;
     private Spinner spCity;
     private StringBuffer json;
-    private String routeName, routeDescription, routeCreator, routeAssessment;
+    private String routeName, routeDescription, routeCreator, routeAssessment, NameFilter = "";
     private long id;
     private double assessment;
     private AlertDialog dialog;
 
     private Datasource bd;
     private String assessmentFilter = "ASC", typeOfRouteFilter = "short", cityOfRouteFilter= "Mataró", URL =  "http://localhost/ApiCrazyNuit/public/api/";
-    private int cityOfRouteFilterPosition = 0;
+    private int cityOfRouteFilterPosition = 0, RouteLenghtMin = 0, RouteLenght = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,6 +120,10 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
                 cityOfRouteFilterPosition = position;
                 cityOfRouteFilter = spCity.getSelectedItem().toString();
                 bd.filterConfigUpdate("routes", assessmentFilter, typeOfRouteFilter, cityOfRouteFilter, cityOfRouteFilterPosition);
+
+                clearData();
+                addDBRoutes();
+                exampleRoutes();
             }
 
             @Override
@@ -135,11 +140,58 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
 
         filterConfig();
         clearData();
+        addDBRoutes();
         exampleRoutes();
 
         spCity.setSelection(cityOfRouteFilterPosition);
         btnRoutes.setEnabled(false);
     }
+
+
+    private void addDBRoutes() {
+        String name = "", description= "", creator= "Senpai", city= "", locals = "", date = "";
+        Double assessment = 1.0;
+        int route_lenght = 2;
+
+
+        for(int id = 0; id <= 10; id++){
+
+            assessment = assessment + 0.2;
+            if (id >= 0 && id <= 10){
+                name = "Ruta: " + id;
+                description= "Una ruta entretenida.";
+                if (id <= 2){
+                    city= "Mataró";
+                    assessment = 5.0;
+                    route_lenght = 2;
+                }
+                else{
+                    if (id == 3){
+                        city= "Mataró";
+                        assessment = 3.0;
+                        route_lenght = 10;
+                    }
+                }
+                if (id >= 4 && id <= 7){
+                    city= "Barcelona";
+                    assessment = 3.0;
+                    route_lenght = 2;
+                }
+                if (id >= 8 && id <= 10){
+                    city= "Girona";
+                    assessment = 2.0;
+                    route_lenght = 4;
+                }
+                if (bd.routesAskExist(id)){
+                    bd.routesUpdate(id, route_lenght, name, description, assessment, creator, city, locals, date);
+                }
+                else{
+                    bd.routesAdd(id, route_lenght, name, description, assessment, creator, city, locals, date);
+                }
+            }
+        }
+    }
+
 
     private void intentRouteContent() {
         Bundle bundle = new Bundle();
@@ -214,14 +266,20 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
         }
         if (typeOfRouteFilter.equals("short")) {
             ckbxShort.setChecked(true);
+            RouteLenghtMin = 0;
+            RouteLenght = 4;
         }
         else{
             if (typeOfRouteFilter.equals("halfways")) {
                 ckbxHalfways.setChecked(true);
+                RouteLenghtMin = 4;
+                RouteLenght = 8;
             }
             else{
                 if (typeOfRouteFilter.equals("long")) {
                     ckbxLong.setChecked(true);
+                    RouteLenghtMin = 8;
+                    RouteLenght = 13;
                 }
             }
         }
@@ -248,21 +306,30 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
 
                 if (ckbxShort.isChecked()){
                     typeOfRouteFilter = "short";
+                    RouteLenghtMin = 0;
+                    RouteLenght = 4;
                 }
                 else{
                     if (ckbxHalfways.isChecked()){
                         typeOfRouteFilter = "halfways";
+                        RouteLenghtMin = 4;
+                        RouteLenght = 8;
                     }else{
 
                     }
                     if (ckbxLong.isChecked()){
                         typeOfRouteFilter = "long";
+                        RouteLenghtMin = 8;
+                        RouteLenght = 13;
                     }
                 }
 
-                clearData();
-                exampleRoutes();
+                NameFilter = edtFilterName.getText().toString();
+
                 bd.filterConfigUpdate("routes", assessmentFilter, typeOfRouteFilter, cityOfRouteFilter, cityOfRouteFilterPosition);
+                clearData();
+                addDBRoutes();
+                exampleRoutes();
 
                 text = "Se han aplicado los filtros.";
                 duration = 3;
@@ -316,9 +383,54 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
     }
     private void exampleRoutes() {
 
-        for(int index = 0; index<= 3; index++){
+        Cursor cursor;
+        Long id;
+        String measure = "", name, description, creator, city, rute_locals, route_date;
+        Double assessment, entrance_price;
+        int route_lenght;
 
-            listRoutes.add(new routes(index, typeOfRouteFilter,"local " + index+ ".", "Una ruta muy entretenida.", "Creador " + index,  index + 0.0, 0));
+        if (typeOfRouteFilter.equals("short")) {
+            RouteLenghtMin = 0;
+            RouteLenght = 4;
+        }
+        else{
+            if (typeOfRouteFilter.equals("halfways")) {
+                RouteLenghtMin = 4;
+                RouteLenght = 8;
+            }
+            else{
+                if (typeOfRouteFilter.equals("long")) {
+                    RouteLenghtMin = 8;
+                    RouteLenght = 13;
+                }
+            }
+        }
+
+        cursor = bd.filterRoutes(cityOfRouteFilter, assessmentFilter, NameFilter, RouteLenghtMin, RouteLenght);
+        while(cursor.moveToNext()){
+            id = cursor.getLong(0);
+            route_lenght = cursor.getInt(1);
+            name = cursor.getString(2);
+            description = cursor.getString(3);
+            assessment = cursor.getDouble(4);
+            creator = cursor.getString(5);
+            city = cursor.getString(6);
+            rute_locals = cursor.getString(7);
+            route_date = cursor.getString(8);
+
+            if (route_lenght <= 4){
+                measure = "short";
+            }else{
+                if (route_lenght <= 8){
+                    measure = "halfways";
+                }else{
+                    if (route_lenght <= 13){
+                        measure = "long";
+                    }
+                }
+            }
+
+            listRoutes.add(new routes(id, measure, name, description, creator, assessment, 0));
         }
     }
 

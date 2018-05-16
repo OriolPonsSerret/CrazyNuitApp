@@ -60,6 +60,17 @@ public class Datasource {
     public static final String DISCOS_CLOSE = "schedule_close";
     public static final String DISCOS_PRICE = "entrance_price";
 
+    public static final String table_ROUTES= "routes";
+    public static final String ROUTES_ID = "_id";
+    public static final String ROUTES_LENGHT = "route_lenght";
+    public static final String ROUTES_NAME = "name";
+    public static final String ROUTES_DESCRIPTION = "description";
+    public static final String ROUTES_ASSESSMENT = "assessment";
+    public static final String ROUTES_CREATOR = "creator";
+    public static final String ROUTES_CITY = "city";
+    public static final String ROUTES_LOCALS = "rute_locals";
+    public static final String ROUTES_DATE = "route_date";
+
     private DatabaseHelper dbHelper;
     private SQLiteDatabase dbW, dbR;
 
@@ -192,6 +203,13 @@ public class Datasource {
                 " ORDER BY " + DISCOS_ASSESSMENT + " " + order, null);
     }
 
+    public Cursor filterRoutes(String city, String order, String routeName, int route_lenghtmin, int route_lenght) {
+        //localName = "";
+        return dbR.rawQuery("SELECT " + ROUTES_ID + ", " + ROUTES_LENGHT +", " + ROUTES_NAME + ", " + ROUTES_DESCRIPTION + ", " + ROUTES_ASSESSMENT + ", " + ROUTES_CREATOR + ", " + ROUTES_CITY + ", " + ROUTES_LOCALS + ", " + ROUTES_DATE +
+                " FROM " + table_ROUTES +
+                " WHERE UPPER(" +  ROUTES_CITY + ") LIKE UPPER ('" + city +"') AND UPPER(" +  ROUTES_NAME + ") LIKE UPPER ('%" + routeName +"%') AND " +  ROUTES_LENGHT + " > " + route_lenghtmin + " AND " +  ROUTES_LENGHT + " <= " + route_lenght  +
+                " ORDER BY " + ROUTES_ASSESSMENT + " " + order, null);
+    }
 
 
 
@@ -234,7 +252,6 @@ public class Datasource {
 
         dbW.update(table_RESTAURANTS,values, RESTAURANTS_ID + " = ?", new String[] { String.valueOf(id) });
     }
-
 
     public boolean pubsAskExist(int id) {
         Cursor c = dbR.rawQuery("SELECT " + PUBS_ID  +
@@ -305,5 +322,47 @@ public class Datasource {
         values.put(DISCOS_PRICE, price);
 
         dbW.update(table_DISCOS,values, DISCOS_ID + " = ?", new String[] { String.valueOf(id) });
+    }
+
+
+
+
+
+
+    public boolean routesAskExist(int id) {
+        Cursor c = dbR.rawQuery("SELECT " + ROUTES_ID  +
+                " FROM " + table_ROUTES +
+                " WHERE " +  ROUTES_ID + " LIKE " + id, null);
+        boolean exists = c.moveToFirst();
+        c.close();
+        return exists;
+    }
+    public void routesAdd(int id, int route_lenght, String name, String description, Double assessment, String creator, String city, String locals, String date) {
+        ContentValues values = new ContentValues();
+        values.put(ROUTES_ID, id);
+        values.put(ROUTES_LENGHT, route_lenght);
+        values.put(ROUTES_NAME, name);
+        values.put(ROUTES_DESCRIPTION, description);
+        values.put(ROUTES_ASSESSMENT, assessment);
+        values.put(ROUTES_CREATOR, creator);
+        values.put(ROUTES_CITY, city);
+        values.put(ROUTES_LOCALS, locals);
+        values.put(ROUTES_DATE, date);
+
+        dbW.insert(table_ROUTES, null, values);
+    }
+
+    public void routesUpdate(int id, int route_lenght, String name, String description, Double assessment, String creator, String city, String locals, String date) {
+        ContentValues values = new ContentValues();
+        values.put(ROUTES_LENGHT, route_lenght);
+        values.put(ROUTES_NAME, name);
+        values.put(ROUTES_DESCRIPTION, description);
+        values.put(ROUTES_ASSESSMENT, assessment);
+        values.put(ROUTES_CREATOR, creator);
+        values.put(ROUTES_CITY, city);
+        values.put(ROUTES_LOCALS, locals);
+        values.put(ROUTES_DATE, date);
+
+        dbW.update(table_ROUTES,values, ROUTES_ID + " = ?", new String[] { String.valueOf(id) });
     }
 }
