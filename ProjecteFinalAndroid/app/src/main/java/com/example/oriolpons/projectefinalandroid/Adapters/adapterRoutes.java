@@ -40,7 +40,7 @@ public class adapterRoutes extends RecyclerView.Adapter<adapterRoutes.ViewHolder
         holder.tvTitle.setText(listRoutes.get(position).getName());
         holder.txtDescription.setText(listRoutes.get(position).getDescription());
         holder.txtCreator.setText(listRoutes.get(position).getCreator());
-        holder.txtAssessment.setText(listRoutes.get(position).getAssessment() + "/5 - 1 votos");
+        holder.txtAssessment.setText(listRoutes.get(position).getAssessment() + "/5");
 
         if(listRoutes.get(position).getMeasure().equals("short")){
             holder.icon.setImageResource(R.drawable.short_icon);

@@ -16,7 +16,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -28,7 +27,6 @@ import com.example.oriolpons.projectefinalandroid.Database.Datasource;
 import com.example.oriolpons.projectefinalandroid.Models.local;
 import com.example.oriolpons.projectefinalandroid.Adapters.adapterLocal;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -52,7 +50,7 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
     private StringBuffer json;
     private AlertDialog dialog;
     private Datasource bd;
-    private String localName, localDescription, localAssessment, typeOfLocalFilter = "restaurants", assessmentFilter = "asc", cityOfLocalFilter= "Mataró", URL =  "http://localhost/ApiCrazyNuit/public/api/";
+    private String localName, localDescription, localAssessment, NameFilter = "", typeOfLocalFilter = "restaurants", assessmentFilter = "ASC", cityOfLocalFilter= "Mataró", URL =  "http://localhost/ApiCrazyNuit/public/api/";
     private int cityOfLocalFilterPosition = 0;
 
     @Override
@@ -99,7 +97,12 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 cityOfLocalFilterPosition = position;
                 cityOfLocalFilter = spCity.getSelectedItem().toString();
-                bd.FilterConfigUpdate("local", assessmentFilter, typeOfLocalFilter, cityOfLocalFilter, cityOfLocalFilterPosition);
+                bd.filterConfigUpdate("local", assessmentFilter, typeOfLocalFilter, cityOfLocalFilter, cityOfLocalFilterPosition);
+
+                //filterConfig();
+                clearData();
+                addDBLocals();
+                exampleLocal();
             }
 
             @Override
@@ -114,19 +117,91 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
             public void onClick(View view) {
                 localName = listLocals.get(recyclerLocals.getChildAdapterPosition(view)).getName();
                 localDescription = listLocals.get(recyclerLocals.getChildAdapterPosition(view)).getDescription();
-                localAssessment = listLocals.get(recyclerLocals.getChildAdapterPosition(view)).getAssessment() + "/5 - 1 votos";
+                localAssessment = listLocals.get(recyclerLocals.getChildAdapterPosition(view)).getAssessment() + "/5";
                 intentLocalContent();
             }
         });
         recyclerLocals.setAdapter(adapterLocal);
 
+
         filterConfig();
         clearData();
+        addDBLocals();
         exampleLocal();
 
 
         spCity.setSelection(cityOfLocalFilterPosition);
         btnLocal.setEnabled(false);
+    }
+
+    private void addDBLocals() {
+        String name = "", description= "", address= "", opening_hours= "", schedule_close= "", gastronomy= "";
+        Double assessment = 1.0, entrance_price = 10.0;
+        int category = 4;
+
+
+        for(int id = 0; id <= 30; id++){
+
+            assessment = assessment + 0.2;
+            if (id >= 0 && id <= 10){
+                name = "Restaurante: " + id;
+                description= "Un restaurante con los mejores chefs.";
+                if (id <= 3){
+                    address= "Mataró";
+                }
+                if (id >= 4 && id <= 7){
+                    address= "Barcelona";
+                }
+                if (id >= 8 && id <= 10){
+                    address= "Girona";
+                }
+                if (bd.restaurantsAskExist(id)){
+                    bd.restaurantsUpdate(id, name, description, assessment, address, opening_hours, schedule_close, gastronomy, category);
+                }
+                else{
+                    bd.restaurantsAdd(id, name, description, assessment, address, opening_hours, schedule_close, gastronomy, category);
+                }
+            }
+
+            if (id >= 11 && id <= 20){
+                name = "Pub: " + id;
+                description= "Un pub interesante.";
+                if (id <= 13){
+                    address= "Mataró";
+                }
+                if (id >= 14 && id <= 17){
+                    address= "Barcelona";
+                }
+                if (id >= 18 && id <= 20){
+                    address= "Girona";
+                }
+                if (bd.pubsAskExist(id)){
+                    bd.pubsUpdate(id, name, description, assessment, address, opening_hours, schedule_close);
+                }
+                else{
+                    bd.pubsAdd(id, name, description, assessment, address, opening_hours, schedule_close);
+                }
+            }
+            if (id >= 21 && id <= 30){
+                name = "Disco: " + id;
+                description= "Una disco con música de ánime.";
+                if (id <= 23){
+                    address= "Mataró";
+                }
+                if (id >= 24 && id <= 27){
+                    address= "Barcelona";
+                }
+                if (id >= 28 && id <= 30){
+                    address= "Girona";
+                }
+                if (bd.discoAskExist(id)){
+                    bd.discosUpdate(id, name, description, assessment, address, opening_hours, schedule_close, entrance_price);
+                }
+                else{
+                    bd.discosAdd(id, name, description, assessment, address, opening_hours, schedule_close, entrance_price);
+                }
+            }
+        }
     }
 
     private void filterConfig() {
@@ -152,7 +227,6 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
             case R.id.btnMenu: actionShowHideMenu(); break;
             case R.id.btnBack: actionBack(); break;
             case R.id.btnFilterLocal: actionFilterLocal(); break;
-
         }
     }
 
@@ -208,11 +282,11 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
         Button btnFilterLocal = (Button) view.findViewById(R.id.btnFilterLocal);
 
         filterConfig();
-        if (assessmentFilter.equals("asc")){
+        if (assessmentFilter.equals("ASC")){
             rbtnAsc.setChecked(true);
         }
         else{
-            if (assessmentFilter.equals("desc")){
+            if (assessmentFilter.equals("DESC")){
                 rbtnDes.setChecked(true);
             }
         }
@@ -242,10 +316,10 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
                 Toast mensaje;
 
                 if (rbtnAsc.isChecked()){
-                    assessmentFilter = "asc";
+                    assessmentFilter = "ASC";
                 }
                 else{
-                    assessmentFilter = "desc";
+                    assessmentFilter = "DESC";
                 }
 
                 if (ckbxRestaurant.isChecked()){
@@ -262,9 +336,12 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
                     }
                 }
 
+                NameFilter = edtFilterName.getText().toString();
+
+                bd.filterConfigUpdate("local", assessmentFilter, typeOfLocalFilter, cityOfLocalFilter, cityOfLocalFilterPosition);
                 clearData();
+                addDBLocals();
                 exampleLocal();
-                bd.FilterConfigUpdate("local", assessmentFilter, typeOfLocalFilter, cityOfLocalFilter, cityOfLocalFilterPosition);
 
                 text = "Se han aplicado los filtros.";
                 duration = 3;
@@ -292,10 +369,69 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void exampleLocal() {
+        Cursor cursor;
+        Long id;
+        String type, name, description, address, opening_hours, schedule_close, gastronomy;
+        Double assessment, entrance_price;
+        int category;
 
-        for(int index = 0; index<= 3; index++){
+        if (typeOfLocalFilter.equals("restaurants")) {
+            cursor = bd.filterLocalRestaurants(cityOfLocalFilter, assessmentFilter, NameFilter);
+            while(cursor.moveToNext()){
+                id = cursor.getLong(0);
+                type = "restaurants";
+                name = cursor.getString(1);
+                description = cursor.getString(2);
+                assessment = cursor.getDouble(3);
+                address = cursor.getString(4);
+                opening_hours = cursor.getString(5);
+                schedule_close = cursor.getString(6);
+                gastronomy = cursor.getString(7);
+                category = cursor.getInt(8);
+                entrance_price = 0.0;
 
-            listLocals.add(new local(index,typeOfLocalFilter,"local " + index+ ".", "Un local muy entretenido.",  index + 0.0, null, null, null, null,0, null,0));
+                listLocals.add(new local(id, type, name, description, assessment, address, opening_hours, schedule_close, gastronomy, category, entrance_price, 0));
+            }
+        }
+        else{
+            if (typeOfLocalFilter.equals("pubs")) {
+                cursor = bd.filterLocalPub(cityOfLocalFilter, assessmentFilter, NameFilter);
+                while(cursor.moveToNext()){
+                    id = cursor.getLong(0);
+                    type = "pubs";
+                    name = cursor.getString(1);
+                    description = cursor.getString(2);
+                    assessment = cursor.getDouble(3);
+                    address = cursor.getString(4);
+                    opening_hours = cursor.getString(5);
+                    schedule_close = cursor.getString(6);
+                    gastronomy = "";
+                    category = 0;
+                    entrance_price = 0.0;
+
+                    listLocals.add(new local(id, type, name, description, assessment, address, opening_hours, schedule_close, gastronomy, category, entrance_price, 0));
+                }
+            }
+            else{
+                if (typeOfLocalFilter.equals("discoteques")) {
+                    cursor = bd.filterLocalDisco(cityOfLocalFilter, assessmentFilter, NameFilter);
+                    while(cursor.moveToNext()){
+                        id = cursor.getLong(0);
+                        type = "discoteques";
+                        name = cursor.getString(1);
+                        description = cursor.getString(2);
+                        assessment = cursor.getDouble(3);
+                        address = cursor.getString(4);
+                        opening_hours = cursor.getString(5);
+                        schedule_close = cursor.getString(6);
+                        gastronomy = "";
+                        category = 0;
+                        entrance_price = cursor.getDouble(7);
+
+                        listLocals.add(new local(id, type, name, description, assessment, address, opening_hours, schedule_close, gastronomy, category, entrance_price, 0));
+                    }
+                }
+            }
         }
     }
 
@@ -373,31 +509,31 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void readData() throws JSONException {
-        long id = 0;
-        int categoria = 0;
-        double valoracio = 0.0;
-        String nom = "", descripcio = "", gastronomia = "";
+        Long id;
+        String type, name, description, address, opening_hours, schedule_close, gastronomy, entrance_price;
+        Double assessment;
+        int category;
 
         if (typeOfLocalFilter.equals("restaurants")){
 
             for (int i = 0; i < data.length(); i++) {
                 id = (long) data.get("idBar-Restaurant");
-                nom = (String) data.get("Nom");
-                descripcio = (String) data.get("Descripcio");
-                valoracio = (int) data.get("Valoracio");
-                categoria = (int) data.get("Categoria");
-               // listLocals.add(new local(id, "bar", nom, descripcio, valoracio));
+                name = (String) data.get("Nom");
+                description = (String) data.get("Descripcio");
+                assessment = (double) data.get("Valoracio");
+                category = (int) data.get("Categoria");
+               // bd.add());
             }
         }
 
         if (typeOfLocalFilter.equals("pubs")){
             for (int i = 0; i < data.length(); i++) {
                 id = (long) data.get("idPub");
-                nom = (String) data.get("Nom");
-                descripcio = (String) data.get("Descripcio");
-                valoracio = (int) data.get("Valoracio");
-                gastronomia = (String) data.get("TipusGastronomic");
-                categoria = (int) data.get("Categoria");
+                name = (String) data.get("Nom");
+                description = (String) data.get("Descripcio");
+                assessment = (Double) data.get("Valoracio");
+                gastronomy = (String) data.get("TipusGastronomic");
+                category = (int) data.get("Categoria");
                 // listLocals.add(new local(id,nom, descripcio, valoracio));
             }
         }
@@ -405,10 +541,10 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
         if (typeOfLocalFilter.equals("typeOfLocalFilter")){
             for (int i = 0; i < data.length(); i++) {
                 id = (long) data.get("idDiscoteca");
-                nom = (String) data.get("Nom");
-                descripcio = (String) data.get("Descripcio");
-                valoracio = (int) data.get("Valoracio");
-                categoria = (int) data.get("Categoria");
+                name = (String) data.get("Nom");
+                description = (String) data.get("Descripcio");
+                assessment = (Double) data.get("Valoracio");
+                category = (int) data.get("Categoria");
                 // listLocals.add(new local(id,nom, descripcio, valoracio));
             }
         }
