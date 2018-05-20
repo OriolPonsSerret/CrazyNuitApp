@@ -4,17 +4,20 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.regex.Pattern;
+
 public class registerActivity extends AppCompatActivity{
 
     private Button btnRegister;
-   // EditText edtUserName, edtEmail, edtPassword, edtPasswordR;
-
+    private EditText edtUserName, edtEmail, edtPassword, edtPasswordR;
+    private String username = "",email = "", password = "", rePassword = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,15 +32,14 @@ public class registerActivity extends AppCompatActivity{
             }
         });
 
-        //edtUserName  = (EditText) findViewById(R.id.edtUserName);
-        //edtEmail  = (EditText) findViewById(R.id.edtEmail);
-        //edtPassword  = (EditText) findViewById(R.id.edtPassword);
-        //edtPasswordR  = (EditText) findViewById(R.id.edtPasswordR);
+        edtUserName  = (EditText) findViewById(R.id.edtUserName);
+        edtEmail  = (EditText) findViewById(R.id.edtEmail);
+        edtPassword  = (EditText) findViewById(R.id.edtPassword);
+        edtPasswordR  = (EditText) findViewById(R.id.edtPasswordR);
 
     }
 
     private void checkData() {
-        String UserName, Email, Password, PasswordRepeat;
 
         TextView tv;
         Context context = getApplicationContext();
@@ -46,70 +48,61 @@ public class registerActivity extends AppCompatActivity{
         Toast mensaje;
 
         tv = (TextView) findViewById(R.id.edtUserName);
-        UserName = tv.getText().toString();
-        if (UserName.trim().equals("")) {
-            text = "El nombre de usuario es obligatorio.";
-            duration = 3;
-
-            mensaje = Toast.makeText(context, text, duration);
-            mensaje.show();
+        username = tv.getText().toString();
+        if (username.trim().equals("")) {
+            edtUserName.setError("El Nombre de Usuario és obligatorio.");
             return;
         }
 
         tv = (TextView) findViewById(R.id.edtEmail);
-        Email = tv.getText().toString();
-        if (Email.trim().equals("")) {
-            text = "El email es obligatorio.";
-            duration = 3;
-
-            mensaje = Toast.makeText(context, text, duration);
-            mensaje.show();
+        email = tv.getText().toString();
+        if (email.trim().equals("")) {
+            edtEmail.setError("El Correo és obligatoria.");
             return;
         }
 
         tv = (TextView) findViewById(R.id.edtPassword);
-        Password = tv.getText().toString();
-        if (Password.trim().equals("")) {
-            text = "La contraseña es obligatoria.";
-            duration = 3;
-
-            mensaje = Toast.makeText(context, text, duration);
-            mensaje.show();
+        password = tv.getText().toString();
+        if (password.trim().equals("")) {
+            edtPassword.setError("La Contraseña és obligatoria.");
             return;
         }
 
         tv = (TextView) findViewById(R.id.edtPasswordR);
-        PasswordRepeat = tv.getText().toString();
-        if (PasswordRepeat.trim().equals("")) {
-            text = "Tienes que volver a repetir la contraseña.";
-            duration = 3;
-
-            mensaje = Toast.makeText(context, text, duration);
-            mensaje.show();
+        rePassword = tv.getText().toString();
+        if (rePassword.trim().equals("")) {
+            edtPasswordR.setError("Repite la Contraseña.");
             return;
         }
 
-        if (Password.trim().equals(PasswordRepeat)) {
+        if (password.trim().equals(rePassword)) {
         }
         else{
-            text = "Las contraseñas no coinciden.";
-            duration = 3;
-
-            mensaje = Toast.makeText(context, text, duration);
-            mensaje.show();
+            edtPasswordR.setError("Las Contraseñas no coinciden.");
             return;
         }
 
-        //bd.existUserName(UserName);
-        //bd.existEmail(Email);
-        //bd.userAdd(UserName, Email, Password, PasswordRepeat);
-        text = "¡Te has registrado correctamente! Ahora puedes inicar sesión.";
+        if (!ValidationEmail()){
+            edtEmail.setError("Correo no válido.");
+            return;
+        }
+        else {
+
+        //Falta: Comprovar que ni el nombre de usuario ni el correo existan en la base de datos.
+        //       También enviarle los datos para que lo registre.
+
+        text = "¡Te has registrado correctamente!";
         duration = 4;
 
         mensaje = Toast.makeText(context, text, duration);
         mensaje.show();
 
-
         finish();
+        }
+    }
+
+    private boolean ValidationEmail() {
+        Pattern pattern = Patterns.EMAIL_ADDRESS;
+        return pattern.matcher(email).matches();
     }
 }

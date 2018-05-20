@@ -19,7 +19,7 @@ public class Datasource {
     public static final String FILTERCONFIG_CITYPOSITION = "cityposition";
 
     public static final String table_REMEMBERME= "rememberme";
-    public static final String REMEMBERME_ID = "_id";
+    public static final String REMEMBERME_FIND = "_id";
     public static final String REMEMBERME_EMAIL = "email";
 
     public static final String table_USER= "user";
@@ -93,32 +93,14 @@ public class Datasource {
 
     // LOGIN SCREEN
     public Cursor remembermeCount() {
-        return dbR.rawQuery("SELECT COUNT(*) " +
+        return dbR.rawQuery("SELECT COUNT(*)" +
                 " FROM " + table_REMEMBERME, null);
     }
 
     public Cursor remembermeGetUser() {
-        return dbR.rawQuery("SELECT " + REMEMBERME_ID + ", " + REMEMBERME_EMAIL +
+        return dbR.rawQuery("SELECT " + REMEMBERME_EMAIL +
                 " FROM " + table_REMEMBERME, null);
     }
-
-    public void userRememberAdd(int id, String email) {
-        ContentValues values = new ContentValues();
-        values.put(REMEMBERME_ID,id);
-        values.put(REMEMBERME_EMAIL,email);
-
-        dbW.insert(table_REMEMBERME,null,values);
-    }
-
-    public void userRememberUpdate(int id, String email) {
-        ContentValues values = new ContentValues();
-        values.put(REMEMBERME_ID,id);
-        values.put(REMEMBERME_EMAIL,email);
-
-        dbW.update(table_FILTERCONFIG,values, FILTERCONFIG_ID + " = ?", new String[] { String.valueOf(id) });
-    }
-
-
 
     // FILTERS
     public boolean filterConfigVerification() {
@@ -148,6 +130,31 @@ public class Datasource {
                 " WHERE UPPER(" +  FILTERCONFIG_ID + ") LIKE UPPER ('local')", null);
     }
 */
+    public void DefaultRemembermeAdd() {
+        ContentValues values = new ContentValues();
+        values.put(REMEMBERME_FIND,"user");
+        values.put(REMEMBERME_EMAIL,"");
+
+        dbW.insert(table_REMEMBERME,null,values);
+    }
+
+    public void UserRemembermeAdd(String email) {
+        String type = "user";
+        ContentValues values = new ContentValues();
+        values.put(REMEMBERME_FIND,"user");
+        values.put(REMEMBERME_EMAIL,email);
+
+        dbW.update(table_REMEMBERME,values, REMEMBERME_FIND + " = ?", new String[] { String.valueOf(type) });
+    }
+
+    public void RemembermeRemove() {
+        String type = "user";
+        ContentValues values = new ContentValues();
+        values.put(REMEMBERME_EMAIL,"");
+
+        dbW.update(table_REMEMBERME,values, REMEMBERME_FIND + " = ?", new String[] { String.valueOf(type) });
+    }
+
 
 
     public void DefaultFilterConfigAdd() {

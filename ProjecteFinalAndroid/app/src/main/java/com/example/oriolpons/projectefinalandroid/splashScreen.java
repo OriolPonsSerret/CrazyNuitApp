@@ -2,6 +2,7 @@ package com.example.oriolpons.projectefinalandroid;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ProgressBar;
@@ -10,7 +11,7 @@ import com.example.oriolpons.projectefinalandroid.Database.Datasource;
 
 public class splashScreen extends Activity {
     private ProgressBar progressBar;
-    int progressStatus = 0;
+    int progressStatus = 0, quantity = 0;
     private Datasource bd;
 
 
@@ -28,6 +29,13 @@ public class splashScreen extends Activity {
             bd.DefaultFilterConfigAdd();
         }
 
+        Cursor cursor  = bd.remembermeCount();
+        while(cursor.moveToNext()){
+            quantity = cursor.getInt(0);
+        }
+        if (quantity == 0){
+            bd.DefaultRemembermeAdd();
+        }
         loading();
     }
 

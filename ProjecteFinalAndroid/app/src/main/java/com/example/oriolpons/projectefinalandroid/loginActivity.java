@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -16,6 +17,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.oriolpons.projectefinalandroid.Database.Datasource;
+
+import java.util.regex.Pattern;
 // import com.google.android.gms.auth.api.signin.GoogleSignIn;
 // import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 // import com.google.android.gms.auth.api.signin.GoogleSignInApi;
@@ -33,6 +36,7 @@ public class loginActivity extends AppCompatActivity implements View.OnClickList
     private Datasource bd;
     private int quantity = 0, id = 0;
     private String email = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,65 +78,47 @@ public class loginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void I_have_a_remember_me() {
-        Cursor cursor  = bd.remembermeCount();
-
+        Cursor cursor = bd.remembermeGetUser();
         while(cursor.moveToNext()){
-            quantity = cursor.getInt(0);
+            email = cursor.getString(0);
         }
-        cursor = bd.remembermeGetUser();
-        if (quantity > 0){
-            while(cursor.moveToNext()){
-                id = cursor.getInt(0);
-                email = cursor.getString(1);
-            }
-        }
+
         edtEmail.setText(email);
     }
 
+
     private void loginData() {
-        String Email, Password;
+        String Password;
 
         TextView tv;
-        Context context = getApplicationContext();
-        CharSequence text = "";
-        int duration;
-        Toast mensaje;
-
 
         tv = (TextView) findViewById(R.id.edtEmail);
-        Email = tv.getText().toString();
-        if (Email.trim().equals("")) {
-            text = "El email es obligatorio.";
-            duration = 3;
-
-            mensaje = Toast.makeText(context, text, duration);
-            mensaje.show();
+        email = tv.getText().toString();
+        if (email.trim().equals("")) {
+            edtEmail.setError("El campo no puede estar vacío.");
             return;
         }
 
         tv = (TextView) findViewById(R.id.edtPassword);
         Password = tv.getText().toString();
         if (Password.trim().equals("")) {
-            text = "La contraseña es obligatoria.";
-            duration = 3;
-
-            mensaje = Toast.makeText(context, text, duration);
-            mensaje.show();
+            edtPassword.setError("La Contraseña és obligatoria.");
             return;
         }
-/*
-        if(chbxRemember.isChecked()){
-            if (quantity == 0){
-                bd.userRememberAdd(id, email);
-            }
-            else{
-                bd.userRememberUpdate(id, email);
-            }
+
+        if (!ValidationEmail()){
+            edtEmail.setError("Formato del Correo no és válido.");
+            return;
         }
-*/
-        Intent i = new Intent(this, MainActivity.class);
-        startActivityForResult(i, 1);
-        //startActivity(i);
+        else {
+
+            if (chbxRemember.isChecked()) {
+                bd.UserRemembermeAdd(email);
+            }
+
+            Intent i = new Intent(this, MainActivity.class);
+            startActivityForResult(i, 1);
+        }
     }
 
     private void registerUser() {
@@ -144,12 +130,15 @@ public class loginActivity extends AppCompatActivity implements View.OnClickList
    @Override
    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onRestart();
+       edtEmail.setText("");
+       edtPassword.setText("");
 
        AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
        builder.setMessage("¿Estás seguro de volver a la pantalla de Iniciar Sesión?");
        builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
            public void onClick(DialogInterface dialog, int id) {
+               bd.RemembermeRemove();
            }
        });
 
@@ -165,5 +154,10 @@ public class loginActivity extends AppCompatActivity implements View.OnClickList
     private void goBack() {
         Intent i = new Intent(this, MainActivity.class);
         startActivityForResult(i, 1);
+    }
+
+    private boolean ValidationEmail() {
+        Pattern pattern = Patterns.EMAIL_ADDRESS;
+        return pattern.matcher(email).matches();
     }
 }
