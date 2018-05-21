@@ -241,12 +241,12 @@ public class routesProfileFragment extends Fragment {
     }
 
     private void readData() throws JSONException {
-        long id;
+        int id;
         String name = "", description = "", creator = "";
         double puntuation = 0.0;
 
         for (int i = 0; i < data.length(); i++) {
-            id = (long) data.get("idusuaris");
+            id = (int) data.get("idusuaris");
            // name = (String) data.get("Nom");
            // description = (String) data.get("description");
            // creator = (String) data.get("creador");

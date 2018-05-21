@@ -91,7 +91,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         "creator TEXT NOT NULL, " +
                         "city TEXT NOT NULL, " +
                         "rute_locals TEXT, " +
-                        "route_date TEXT)";
+                        "route_date TEXT, " +
+                        "favourite TEXT)";
         db.execSQL(CREATE_TABLE);
 
 /*

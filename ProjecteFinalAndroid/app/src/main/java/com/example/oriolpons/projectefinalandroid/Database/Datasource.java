@@ -70,6 +70,7 @@ public class Datasource {
     public static final String ROUTES_CITY = "city";
     public static final String ROUTES_LOCALS = "rute_locals";
     public static final String ROUTES_DATE = "route_date";
+    public static final String ROUTES_FAVOURITE = "favourite";
 
     private DatabaseHelper dbHelper;
     private SQLiteDatabase dbW, dbR;
@@ -212,14 +213,24 @@ public class Datasource {
 
     public Cursor filterRoutes(String city, String order, String routeName, int route_lenghtmin, int route_lenght) {
         //localName = "";
-        return dbR.rawQuery("SELECT " + ROUTES_ID + ", " + ROUTES_LENGHT +", " + ROUTES_NAME + ", " + ROUTES_DESCRIPTION + ", " + ROUTES_ASSESSMENT + ", " + ROUTES_CREATOR + ", " + ROUTES_CITY + ", " + ROUTES_LOCALS + ", " + ROUTES_DATE +
+        return dbR.rawQuery("SELECT " + ROUTES_ID + ", " + ROUTES_LENGHT +", " + ROUTES_NAME + ", " + ROUTES_DESCRIPTION + ", " + ROUTES_ASSESSMENT + ", " + ROUTES_CREATOR + ", " + ROUTES_CITY + ", " + ROUTES_LOCALS + ", " + ROUTES_DATE + ", " + ROUTES_FAVOURITE +
                 " FROM " + table_ROUTES +
                 " WHERE UPPER(" +  ROUTES_CITY + ") LIKE UPPER ('" + city +"') AND UPPER(" +  ROUTES_NAME + ") LIKE UPPER ('%" + routeName +"%') AND " +  ROUTES_LENGHT + " > " + route_lenghtmin + " AND " +  ROUTES_LENGHT + " <= " + route_lenght  +
                 " ORDER BY " + ROUTES_ASSESSMENT + " " + order, null);
     }
+    public Cursor filterFavRoutes(String city, String order, String routeName, int route_lenghtmin, int route_lenght) {
+        return dbR.rawQuery("SELECT " + ROUTES_ID + ", " + ROUTES_LENGHT +", " + ROUTES_NAME + ", " + ROUTES_DESCRIPTION + ", " + ROUTES_ASSESSMENT + ", " + ROUTES_CREATOR + ", " + ROUTES_CITY + ", " + ROUTES_LOCALS + ", " + ROUTES_DATE + ", " + ROUTES_FAVOURITE +
+                " FROM " + table_ROUTES +
+                " WHERE UPPER(" +  ROUTES_CITY + ") LIKE UPPER ('" + city +"') AND UPPER(" +  ROUTES_NAME + ") LIKE UPPER ('%" + routeName +"%') AND " +  ROUTES_LENGHT + " > " + route_lenghtmin + " AND " +  ROUTES_LENGHT + " <= " + route_lenght  + " AND UPPER(" +  ROUTES_FAVOURITE + ") LIKE UPPER ('TRUE')" +
+                " ORDER BY " + ROUTES_ASSESSMENT + " " + order, null);
+    }
 
 
-
+    public Cursor getRouteInformation(int id) {
+        return dbR.rawQuery("SELECT " + ROUTES_LENGHT +", " + ROUTES_NAME + ", " + ROUTES_DESCRIPTION + ", " + ROUTES_ASSESSMENT + ", " + ROUTES_CREATOR + ", " + ROUTES_CITY + ", " + ROUTES_LOCALS + ", " + ROUTES_DATE + ", " + ROUTES_FAVOURITE +
+                " FROM " + table_ROUTES +
+                " WHERE " +  ROUTES_ID + " LIKE " + id , null);
+    }
 
 
     public boolean restaurantsAskExist(int id) {
@@ -331,11 +342,6 @@ public class Datasource {
         dbW.update(table_DISCOS,values, DISCOS_ID + " = ?", new String[] { String.valueOf(id) });
     }
 
-
-
-
-
-
     public boolean routesAskExist(int id) {
         Cursor c = dbR.rawQuery("SELECT " + ROUTES_ID  +
                 " FROM " + table_ROUTES +
@@ -344,7 +350,7 @@ public class Datasource {
         c.close();
         return exists;
     }
-    public void routesAdd(int id, int route_lenght, String name, String description, Double assessment, String creator, String city, String locals, String date) {
+    public void routesAdd(int id, int route_lenght, String name, String description, Double assessment, String creator, String city, String locals, String date, String favourite) {
         ContentValues values = new ContentValues();
         values.put(ROUTES_ID, id);
         values.put(ROUTES_LENGHT, route_lenght);
@@ -355,11 +361,12 @@ public class Datasource {
         values.put(ROUTES_CITY, city);
         values.put(ROUTES_LOCALS, locals);
         values.put(ROUTES_DATE, date);
+        values.put(ROUTES_FAVOURITE, favourite);
 
         dbW.insert(table_ROUTES, null, values);
     }
 
-    public void routesUpdate(int id, int route_lenght, String name, String description, Double assessment, String creator, String city, String locals, String date) {
+    public void routesUpdate(int id, int route_lenght, String name, String description, Double assessment, String creator, String city, String locals, String date, String favourite) {
         ContentValues values = new ContentValues();
         values.put(ROUTES_LENGHT, route_lenght);
         values.put(ROUTES_NAME, name);
@@ -369,6 +376,15 @@ public class Datasource {
         values.put(ROUTES_CITY, city);
         values.put(ROUTES_LOCALS, locals);
         values.put(ROUTES_DATE, date);
+        values.put(ROUTES_FAVOURITE, date);
+        values.put(ROUTES_FAVOURITE, favourite);
+
+        dbW.update(table_ROUTES,values, ROUTES_ID + " = ?", new String[] { String.valueOf(id) });
+    }
+
+    public void routesAddOrRemoveFavourite(int id, String favourite) {
+        ContentValues values = new ContentValues();
+        values.put(ROUTES_FAVOURITE, favourite);
 
         dbW.update(table_ROUTES,values, ROUTES_ID + " = ?", new String[] { String.valueOf(id) });
     }

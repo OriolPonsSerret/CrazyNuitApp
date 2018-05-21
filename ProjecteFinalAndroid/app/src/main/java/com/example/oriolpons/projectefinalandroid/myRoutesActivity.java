@@ -24,6 +24,8 @@ import com.example.oriolpons.projectefinalandroid.Database.Datasource;
 import com.example.oriolpons.projectefinalandroid.Models.routes;
 import com.example.oriolpons.projectefinalandroid.Adapters.adapterRoutes;
 
+import org.json.JSONException;
+
 import java.util.ArrayList;
 
 public class myRoutesActivity extends AppCompatActivity implements View.OnClickListener{
@@ -37,13 +39,13 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
     private String routeName, routeDescription, routeCreator, routeAssessment, NameFilter = "";
     private LinearLayout linearLayoutMenu;
     private Spinner spCity;
-    private long id;
+    private int id;
     private double assessment;
     private AlertDialog dialog;
 
     private Datasource bd;
     private String assessmentFilter = "ASC", typeOfRouteFilter = "short", cityOfRouteFilter= "Mataró", URL =  "http://localhost/ApiCrazyNuit/public/api/";
-    private int cityOfRouteFilterPosition = 0, RouteLenghtMin = 0, RouteLenght = 0;
+    private int cityOfRouteFilterPosition = 0, RouteLenghtMin = 0, RouteLenght = 0, routeId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +83,7 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
         adapterRoutes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                routeId = listRoutes.get(recyclerRoutes.getChildAdapterPosition(view)).getId();
                 routeName = listRoutes.get(recyclerRoutes.getChildAdapterPosition(view)).getName();
                 routeDescription = listRoutes.get(recyclerRoutes.getChildAdapterPosition(view)).getDescription();
                 routeAssessment = listRoutes.get(recyclerRoutes.getChildAdapterPosition(view)).getAssessment() + "/5 - 1 votos";
@@ -113,7 +116,7 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
 
                 clearData();
                 addDBRoutes();
-                exampleRoutes();
+                databaseToRouteList();
             }
 
             @Override
@@ -131,14 +134,14 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
         filterConfig();
         clearData();
         addDBRoutes();
-        exampleRoutes();
+        databaseToRouteList();
 
         spCity.setSelection(cityOfRouteFilterPosition);
         btnRoutes.setEnabled(false);
     }
 
     private void addDBRoutes() {
-        String name = "", description= "", creator= "Senpai", city= "", locals = "", date = "";
+        String name = "", description= "", creator= "Senpai", city= "", locals = "", date = "", favourite = "FALSE";
         Double assessment = 1.0;
         int route_lenght = 2;
 
@@ -172,10 +175,10 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
                     route_lenght = 4;
                 }
                 if (bd.routesAskExist(id)){
-                    bd.routesUpdate(id, route_lenght, name, description, assessment, creator, city, locals, date);
+                    bd.routesUpdate(id, route_lenght, name, description, assessment, creator, city, locals, date, "FALSE");
                 }
                 else{
-                    bd.routesAdd(id, route_lenght, name, description, assessment, creator, city, locals, date);
+                    bd.routesAdd(id, route_lenght, name, description, assessment, creator, city, locals, date, favourite);
                 }
             }
         }
@@ -288,7 +291,7 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
                 bd.filterConfigUpdate("routes", assessmentFilter, typeOfRouteFilter, cityOfRouteFilter, cityOfRouteFilterPosition);
                 clearData();
                 addDBRoutes();
-                exampleRoutes();
+                databaseToRouteList();
 
                 text = "Se han aplicado los filtros.";
                 duration = 3;
@@ -303,6 +306,7 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
 
     private void intentRouteContent() {
         Bundle bundle = new Bundle();
+        bundle.putInt("id",routeId);
         bundle.putString("name",routeName);
         bundle.putString("description",routeDescription);
         bundle.putString("assessment",routeAssessment);
@@ -362,10 +366,10 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
         listRoutes.clear(); //clear list
         adapterRoutes.notifyDataSetChanged(); //let your adapter know about the changes and reload view.
     }
-    private void exampleRoutes() {
+    private void databaseToRouteList() {
 
         Cursor cursor;
-        Long id;
+        int id;
         String measure = "", name, description, creator, city, rute_locals, route_date;
         Double assessment, entrance_price;
         int route_lenght;
@@ -389,7 +393,7 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
 
         cursor = bd.filterRoutes(cityOfRouteFilter, assessmentFilter, NameFilter, RouteLenghtMin, RouteLenght);
         while(cursor.moveToNext()){
-            id = cursor.getLong(0);
+            id = cursor.getInt(0);
             route_lenght = cursor.getInt(1);
             name = cursor.getString(2);
             description = cursor.getString(3);
@@ -415,6 +419,35 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
         }
     }
 
+/*
+    private void readDataFromJson() throws JSONException {
+        String name = "", description= "", creator= "Senpai", city= "", locals = "", date = "", favourite = "FALSE";
+        Double assessment = 1.0;
+        int route_lenght = 2;
+
+        for (int i = 0; i < data.length(); i++) {
+            id = (int) data.get("idDiscoteca");
+            route_lenght = (int) data.getInt("idDiscoteca");
+            name = (String) data.get("Nom");
+            description = (String) data.get("Descripcio");
+            assessment = (Double) data.get("Valoracio");
+            creator = (String) data.get("Direccio");
+            city = (String) data.get("Horari-Obertura");
+            locals = (String) data.get("Horari-Tancament");
+            date = (String) data.get("Valoracio");
+            favourite = (String) data.get("Categoria");
+
+
+            if (bd.routesAskExist(id)){
+                bd.routesUpdate(id, route_lenght, name, description, assessment, creator, city, locals, date, favourite);
+            }
+            else{
+                bd.routesAdd(id, route_lenght, name, description, assessment, creator, city, locals, date, favourite);
+            }
+        }
+        databaseToRouteList();
+    }
+*/
     public void onRestart()
     {
         super.onRestart();

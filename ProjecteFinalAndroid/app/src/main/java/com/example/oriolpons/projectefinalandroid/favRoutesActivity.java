@@ -43,7 +43,7 @@ public class favRoutesActivity extends AppCompatActivity implements View.OnClick
 
     private Datasource bd;
     private String assessmentFilter = "ASC", typeOfRouteFilter = "short", cityOfRouteFilter= "Mataró", URL =  "http://localhost/ApiCrazyNuit/public/api/";
-    private int cityOfRouteFilterPosition = 0, RouteLenghtMin = 0, RouteLenght = 0;
+    private int cityOfRouteFilterPosition = 0, RouteLenghtMin = 0, RouteLenght = 0, routeId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +82,7 @@ public class favRoutesActivity extends AppCompatActivity implements View.OnClick
         adapterRoutes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                routeId = listRoutes.get(recyclerRoutes.getChildAdapterPosition(view)).getId();
                 routeName = listRoutes.get(recyclerRoutes.getChildAdapterPosition(view)).getName();
                 routeDescription = listRoutes.get(recyclerRoutes.getChildAdapterPosition(view)).getDescription();
                 routeAssessment = listRoutes.get(recyclerRoutes.getChildAdapterPosition(view)).getAssessment() + "/5 - 1 votos";
@@ -112,7 +113,6 @@ public class favRoutesActivity extends AppCompatActivity implements View.OnClick
                 bd.filterConfigUpdate("routes", assessmentFilter, typeOfRouteFilter, cityOfRouteFilter, cityOfRouteFilterPosition);
 
                 clearData();
-                addDBRoutes();
                 exampleRoutes();
             }
 
@@ -130,61 +130,15 @@ public class favRoutesActivity extends AppCompatActivity implements View.OnClick
 
         filterConfig();
         clearData();
-        addDBRoutes();
         exampleRoutes();
 
         spCity.setSelection(cityOfRouteFilterPosition);
         btnRoutes.setEnabled(false);
     }
 
-
-    private void addDBRoutes() {
-        String name = "", description= "", creator= "Senpai", city= "", locals = "", date = "";
-        Double assessment = 1.0;
-        int route_lenght = 2;
-
-
-        for(int id = 0; id <= 10; id++){
-
-            assessment = assessment + 0.2;
-            if (id >= 0 && id <= 10){
-                name = "Ruta: " + id;
-                description= "Una ruta entretenida.";
-                if (id <= 2){
-                    city= "Mataró";
-                    assessment = 5.0;
-                    route_lenght = 2;
-                }
-                else{
-                    if (id == 3){
-                        city= "Mataró";
-                        assessment = 3.0;
-                        route_lenght = 10;
-                    }
-                }
-                if (id >= 4 && id <= 7){
-                    city= "Barcelona";
-                    assessment = 3.0;
-                    route_lenght = 2;
-                }
-                if (id >= 8 && id <= 10){
-                    city= "Girona";
-                    assessment = 2.0;
-                    route_lenght = 4;
-                }
-                if (bd.routesAskExist(id)){
-                    bd.routesUpdate(id, route_lenght, name, description, assessment, creator, city, locals, date);
-                }
-                else{
-                    bd.routesAdd(id, route_lenght, name, description, assessment, creator, city, locals, date);
-                }
-            }
-        }
-    }
-
-
     private void intentRouteContent() {
         Bundle bundle = new Bundle();
+        bundle.putInt("id",routeId);
         bundle.putString("name",routeName);
         bundle.putString("description",routeDescription);
         bundle.putString("assessment",routeAssessment);
@@ -311,7 +265,7 @@ public class favRoutesActivity extends AppCompatActivity implements View.OnClick
 
                 bd.filterConfigUpdate("routes", assessmentFilter, typeOfRouteFilter, cityOfRouteFilter, cityOfRouteFilterPosition);
                 clearData();
-                addDBRoutes();
+                //addDBRoutes();
                 exampleRoutes();
 
                 text = "Se han aplicado los filtros.";
@@ -367,8 +321,8 @@ public class favRoutesActivity extends AppCompatActivity implements View.OnClick
     private void exampleRoutes() {
 
         Cursor cursor;
-        Long id;
-        String measure = "", name, description, creator, city, rute_locals, route_date;
+        int id;
+        String measure = "", name, description, creator, city, rute_locals, route_date, favourite;
         Double assessment, entrance_price;
         int route_lenght;
 
@@ -389,9 +343,9 @@ public class favRoutesActivity extends AppCompatActivity implements View.OnClick
             }
         }
 
-        cursor = bd.filterRoutes(cityOfRouteFilter, assessmentFilter, NameFilter, RouteLenghtMin, RouteLenght);
+        cursor = bd.filterFavRoutes(cityOfRouteFilter, assessmentFilter, NameFilter, RouteLenghtMin, RouteLenght);
         while(cursor.moveToNext()){
-            id = cursor.getLong(0);
+            id = cursor.getInt(0);
             route_lenght = cursor.getInt(1);
             name = cursor.getString(2);
             description = cursor.getString(3);
@@ -400,6 +354,7 @@ public class favRoutesActivity extends AppCompatActivity implements View.OnClick
             city = cursor.getString(6);
             rute_locals = cursor.getString(7);
             route_date = cursor.getString(8);
+            favourite = cursor.getString(9);
 
             if (route_lenght <= 4){
                 measure = "short";
@@ -421,6 +376,8 @@ public class favRoutesActivity extends AppCompatActivity implements View.OnClick
     {
         super.onRestart();
         linearLayoutMenu.setVisibility(View.GONE);
+        clearData();
+        exampleRoutes();
 
     }
 }
