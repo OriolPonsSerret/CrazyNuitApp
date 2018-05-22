@@ -101,8 +101,8 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
 
                 //filterConfig();
                 clearData();
-                addDBLocals();
-                exampleLocal();
+                addLocalsToDatabase(); //getJsonData();
+                databaseToLocalList(); //
             }
 
             @Override
@@ -126,15 +126,15 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
 
         filterConfig();
         clearData();
-        addDBLocals();
-        exampleLocal();
+        addLocalsToDatabase(); //getJsonData();
+        databaseToLocalList(); //
 
 
         spCity.setSelection(cityOfLocalFilterPosition);
         btnLocal.setEnabled(false);
     }
 
-    private void addDBLocals() {
+    private void addLocalsToDatabase() {
         String name = "", description= "", address= "", opening_hours= "", schedule_close= "", gastronomy= "";
         Double assessment = 1.0, entrance_price = 10.0;
         int category = 4;
@@ -340,8 +340,8 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
 
                 bd.filterConfigUpdate("local", assessmentFilter, typeOfLocalFilter, cityOfLocalFilter, cityOfLocalFilterPosition);
                 clearData();
-                addDBLocals();
-                exampleLocal();
+                addLocalsToDatabase(); //getJsonData();
+                databaseToLocalList(); //
 
                 text = "Se han aplicado los filtros.";
                 duration = 3;
@@ -368,7 +368,7 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
         startActivity(intent);
     }
 
-    private void exampleLocal() {
+    private void databaseToLocalList() {
         Cursor cursor;
         Long id;
         String type, name, description, address, opening_hours, schedule_close, gastronomy;
@@ -435,7 +435,7 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
-    private void getJSON() {
+    private void getJsonData() {
 
         new AsyncTask<Void, Void, Void>() {
 
@@ -450,7 +450,7 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
             @Override
             protected Void doInBackground(Void... params) {
                 try {
-                    URL url = new URL(URL + typeOfLocalFilter);//---------------------<<<<<<<<<<<<<< URL <<<<<<
+                    URL url = new URL(URL + typeOfLocalFilter);
 
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
@@ -498,7 +498,7 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
                     Log.d("my weather received", data.toString());
 
                     try {
-                        readData();
+                        readDataFromJson();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -508,46 +508,84 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
         }.execute();
     }
 
-    private void readData() throws JSONException {
-        Long id;
-        String type, name, description, address, opening_hours, schedule_close, gastronomy, entrance_price;
-        Double assessment;
-        int category;
+    private void readDataFromJson() throws JSONException {
+        int id;
+        String name = "", description= "", address= "", opening_hours= "", schedule_close= "", gastronomy= "";
+        Double assessment = 1.0, entrance_price = 10.0;
+        int category = 4;
+
+        // Long id;
+        // String type, name, description, address, opening_hours, schedule_close, gastronomy, entrance_price;
+        // Double assessment;
+        // int category;
 
         if (typeOfLocalFilter.equals("restaurants")){
 
             for (int i = 0; i < data.length(); i++) {
-                id = (long) data.get("idBar-Restaurant");
+                id = (int) data.get("idBar-Restaurant");
                 name = (String) data.get("Nom");
                 description = (String) data.get("Descripcio");
                 assessment = (double) data.get("Valoracio");
+                address = (String) data.get("Direccio"); //Por confirmar
+                opening_hours = (String) data.get("Horari-Obertura");
+                schedule_close = (String) data.get("Horari-Tancament");
+                gastronomy = (String) data.get("TipusGastronomic");
                 category = (int) data.get("Categoria");
-               // bd.add());
+
+                if (bd.restaurantsAskExist(id)){
+                    bd.restaurantsUpdate(id, name, description, assessment, address, opening_hours, schedule_close, gastronomy, category);
+                }
+                else{
+                    bd.restaurantsAdd(id, name, description, assessment, address, opening_hours, schedule_close, gastronomy, category);
+                }
             }
         }
 
         if (typeOfLocalFilter.equals("pubs")){
             for (int i = 0; i < data.length(); i++) {
-                id = (long) data.get("idPub");
+                id = (int) data.get("idPub");
                 name = (String) data.get("Nom");
                 description = (String) data.get("Descripcio");
                 assessment = (Double) data.get("Valoracio");
-                gastronomy = (String) data.get("TipusGastronomic");
-                category = (int) data.get("Categoria");
-                // listLocals.add(new local(id,nom, descripcio, valoracio));
+                address = (String) data.get("Direccio"); //Por confirmar
+                opening_hours = (String) data.get("Horari-Obertura");
+                schedule_close = (String) data.get("Horari-Tancament");
+
+                // gastronomy = (String) data.get("TipusGastronomic");
+                // category = (int) data.get("Categoria");
+
+                if (bd.pubsAskExist(id)){
+                    bd.pubsUpdate(id, name, description, assessment, address, opening_hours, schedule_close);
+                }
+                else{
+                    bd.pubsAdd(id, name, description, assessment, address, opening_hours, schedule_close);
+                }
             }
         }
 
-        if (typeOfLocalFilter.equals("typeOfLocalFilter")){
+        if (typeOfLocalFilter.equals("discoteques")){
             for (int i = 0; i < data.length(); i++) {
-                id = (long) data.get("idDiscoteca");
+                id = (int) data.get("idDiscoteca");
                 name = (String) data.get("Nom");
                 description = (String) data.get("Descripcio");
                 assessment = (Double) data.get("Valoracio");
-                category = (int) data.get("Categoria");
-                // listLocals.add(new local(id,nom, descripcio, valoracio));
+                address = (String) data.get("Direccio"); //Por confirmar
+                opening_hours = (String) data.get("Horari-Obertura");
+                schedule_close = (String) data.get("Horari-Tancament");
+                entrance_price = (Double) data.get("Valoracio");//Por confirmar
+                // category = (int) data.get("Categoria");
+
+
+                if (bd.discoAskExist(id)){
+                    bd.discosUpdate(id, name, description, assessment, address, opening_hours, schedule_close, entrance_price);
+                }
+                else{
+                    bd.discosAdd(id, name, description, assessment, address, opening_hours, schedule_close, entrance_price);
+                }
             }
         }
         // JSONObject jsonObjectMain = (JSONObject) data.get("main");
+
+        databaseToLocalList();
     }
 }

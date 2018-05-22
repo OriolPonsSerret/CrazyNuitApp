@@ -24,7 +24,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
         String CREATE_TABLE =
-                "CREATE TABLE rememberme ( _id INTEGER, " +
+                "CREATE TABLE rememberme ( _id TEXT PRIMARY KEY, " +
                         "email TEXT)";
 
         db.execSQL(CREATE_TABLE);
@@ -91,7 +91,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         "creator TEXT NOT NULL, " +
                         "city TEXT NOT NULL, " +
                         "rute_locals TEXT, " +
-                        "route_date TEXT)";
+                        "route_date TEXT, " +
+                        "favourite TEXT)";
         db.execSQL(CREATE_TABLE);
 
 /*

@@ -53,7 +53,8 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
 
     private Datasource bd;
     private String assessmentFilter = "ASC", typeOfRouteFilter = "short", cityOfRouteFilter= "Mataró", URL =  "http://localhost/ApiCrazyNuit/public/api/";
-    private int cityOfRouteFilterPosition = 0, RouteLenghtMin = 0, RouteLenght = 0;
+    private int cityOfRouteFilterPosition = 0, RouteLenghtMin = 0, RouteLenght = 0, routeId;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,9 +92,10 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
         adapterRoutes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                routeId = listRoutes.get(recyclerRoutes.getChildAdapterPosition(view)).getId();
                 routeName = listRoutes.get(recyclerRoutes.getChildAdapterPosition(view)).getName();
                 routeDescription = listRoutes.get(recyclerRoutes.getChildAdapterPosition(view)).getDescription();
-                routeAssessment = listRoutes.get(recyclerRoutes.getChildAdapterPosition(view)).getAssessment() + "/5 - 1 votos";
+                routeAssessment = listRoutes.get(recyclerRoutes.getChildAdapterPosition(view)).getAssessment() + "/5";
                 routeCreator = listRoutes.get(recyclerRoutes.getChildAdapterPosition(view)).getCreator();
                 intentRouteContent();
             }
@@ -149,7 +151,7 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
 
 
     private void addDBRoutes() {
-        String name = "", description= "", creator= "Senpai", city= "", locals = "", date = "";
+        String name = "", description= "", creator= "Senpai", city= "", locals = "", date = "", favourite = "FALSE";
         Double assessment = 1.0;
         int route_lenght = 2;
 
@@ -183,10 +185,10 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
                     route_lenght = 4;
                 }
                 if (bd.routesAskExist(id)){
-                    bd.routesUpdate(id, route_lenght, name, description, assessment, creator, city, locals, date);
+                    bd.routesUpdate(id, route_lenght, name, description, assessment, creator, city, locals, date, favourite);
                 }
                 else{
-                    bd.routesAdd(id, route_lenght, name, description, assessment, creator, city, locals, date);
+                    bd.routesAdd(id, route_lenght, name, description, assessment, creator, city, locals, date, favourite);
                 }
             }
         }
@@ -195,6 +197,7 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
 
     private void intentRouteContent() {
         Bundle bundle = new Bundle();
+        bundle.putInt("id",routeId);
         bundle.putString("name",routeName);
         bundle.putString("description",routeDescription);
         bundle.putString("assessment",routeAssessment);
@@ -384,7 +387,7 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
     private void exampleRoutes() {
 
         Cursor cursor;
-        Long id;
+        int id;
         String measure = "", name, description, creator, city, rute_locals, route_date;
         Double assessment, entrance_price;
         int route_lenght;
@@ -408,7 +411,7 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
 
         cursor = bd.filterRoutes(cityOfRouteFilter, assessmentFilter, NameFilter, RouteLenghtMin, RouteLenght);
         while(cursor.moveToNext()){
-            id = cursor.getLong(0);
+            id = cursor.getInt(0);
             route_lenght = cursor.getInt(1);
             name = cursor.getString(2);
             description = cursor.getString(3);

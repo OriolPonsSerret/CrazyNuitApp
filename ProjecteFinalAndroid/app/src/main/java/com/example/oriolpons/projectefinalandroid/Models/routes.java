@@ -7,7 +7,7 @@ import java.util.ArrayList;
  */
 
 public class routes {
-    private long id;
+    private int id;
     private String measure;
     private String name;
     private String description;
@@ -16,7 +16,7 @@ public class routes {
     private int icon;
     //private ArrayList<String> locals;
 
-    public routes(long id, String measure, String name, String description, String creator, Double assessment, int icon) {
+    public routes(int id, String measure, String name, String description, String creator, Double assessment, int icon) {
         this.id = id;
         this.measure = measure;
         this.name = name;
@@ -26,11 +26,11 @@ public class routes {
         this.icon = icon;
     }
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

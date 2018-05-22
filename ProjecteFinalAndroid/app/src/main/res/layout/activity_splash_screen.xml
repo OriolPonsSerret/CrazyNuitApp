@@ -37,7 +37,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="10dp"
         android:gravity="center_horizontal"
-        android:text="Bienvenido a Crazy Nuit!"
+        android:text="¡Bienvenido a Crazy Nuit!"
         android:textColor="#454545"
         android:textSize="18sp" />
 

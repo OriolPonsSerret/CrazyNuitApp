@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.oriolpons.projectefinalandroid.Database.Datasource;
 import com.example.oriolpons.projectefinalandroid.Fragments.achievementProfileFragment;
 import com.example.oriolpons.projectefinalandroid.Fragments.followerProfileFragment;
 import com.example.oriolpons.projectefinalandroid.Fragments.followingProfileFragment;
@@ -50,7 +51,7 @@ public class profileActivity extends AppCompatActivity implements View.OnClickLi
     private JSONObject data = null;
     private StringBuffer json;
     private String URL;
-
+    private Datasource bd;
 
     private long id = 0;
     private String name = "", description = "", bornDate = "", email = "", telephone = "";
@@ -59,6 +60,7 @@ public class profileActivity extends AppCompatActivity implements View.OnClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+        bd = new Datasource(this);
 
         routesProfile = new routesProfileFragment();
         followerProfile = new followerProfileFragment();
@@ -222,8 +224,7 @@ public class profileActivity extends AppCompatActivity implements View.OnClickLi
 
         builder.setMessage("¿Estás seguro de que quieres cerrar sesión?");
         builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                LogOut();
+            public void onClick(DialogInterface dialog, int id) { LogOut();
             }
         });
 
@@ -237,6 +238,8 @@ public class profileActivity extends AppCompatActivity implements View.OnClickLi
         CharSequence text = "";
         int duration;
         Toast mensaje;
+
+        bd.RemembermeRemove();
 
         text = "Se ha cerrado la sesión correctamente.";
         duration = 4;
