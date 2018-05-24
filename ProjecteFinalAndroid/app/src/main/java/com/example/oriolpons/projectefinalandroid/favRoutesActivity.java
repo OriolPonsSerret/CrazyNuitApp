@@ -205,19 +205,19 @@ public class favRoutesActivity extends AppCompatActivity implements View.OnClick
         if (typeOfRouteFilter.equals("short")) {
             ckbxShort.setChecked(true);
             RouteLenghtMin = 0;
-            RouteLenght = 4;
+            RouteLenght = 3;
         }
         else{
             if (typeOfRouteFilter.equals("halfways")) {
                 ckbxHalfways.setChecked(true);
-                RouteLenghtMin = 4;
-                RouteLenght = 8;
+                RouteLenghtMin = 3;
+                RouteLenght = 6;
             }
             else{
                 if (typeOfRouteFilter.equals("long")) {
                     ckbxLong.setChecked(true);
-                    RouteLenghtMin = 8;
-                    RouteLenght = 13;
+                    RouteLenghtMin = 6;
+                    RouteLenght = 10;
                 }
             }
         }
@@ -244,20 +244,20 @@ public class favRoutesActivity extends AppCompatActivity implements View.OnClick
                 if (ckbxShort.isChecked()){
                     typeOfRouteFilter = "short";
                     RouteLenghtMin = 0;
-                    RouteLenght = 4;
+                    RouteLenght = 3;
                 }
                 else{
                     if (ckbxHalfways.isChecked()){
                         typeOfRouteFilter = "halfways";
-                        RouteLenghtMin = 4;
-                        RouteLenght = 8;
+                        RouteLenghtMin = 3;
+                        RouteLenght = 6;
                     }else{
 
                     }
                     if (ckbxLong.isChecked()){
                         typeOfRouteFilter = "long";
-                        RouteLenghtMin = 8;
-                        RouteLenght = 13;
+                        RouteLenghtMin = 6;
+                        RouteLenght = 10;
                     }
                 }
 
@@ -328,17 +328,17 @@ public class favRoutesActivity extends AppCompatActivity implements View.OnClick
 
         if (typeOfRouteFilter.equals("short")) {
             RouteLenghtMin = 0;
-            RouteLenght = 4;
+            RouteLenght = 3;
         }
         else{
             if (typeOfRouteFilter.equals("halfways")) {
-                RouteLenghtMin = 4;
-                RouteLenght = 8;
+                RouteLenghtMin = 3;
+                RouteLenght = 6;
             }
             else{
                 if (typeOfRouteFilter.equals("long")) {
-                    RouteLenghtMin = 8;
-                    RouteLenght = 13;
+                    RouteLenghtMin = 6;
+                    RouteLenght = 10;
                 }
             }
         }
@@ -356,13 +356,13 @@ public class favRoutesActivity extends AppCompatActivity implements View.OnClick
             route_date = cursor.getString(8);
             favourite = cursor.getString(9);
 
-            if (route_lenght <= 4){
+            if (route_lenght <= 3){
                 measure = "short";
             }else{
-                if (route_lenght <= 8){
+                if (route_lenght <= 6){
                     measure = "halfways";
                 }else{
-                    if (route_lenght <= 13){
+                    if (route_lenght <= 10){
                         measure = "long";
                     }
                 }

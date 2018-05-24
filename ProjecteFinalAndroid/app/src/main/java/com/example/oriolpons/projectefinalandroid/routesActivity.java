@@ -47,7 +47,6 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
     private Spinner spCity;
     private StringBuffer json;
     private String routeName, routeDescription, routeCreator, routeAssessment, NameFilter = "";
-    private long id;
     private double assessment;
     private AlertDialog dialog;
 
@@ -125,7 +124,7 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
 
                 clearData();
                 addDBRoutes();
-                exampleRoutes();
+                databaseToRouteList();
             }
 
             @Override
@@ -143,7 +142,7 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
         filterConfig();
         clearData();
         addDBRoutes();
-        exampleRoutes();
+        databaseToRouteList();
 
         spCity.setSelection(cityOfRouteFilterPosition);
         btnRoutes.setEnabled(false);
@@ -155,37 +154,29 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
         Double assessment = 1.0;
         int route_lenght = 2;
 
-
         for(int id = 0; id <= 10; id++){
 
             assessment = assessment + 0.2;
             if (id >= 0 && id <= 10){
                 name = "Ruta: " + id;
                 description= "Una ruta entretenida.";
-                if (id <= 2){
+                if (id <= 3){
                     city= "Mataró";
                     assessment = 5.0;
-                    route_lenght = 2;
-                }
-                else{
-                    if (id == 3){
-                        city= "Mataró";
-                        assessment = 3.0;
-                        route_lenght = 10;
-                    }
+                    route_lenght = id;
                 }
                 if (id >= 4 && id <= 7){
-                    city= "Barcelona";
+                    city= "Mataró";
                     assessment = 3.0;
-                    route_lenght = 2;
+                    route_lenght = id;
                 }
                 if (id >= 8 && id <= 10){
-                    city= "Girona";
+                    city= "Mataró";
                     assessment = 2.0;
-                    route_lenght = 4;
+                    route_lenght = id;
                 }
                 if (bd.routesAskExist(id)){
-                    bd.routesUpdate(id, route_lenght, name, description, assessment, creator, city, locals, date, favourite);
+                    bd.routesUpdate(id, route_lenght, name, description, assessment, creator, city, locals, date, "FALSE");
                 }
                 else{
                     bd.routesAdd(id, route_lenght, name, description, assessment, creator, city, locals, date, favourite);
@@ -270,19 +261,19 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
         if (typeOfRouteFilter.equals("short")) {
             ckbxShort.setChecked(true);
             RouteLenghtMin = 0;
-            RouteLenght = 4;
+            RouteLenght = 3;
         }
         else{
             if (typeOfRouteFilter.equals("halfways")) {
                 ckbxHalfways.setChecked(true);
-                RouteLenghtMin = 4;
-                RouteLenght = 8;
+                RouteLenghtMin = 3;
+                RouteLenght = 6;
             }
             else{
                 if (typeOfRouteFilter.equals("long")) {
                     ckbxLong.setChecked(true);
-                    RouteLenghtMin = 8;
-                    RouteLenght = 13;
+                    RouteLenghtMin = 6;
+                    RouteLenght = 10;
                 }
             }
         }
@@ -310,20 +301,20 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
                 if (ckbxShort.isChecked()){
                     typeOfRouteFilter = "short";
                     RouteLenghtMin = 0;
-                    RouteLenght = 4;
+                    RouteLenght = 3;
                 }
                 else{
                     if (ckbxHalfways.isChecked()){
                         typeOfRouteFilter = "halfways";
-                        RouteLenghtMin = 4;
-                        RouteLenght = 8;
+                        RouteLenghtMin = 3;
+                        RouteLenght = 6;
                     }else{
 
                     }
                     if (ckbxLong.isChecked()){
                         typeOfRouteFilter = "long";
-                        RouteLenghtMin = 8;
-                        RouteLenght = 13;
+                        RouteLenghtMin = 6;
+                        RouteLenght = 10;
                     }
                 }
 
@@ -332,7 +323,7 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
                 bd.filterConfigUpdate("routes", assessmentFilter, typeOfRouteFilter, cityOfRouteFilter, cityOfRouteFilterPosition);
                 clearData();
                 addDBRoutes();
-                exampleRoutes();
+                databaseToRouteList();
 
                 text = "Se han aplicado los filtros.";
                 duration = 3;
@@ -384,7 +375,7 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
         listRoutes.clear(); //clear list
         adapterRoutes.notifyDataSetChanged(); //let your adapter know about the changes and reload view.
     }
-    private void exampleRoutes() {
+    private void databaseToRouteList() {
 
         Cursor cursor;
         int id;
@@ -394,17 +385,17 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
 
         if (typeOfRouteFilter.equals("short")) {
             RouteLenghtMin = 0;
-            RouteLenght = 4;
+            RouteLenght = 3;
         }
         else{
             if (typeOfRouteFilter.equals("halfways")) {
-                RouteLenghtMin = 4;
-                RouteLenght = 8;
+                RouteLenghtMin = 3;
+                RouteLenght = 6;
             }
             else{
                 if (typeOfRouteFilter.equals("long")) {
-                    RouteLenghtMin = 8;
-                    RouteLenght = 13;
+                    RouteLenghtMin = 6;
+                    RouteLenght = 10;
                 }
             }
         }
@@ -421,13 +412,13 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
             rute_locals = cursor.getString(7);
             route_date = cursor.getString(8);
 
-            if (route_lenght <= 4){
+            if (route_lenght <= 3){
                 measure = "short";
             }else{
-                if (route_lenght <= 8){
+                if (route_lenght <= 6){
                     measure = "halfways";
                 }else{
-                    if (route_lenght <= 13){
+                    if (route_lenght <= 10){
                         measure = "long";
                     }
                 }
@@ -503,8 +494,9 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
 
         filterConfig();
         clearData();
-        exampleRoutes();
+        databaseToRouteList();
 
         spCity.setSelection(cityOfRouteFilterPosition);
+        adapterRoutes.notifyDataSetChanged();
     }
 }

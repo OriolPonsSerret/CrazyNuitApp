@@ -38,6 +38,21 @@ public class adapterLocalAdd  extends RecyclerView.Adapter<adapterLocalAdd.ViewH
     @Override
     public void onBindViewHolder(adapterLocalAdd.ViewHolderLocalAdd holder, int position) {
         holder.tvTitle.setText(listLocal.get(position).getName());
+
+        if (listLocal.get(position).getType().equals("restaurants")){
+            holder.tvType.setText("Bar / Restaurante");
+        }
+        else{
+            if (listLocal.get(position).getType().equals("pubs")){
+                holder.tvType.setText("Pub");
+            }
+            else{
+                if (listLocal.get(position).getType().equals("discoteques")){
+                    holder.tvType.setText("Discoteca");
+                }
+            }
+        }
+
     }
 
     @Override
@@ -58,12 +73,13 @@ public class adapterLocalAdd  extends RecyclerView.Adapter<adapterLocalAdd.ViewH
 
     public class ViewHolderLocalAdd extends RecyclerView.ViewHolder {
 
-        TextView tvTitle;
+        TextView tvTitle, tvType;
         ImageView icon;
 
         public ViewHolderLocalAdd(View itemView) {
             super(itemView);
             tvTitle = (TextView) itemView.findViewById(R.id.tvTitle);
+            tvType = (TextView) itemView.findViewById(R.id.tvType);
             // icon = (ImageView) itemView.findViewById(R.id.icon);
         }
     }
