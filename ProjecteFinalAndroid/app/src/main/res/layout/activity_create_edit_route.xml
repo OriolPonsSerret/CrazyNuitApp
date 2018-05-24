@@ -35,8 +35,7 @@
             android:layout_height="wrap_content"
             android:background="?android:attr/detailsElementBackground"
             android:ems="10"
-            android:hapticFeedbackEnabled="false"
-            android:hint="Introduce el nombre de tu ruta"
+            android:hint="Introduce el nombre de la ruta"
             android:inputType="text|textPersonName"
             android:padding="5dp" />
 
@@ -52,6 +51,7 @@
             android:paddingTop="10dp"/>
 
         <EditText
+            android:id="@+id/edtRouteDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?android:attr/detailsElementBackground"
@@ -68,7 +68,7 @@
             android:layout_height="wrap_content"
             android:paddingBottom="5dp"
             android:paddingTop="10dp"
-            android:text="LOCALES EN LA RUTA"
+            android:text="LOCALES EN MI RUTA"
             android:textColor="@android:color/black"
             android:textSize="20dp"
             android:textStyle="bold" />
@@ -76,7 +76,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <ImageButton
                 android:id="@+id/btnFilter1"
@@ -104,27 +105,28 @@
         </LinearLayout>
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/RecyclerAdd"
+            android:id="@+id/LocalsInMyRoute"
             android:layout_width="match_parent"
-            android:layout_height="100dp" />
+            android:layout_height="131dp" />
 
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/txtCity"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingBottom="5dp"
-            android:text="LISTA DE LOCALES"
+            android:paddingTop="12dp"
+            android:text="LOCALES EN: "
             android:textColor="@android:color/black"
             android:textSize="20dp"
-            android:textStyle="bold"
-            android:paddingTop="4dp"/>
+            android:textStyle="bold" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
-            android:paddingBottom="8dp">
+            android:paddingBottom="8dp"
+            android:visibility="gone">
 
             <ImageButton
                 android:id="@+id/btnFilter2"
@@ -151,10 +153,52 @@
         </LinearLayout>
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/RecyclerList"
+            android:id="@+id/LocalsGlobal"
             android:layout_width="match_parent"
-            android:layout_height="100dp" />
+            android:layout_height="132dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="horizontal"
+            android:paddingLeft="60dp"
+            android:paddingRight="0dp"
+            android:paddingTop="25dp">
+
+            <Button
+                android:id="@+id/btnAccept"
+                android:layout_width="187dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_custom"
+                android:text="Aceptar"
+                android:textColor="@android:color/background_light" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:paddingLeft="0dp" />
+
+            <ImageButton
+                android:id="@+id/btnDelete"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_weight="1"
+                android:background="@drawable/button_custom_warning"
+                android:src="@drawable/delete_icon" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="horizontal"
+                android:paddingLeft="0dp" />
+        </LinearLayout>
     </LinearLayout>
+
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -167,7 +211,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:visibility="gone">
 
             <ImageButton
                 android:id="@+id/btnBack"
@@ -273,46 +318,7 @@
         </LinearLayout>
 
     </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="14dp"
-        android:layout_weight="1"
-        android:orientation="horizontal"
-        android:paddingLeft="110dp"
-        android:paddingRight="0dp">
 
-        <Button
-            android:id="@+id/btnAccept"
-            android:layout_width="187dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/button_custom"
-            android:text="Aceptar"
-            android:textColor="@android:color/background_light" />
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:orientation="horizontal"
-            android:paddingLeft="0dp" />
-
-        <ImageButton
-            android:id="@+id/btnDelete"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_weight="1"
-            android:background="@drawable/button_custom_warning"
-            android:src="@drawable/delete_icon" />
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="horizontal"
-            android:paddingLeft="0dp" />
-    </LinearLayout>
 </RelativeLayout>
 
 <!--
