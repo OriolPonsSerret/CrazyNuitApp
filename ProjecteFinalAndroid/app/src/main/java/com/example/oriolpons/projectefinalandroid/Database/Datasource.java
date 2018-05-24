@@ -232,6 +232,11 @@ public class Datasource {
                 " WHERE " +  ROUTES_ID + " LIKE " + id , null);
     }
 
+    public Cursor routeLastId(){
+        return dbR.rawQuery("SELECT " + ROUTES_ID +
+                " FROM " + table_ROUTES +
+                " ORDER BY " + ROUTES_ID + " DESC", null);
+    }
 
     public boolean restaurantsAskExist(int id) {
         Cursor c = dbR.rawQuery("SELECT " + RESTAURANTS_ID  +
@@ -350,6 +355,16 @@ public class Datasource {
         c.close();
         return exists;
     }
+
+    public boolean routesAskExistName(String name) {
+        Cursor c = dbR.rawQuery("SELECT " + ROUTES_ID  +
+                " FROM " + table_ROUTES +
+                " WHERE UPPER(" +  ROUTES_NAME + ") LIKE UPPER ('" + name + "')", null);
+        boolean exists = c.moveToFirst();
+        c.close();
+        return exists;
+    }
+
     public void routesAdd(int id, int route_lenght, String name, String description, Double assessment, String creator, String city, String locals, String date, String favourite) {
         ContentValues values = new ContentValues();
         values.put(ROUTES_ID, id);
@@ -380,6 +395,10 @@ public class Datasource {
         values.put(ROUTES_FAVOURITE, favourite);
 
         dbW.update(table_ROUTES,values, ROUTES_ID + " = ?", new String[] { String.valueOf(id) });
+    }
+
+    public void routesDelete(int id) {
+        dbW.delete(table_ROUTES,ROUTES_ID + " = ?", new String[] { String.valueOf(id) });
     }
 
     public void routesAddOrRemoveFavourite(int id, String favourite) {

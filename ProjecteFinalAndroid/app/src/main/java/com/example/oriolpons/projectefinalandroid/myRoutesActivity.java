@@ -86,7 +86,7 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
                 routeId = listRoutes.get(recyclerRoutes.getChildAdapterPosition(view)).getId();
                 routeName = listRoutes.get(recyclerRoutes.getChildAdapterPosition(view)).getName();
                 routeDescription = listRoutes.get(recyclerRoutes.getChildAdapterPosition(view)).getDescription();
-                routeAssessment = listRoutes.get(recyclerRoutes.getChildAdapterPosition(view)).getAssessment() + "/5 - 1 votos";
+                routeAssessment = listRoutes.get(recyclerRoutes.getChildAdapterPosition(view)).getAssessment() + "/5";
                 routeCreator = listRoutes.get(recyclerRoutes.getChildAdapterPosition(view)).getCreator();
                 intentRouteContent();
             }
@@ -152,27 +152,20 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
             if (id >= 0 && id <= 10){
                 name = "Ruta: " + id;
                 description= "Una ruta entretenida.";
-                if (id <= 2){
+                if (id <= 3){
                     city= "Mataró";
                     assessment = 5.0;
-                    route_lenght = 2;
-                }
-                else{
-                    if (id == 3){
-                        city= "Mataró";
-                        assessment = 3.0;
-                        route_lenght = 10;
-                    }
+                    route_lenght = id;
                 }
                 if (id >= 4 && id <= 7){
-                    city= "Barcelona";
+                    city= "Mataró";
                     assessment = 3.0;
-                    route_lenght = 2;
+                    route_lenght = id;
                 }
                 if (id >= 8 && id <= 10){
-                    city= "Girona";
+                    city= "Mataró";
                     assessment = 2.0;
-                    route_lenght = 4;
+                    route_lenght = id;
                 }
                 if (bd.routesAskExist(id)){
                     bd.routesUpdate(id, route_lenght, name, description, assessment, creator, city, locals, date, "FALSE");
@@ -182,12 +175,6 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
                 }
             }
         }
-    }
-
-
-    private void loadCreateRoutes() {
-        Intent i = new Intent(this, createEditRouteActivity.class );
-        startActivity(i);
     }
 
     @Override
@@ -204,6 +191,15 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
             case R.id.btnPublicRoutes: finish(); break;
             case R.id.btnFilter: actionFilterRoute(); break;
         }
+    }
+
+    private void loadCreateRoutes() {
+        Bundle bundle = new Bundle();
+        bundle.putInt("id",-1);
+        bundle.putString("city",cityOfRouteFilter);
+        Intent intent = new Intent(this, createEditRouteActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     private void actionFilterRoute() {
@@ -230,19 +226,19 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
         if (typeOfRouteFilter.equals("short")) {
             ckbxShort.setChecked(true);
             RouteLenghtMin = 0;
-            RouteLenght = 4;
+            RouteLenght = 3;
         }
         else{
             if (typeOfRouteFilter.equals("halfways")) {
                 ckbxHalfways.setChecked(true);
-                RouteLenghtMin = 4;
-                RouteLenght = 8;
+                RouteLenghtMin = 3;
+                RouteLenght = 6;
             }
             else{
                 if (typeOfRouteFilter.equals("long")) {
                     ckbxLong.setChecked(true);
-                    RouteLenghtMin = 8;
-                    RouteLenght = 13;
+                    RouteLenghtMin = 6;
+                    RouteLenght = 10;
                 }
             }
         }
@@ -269,22 +265,23 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
                 if (ckbxShort.isChecked()){
                     typeOfRouteFilter = "short";
                     RouteLenghtMin = 0;
-                    RouteLenght = 4;
+                    RouteLenght = 3;
                 }
                 else{
                     if (ckbxHalfways.isChecked()){
                         typeOfRouteFilter = "halfways";
-                        RouteLenghtMin = 4;
-                        RouteLenght = 8;
+                        RouteLenghtMin = 3;
+                        RouteLenght = 6;
                     }else{
 
                     }
                     if (ckbxLong.isChecked()){
                         typeOfRouteFilter = "long";
-                        RouteLenghtMin = 8;
-                        RouteLenght = 13;
+                        RouteLenghtMin = 6;
+                        RouteLenght = 10;
                     }
                 }
+
 
                 NameFilter = edtFilterName.getText().toString();
 
@@ -311,7 +308,8 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
         bundle.putString("description",routeDescription);
         bundle.putString("assessment",routeAssessment);
         bundle.putString("creator",routeCreator);
-        Intent intent = new Intent(this, routesContentActivity.class);
+        bundle.putString("city",cityOfRouteFilter);
+        Intent intent = new Intent(this, createEditRouteActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
     }
@@ -376,17 +374,17 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
 
         if (typeOfRouteFilter.equals("short")) {
             RouteLenghtMin = 0;
-            RouteLenght = 4;
+            RouteLenght = 3;
         }
         else{
             if (typeOfRouteFilter.equals("halfways")) {
-                RouteLenghtMin = 4;
-                RouteLenght = 8;
+                RouteLenghtMin = 3;
+                RouteLenght = 6;
             }
             else{
                 if (typeOfRouteFilter.equals("long")) {
-                    RouteLenghtMin = 8;
-                    RouteLenght = 13;
+                    RouteLenghtMin = 6;
+                    RouteLenght = 10;
                 }
             }
         }
@@ -403,13 +401,13 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
             rute_locals = cursor.getString(7);
             route_date = cursor.getString(8);
 
-            if (route_lenght <= 4){
+            if (route_lenght <= 3){
                 measure = "short";
             }else{
-                if (route_lenght <= 8){
+                if (route_lenght <= 6){
                     measure = "halfways";
                 }else{
-                    if (route_lenght <= 13){
+                    if (route_lenght <= 10){
                         measure = "long";
                     }
                 }
@@ -452,6 +450,11 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
     {
         super.onRestart();
         linearLayoutMenu.setVisibility(View.GONE);
+
+        filterConfig();
+        clearData();
+        addDBRoutes();
+        databaseToRouteList();
 
     }
 }
