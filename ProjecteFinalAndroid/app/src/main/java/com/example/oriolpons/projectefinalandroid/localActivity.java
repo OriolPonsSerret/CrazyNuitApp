@@ -51,7 +51,7 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
     private StringBuffer json;
     private AlertDialog dialog;
     private Datasource bd;
-    private String localName, localDescription, localAssessment, NameFilter = "", typeOfLocalFilter = "restaurants", assessmentFilter = "ASC", cityOfLocalFilter= "Mataró", URL =  "http://localhost/CrazyNuitApi/public/api/";
+    private String localName, localDescription, localAssessment, NameFilter = "", typeOfLocalFilter = "restaurants", assessmentFilter = "ASC", cityOfLocalFilter= "Mataró", URL =  "http://10.0.2.2/CrazyNuitApi/public/api/";
     private int cityOfLocalFilterPosition = 0;
 
     private String userEmail = "";
