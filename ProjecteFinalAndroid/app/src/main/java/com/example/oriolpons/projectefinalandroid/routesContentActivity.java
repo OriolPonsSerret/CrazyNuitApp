@@ -112,6 +112,7 @@ public class routesContentActivity extends AppCompatActivity implements View.OnC
 
         }
         exampleLocal();
+        getSupportActionBar().setTitle("Contenido de la ruta");
     }
 
     @Override

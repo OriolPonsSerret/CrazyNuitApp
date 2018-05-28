@@ -56,6 +56,7 @@ public class loginActivity extends AppCompatActivity implements View.OnClickList
         chbxRemember  = (CheckBox) findViewById(R.id.chbxRemember);
 
         I_have_a_remember_me();
+        getSupportActionBar().setTitle("Iniciar sesión");
     }
 
     @Override
@@ -116,7 +117,12 @@ public class loginActivity extends AppCompatActivity implements View.OnClickList
                 bd.UserRemembermeAdd(email);
             }
 
+
+
+            Bundle bundle = new Bundle();
+            bundle.putString("user_email", email);
             Intent i = new Intent(this, MainActivity.class);
+            i.putExtras(bundle);
             startActivityForResult(i, 1);
         }
     }

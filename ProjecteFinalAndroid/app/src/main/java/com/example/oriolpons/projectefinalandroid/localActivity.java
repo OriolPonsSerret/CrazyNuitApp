@@ -27,6 +27,7 @@ import com.example.oriolpons.projectefinalandroid.Database.Datasource;
 import com.example.oriolpons.projectefinalandroid.Models.local;
 import com.example.oriolpons.projectefinalandroid.Adapters.adapterLocal;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -50,8 +51,10 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
     private StringBuffer json;
     private AlertDialog dialog;
     private Datasource bd;
-    private String localName, localDescription, localAssessment, NameFilter = "", typeOfLocalFilter = "restaurants", assessmentFilter = "ASC", cityOfLocalFilter= "Mataró", URL =  "http://localhost/ApiCrazyNuit/public/api/";
+    private String localName, localDescription, localAssessment, NameFilter = "", typeOfLocalFilter = "restaurants", assessmentFilter = "ASC", cityOfLocalFilter= "Mataró", URL =  "http://localhost/CrazyNuitApi/public/api/";
     private int cityOfLocalFilterPosition = 0;
+
+    private String userEmail = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,8 +104,9 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
 
                 //filterConfig();
                 clearData();
-                addLocalsToDatabase(); //getJsonData();
-                databaseToLocalList(); //
+                getJsonData();
+                //addLocalsToDatabase(); //
+                //databaseToLocalList(); //
             }
 
             @Override
@@ -123,11 +127,13 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
         });
         recyclerLocals.setAdapter(adapterLocal);
 
+        userEmail = this.getIntent().getExtras().getString("user_email");
 
         filterConfig();
         clearData();
-        addLocalsToDatabase(); //getJsonData();
-        databaseToLocalList(); //
+        getJsonData();
+        //addLocalsToDatabase(); //
+        //databaseToLocalList(); //
 
 
         spCity.setSelection(cityOfLocalFilterPosition);
@@ -248,22 +254,39 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
 
     }
 
+
     private void intentMain() {
-        Intent i = new Intent(this, MainActivity.class );
+        Bundle bundle = new Bundle();
+        bundle.putString("user_email", userEmail);
+        Intent i = new Intent(this, MainActivity.class);
+        i.putExtras(bundle);
         startActivity(i);
     }
     private void intentLocal() {
-        Intent i = new Intent(this, localActivity.class );
+        Bundle bundle = new Bundle();
+        bundle.putString("user_email", userEmail);
+        Intent i = new Intent(this, localActivity.class);
+        i.putExtras(bundle);
         startActivity(i);
     }
     private void intentRoutes() {
-        Intent i = new Intent(this, routesActivity.class );
+        Bundle bundle = new Bundle();
+        bundle.putString("user_email", userEmail);
+        Intent i = new Intent(this, routesActivity.class);
+        i.putExtras(bundle);
         startActivity(i);
     }
     private void intentUserProfile() {
+        String userName = "";
+
+        Cursor cursor = bd.getUserInformationByEmail(userEmail);
+        while(cursor.moveToNext()){
+            userName = cursor.getString(1);
+        }
         Bundle bundle = new Bundle();
         bundle.putString("type","me");
-        bundle.putString("userName","user");
+        bundle.putString("userName",userName);
+        bundle.putString("user_email", userEmail);
         Intent i = new Intent(this, profileActivity.class);
         i.putExtras(bundle);
         startActivity(i);
@@ -340,8 +363,9 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
 
                 bd.filterConfigUpdate("local", assessmentFilter, typeOfLocalFilter, cityOfLocalFilter, cityOfLocalFilterPosition);
                 clearData();
-                addLocalsToDatabase(); //getJsonData();
-                databaseToLocalList(); //
+                getJsonData();
+                //addLocalsToDatabase(); //
+                //databaseToLocalList(); //
 
                 text = "Se han aplicado los filtros.";
                 duration = 3;
@@ -474,7 +498,7 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
 
                 } catch (Exception e) {
 
-                    //System.out.println("Exception " + e.getMessage());
+                    System.out.println("Exception " + e.getMessage());
                     // mostrarOpcion();
                     return null;
                 }
@@ -510,7 +534,7 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
 
     private void readDataFromJson() throws JSONException {
         int id;
-        String name = "", description= "", address= "", opening_hours= "", schedule_close= "", gastronomy= "";
+        String name = "", description= "", address= "Mataró", opening_hours= "", schedule_close= "", gastronomy= "";
         Double assessment = 1.0, entrance_price = 10.0;
         int category = 4;
 
@@ -518,19 +542,21 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
         // String type, name, description, address, opening_hours, schedule_close, gastronomy, entrance_price;
         // Double assessment;
         // int category;
+        JSONArray jArray = new JSONArray(data);
 
         if (typeOfLocalFilter.equals("restaurants")){
 
-            for (int i = 0; i < data.length(); i++) {
-                id = (int) data.get("idBar-Restaurant");
-                name = (String) data.get("Nom");
-                description = (String) data.get("Descripcio");
-                assessment = (double) data.get("Valoracio");
-                address = (String) data.get("Direccio"); //Por confirmar
-                opening_hours = (String) data.get("Horari-Obertura");
-                schedule_close = (String) data.get("Horari-Tancament");
-                gastronomy = (String) data.get("TipusGastronomic");
-                category = (int) data.get("Categoria");
+            for (int i = 0; i < jArray.length(); i++) {
+                JSONObject jObject = jArray.getJSONObject(i);
+                    id = (int) jObject.get("idBar-Restaurant");
+                    name = (String) jObject.get("Nom");
+                    description = (String) jObject.get("Descripcio");
+                    assessment = (double) jObject.get("Valoracio");
+                    address = (String) jObject.get("Direccio"); //Por confirmar
+                    opening_hours = (String) jObject.get("Horari-Obertura");
+                    schedule_close = (String) jObject.get("Horari-Tancament");
+                    gastronomy = (String) jObject.get("TipusGastronomic");
+                    category = (int) jObject.get("Categoria");
 
                 if (bd.restaurantsAskExist(id)){
                     bd.restaurantsUpdate(id, name, description, assessment, address, opening_hours, schedule_close, gastronomy, category);
@@ -542,14 +568,15 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
         }
 
         if (typeOfLocalFilter.equals("pubs")){
-            for (int i = 0; i < data.length(); i++) {
-                id = (int) data.get("idPub");
-                name = (String) data.get("Nom");
-                description = (String) data.get("Descripcio");
-                assessment = (Double) data.get("Valoracio");
-                address = (String) data.get("Direccio"); //Por confirmar
-                opening_hours = (String) data.get("Horari-Obertura");
-                schedule_close = (String) data.get("Horari-Tancament");
+            for (int i = 0; i < jArray.length(); i++) {
+                JSONObject jObject = jArray.getJSONObject(i);
+                    id = (int) jObject.get("idPub");
+                    name = (String) jObject.get("Nom");
+                    description = (String) jObject.get("Descripcio");
+                    assessment = (Double) jObject.get("Valoracio");
+                    address = (String) jObject.get("Direccio"); //Por confirmar
+                    opening_hours = (String) jObject.get("Horari-Obertura");
+                    schedule_close = (String) jObject.get("Horari-Tancament");
 
                 // gastronomy = (String) data.get("TipusGastronomic");
                 // category = (int) data.get("Categoria");
@@ -564,16 +591,17 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
         }
 
         if (typeOfLocalFilter.equals("discoteques")){
-            for (int i = 0; i < data.length(); i++) {
-                id = (int) data.get("idDiscoteca");
-                name = (String) data.get("Nom");
-                description = (String) data.get("Descripcio");
-                assessment = (Double) data.get("Valoracio");
-                address = (String) data.get("Direccio"); //Por confirmar
-                opening_hours = (String) data.get("Horari-Obertura");
-                schedule_close = (String) data.get("Horari-Tancament");
-                entrance_price = (Double) data.get("Valoracio");//Por confirmar
-                // category = (int) data.get("Categoria");
+            for (int i = 0; i < jArray.length(); i++) {
+                JSONObject jObject = jArray.getJSONObject(i);
+                    id = (int) jObject.get("idDiscoteca");
+                    name = (String) jObject.get("Nom");
+                    description = (String) jObject.get("Descripcio");
+                    assessment = (Double) jObject.get("Valoracio");
+                    address = (String) jObject.get("Direccio"); //Por confirmar
+                    opening_hours = (String) jObject.get("Horari-Obertura");
+                    schedule_close = (String) jObject.get("Horari-Tancament");
+                    entrance_price = (Double) jObject.get("Valoracio");//Por confirmar
+                    // category = (int) data.get("Categoria");
 
 
                 if (bd.discoAskExist(id)){

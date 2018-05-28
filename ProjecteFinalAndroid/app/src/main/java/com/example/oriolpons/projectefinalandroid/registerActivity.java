@@ -11,6 +11,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.oriolpons.projectefinalandroid.Database.Datasource;
+
 import java.util.regex.Pattern;
 
 public class registerActivity extends AppCompatActivity{
@@ -18,10 +20,14 @@ public class registerActivity extends AppCompatActivity{
     private Button btnRegister;
     private EditText edtUserName, edtEmail, edtPassword, edtPasswordR;
     private String username = "",email = "", password = "", rePassword = "";
+    private Datasource bd;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        bd = new Datasource(this);
 
         btnRegister = (Button) findViewById(R.id.btnRegister);
         btnRegister.setOnClickListener(new View.OnClickListener() {
@@ -37,6 +43,7 @@ public class registerActivity extends AppCompatActivity{
         edtPassword  = (EditText) findViewById(R.id.edtPassword);
         edtPasswordR  = (EditText) findViewById(R.id.edtPasswordR);
 
+        getSupportActionBar().setTitle("Registro de usuario");
     }
 
     private void checkData() {
@@ -91,13 +98,18 @@ public class registerActivity extends AppCompatActivity{
         //Falta: Comprovar que ni el nombre de usuario ni el correo existan en la base de datos.
         //       También enviarle los datos para que lo registre.
 
-        text = "¡Te has registrado correctamente!";
-        duration = 4;
 
-        mensaje = Toast.makeText(context, text, duration);
-        mensaje.show();
+            if (!bd.userAskExist(email)){
+                bd.userAdd(username, email);
+            }
 
-        finish();
+            text = "¡Te has registrado correctamente!";
+            duration = 4;
+
+            mensaje = Toast.makeText(context, text, duration);
+            mensaje.show();
+
+            finish();
         }
     }
 

@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.oriolpons.projectefinalandroid.R;
 import com.example.oriolpons.projectefinalandroid.Models.achievement;
@@ -35,8 +36,9 @@ public class achievementProfileFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
-    ArrayList<achievement> listAchievements;
-    RecyclerView recyclerView;
+    private ArrayList<achievement> listAchievements;
+    private RecyclerView recyclerView;
+    private TextView txtAchievementNumber;
 
     public achievementProfileFragment() {
         // Required empty public constructor
@@ -75,9 +77,11 @@ public class achievementProfileFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_achievement_profile,container,false);
 
-        listAchievements=new ArrayList<>();
-        recyclerView=view.findViewById(R.id.recyclerId);
+        listAchievements = new ArrayList<>();
+        recyclerView = view.findViewById(R.id.recyclerId);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+
+        txtAchievementNumber = view.findViewById(R.id.txtAchievementNumber);
 
         exampleAchievement();
 
@@ -141,5 +145,8 @@ public class achievementProfileFragment extends Fragment {
         listAchievements.add(new achievement(2,"Logro nº " + 2+ ".", "Mi primer seguidor.", 6 + " ENERO"));
         listAchievements.add(new achievement(3,"Logro nº " + 3+ ".", "Mi primera valoración.", 12 + " ENERO"));
         listAchievements.add(new achievement(4,"Logro nº " + 4+ ".", "Mi primera ruta seguida.", 28 + " ENERO"));
+
+        txtAchievementNumber.setText(listAchievements.size() + "");
     }
+
 }

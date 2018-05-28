@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -51,10 +52,13 @@ public class profileActivity extends AppCompatActivity implements View.OnClickLi
     private JSONObject data = null;
     private StringBuffer json;
     private String URL;
-    private Datasource bd;
+    public static Datasource bd;
+    private Cursor cursor;
 
     private long id = 0;
     private String name = "", description = "", bornDate = "", email = "", telephone = "";
+    public static String userEmail = "", userName = "";
+    public static int userId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,14 +124,14 @@ public class profileActivity extends AppCompatActivity implements View.OnClickLi
         btnFollowingProfile.setOnClickListener(this);
         btnAchievementProfile = (Button) findViewById(R.id.btnAchievementProfile);
         btnAchievementProfile.setOnClickListener(this);
-
-
         tvUserName = (TextView) findViewById(R.id.tvUserName);
+        tvUserDescription = (TextView) findViewById(R.id.tvUserDescription);
 
         String type = this.getIntent().getExtras().getString("type");
-        String userName = this.getIntent().getExtras().getString("userName");
+        userName = this.getIntent().getExtras().getString("userName");
+        userEmail = this.getIntent().getExtras().getString("user_email");
 
-        tvUserName.setText(userName);
+        setValuesProfile();
 
         if (type.equals("another")){
             btnUserProfile.setEnabled(true);
@@ -136,14 +140,32 @@ public class profileActivity extends AppCompatActivity implements View.OnClickLi
             btnFollow.setVisibility(View.VISIBLE);
         }
         else{
+
             btnUserProfile.setEnabled(false);
         }
 
         btnRoutesProfile.setEnabled(false);
         buttonSelected();
+        getSupportActionBar().setTitle("Perfil de usuario");
     }
 
+    public void onRestart()
+    {
+        super.onRestart();
+        linearLayoutMenu.setVisibility(View.GONE);
+        setValuesProfile();
+    }
 
+    private void setValuesProfile() {
+        cursor = bd.getUserInformationByName(userName);
+        while(cursor.moveToNext()){
+            userName = cursor.getString(1);
+            description = cursor.getString(2);
+        }
+
+        tvUserName.setText(userName);
+        tvUserDescription.setText(description);
+    }
 
     @Override
     public void onClick(View v) {
@@ -169,8 +191,8 @@ public class profileActivity extends AppCompatActivity implements View.OnClickLi
             btnUnfollow.setVisibility(View.VISIBLE);
         }
         else{
-            btnUnfollow.setVisibility(View.GONE);
             btnFollow.setVisibility(View.VISIBLE);
+            btnUnfollow.setVisibility(View.GONE);
         }
     }
 
@@ -272,37 +294,47 @@ public class profileActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     private void loadEditProfile() {
-        Intent i = new Intent(this, editProfileActivity.class );
-        startActivity(i);
-    }
-    private void intentMain() {
-        Intent i = new Intent(this, MainActivity.class );
-        startActivity(i);
-    }
-    private void intentLocal() {
-         Intent i = new Intent(this, localActivity.class );
-         startActivity(i);
-    }
-    private void intentRoutes() {
-        Intent i = new Intent(this, routesActivity.class );
-        startActivity(i);
-    }
-    private void intentUserProfile() {
         Bundle bundle = new Bundle();
-        bundle.putString("type","me");
-        bundle.putString("userName","user");
-        Intent i = new Intent(this, profileActivity.class);
+        bundle.putString("user_email", userEmail);
+        Intent i = new Intent(this, editProfileActivity.class);
         i.putExtras(bundle);
         startActivity(i);
     }
+    private void intentMain() {
+        Bundle bundle = new Bundle();
+        bundle.putString("user_email", userEmail);
+        Intent i = new Intent(this, MainActivity.class);
+        i.putExtras(bundle);
+        startActivity(i);
+    }
+    private void intentLocal() {
+        Bundle bundle = new Bundle();
+        bundle.putString("user_email", userEmail);
+        Intent i = new Intent(this, localActivity.class);
+        i.putExtras(bundle);
+        startActivity(i);
+    }
+    private void intentRoutes() {
+        Bundle bundle = new Bundle();
+        bundle.putString("user_email", userEmail);
+        Intent i = new Intent(this, routesActivity.class);
+        i.putExtras(bundle);
+        startActivity(i);
+    }
+    private void intentUserProfile() {
+        String userName = "";
 
-
-
-    public void onRestart()
-    {
-        super.onRestart();
-        linearLayoutMenu.setVisibility(View.GONE);
-
+        cursor = bd.getUserInformationByEmail(userEmail);
+        while(cursor.moveToNext()){
+            userName = cursor.getString(1);
+        }
+        Bundle bundle = new Bundle();
+        bundle.putString("type","me");
+        bundle.putString("userName",userName);
+        bundle.putString("user_email", userEmail);
+        Intent i = new Intent(this, profileActivity.class);
+        i.putExtras(bundle);
+        startActivity(i);
     }
 
     @Override
@@ -375,7 +407,6 @@ public class profileActivity extends AppCompatActivity implements View.OnClickLi
 
     private void readData() throws JSONException {
 
-
         id = (long) data.get("idusuaris");
         name = (String) data.get("Nom");
         //description = (String) data.get("Descripcio");
@@ -386,4 +417,8 @@ public class profileActivity extends AppCompatActivity implements View.OnClickLi
         tvUserName.setText(name);
         //tvUserDescription.setText(description);
     }
+
+
+
+
 }

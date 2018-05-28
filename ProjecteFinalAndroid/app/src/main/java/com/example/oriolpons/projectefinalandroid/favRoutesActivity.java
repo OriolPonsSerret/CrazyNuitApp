@@ -44,6 +44,8 @@ public class favRoutesActivity extends AppCompatActivity implements View.OnClick
     private Datasource bd;
     private String assessmentFilter = "ASC", typeOfRouteFilter = "short", cityOfRouteFilter= "Mataró", URL =  "http://localhost/ApiCrazyNuit/public/api/";
     private int cityOfRouteFilterPosition = 0, RouteLenghtMin = 0, RouteLenght = 0, routeId;
+    private String userEmail = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,12 +130,15 @@ public class favRoutesActivity extends AppCompatActivity implements View.OnClick
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spCity.setAdapter(adapter);
 
+        userEmail = this.getIntent().getExtras().getString("user_email");
+
         filterConfig();
         clearData();
         exampleRoutes();
 
         spCity.setSelection(cityOfRouteFilterPosition);
         btnRoutes.setEnabled(false);
+        getSupportActionBar().setTitle("Mis rutas favoritas");
     }
 
     private void intentRouteContent() {
@@ -284,22 +289,39 @@ public class favRoutesActivity extends AppCompatActivity implements View.OnClick
         Intent i = new Intent(this, myRoutesActivity.class );
         startActivity(i);
     }
+
     private void intentMain() {
-        Intent i = new Intent(this, MainActivity.class );
+        Bundle bundle = new Bundle();
+        bundle.putString("user_email", userEmail);
+        Intent i = new Intent(this, MainActivity.class);
+        i.putExtras(bundle);
         startActivity(i);
     }
     private void intentLocal() {
-         Intent i = new Intent(this, localActivity.class );
-         startActivity(i);
+        Bundle bundle = new Bundle();
+        bundle.putString("user_email", userEmail);
+        Intent i = new Intent(this, localActivity.class);
+        i.putExtras(bundle);
+        startActivity(i);
     }
     private void intentRoutes() {
-        Intent i = new Intent(this, routesActivity.class );
+        Bundle bundle = new Bundle();
+        bundle.putString("user_email", userEmail);
+        Intent i = new Intent(this, routesActivity.class);
+        i.putExtras(bundle);
         startActivity(i);
     }
     private void intentUserProfile() {
+        String userName = "";
+
+        Cursor cursor = bd.getUserInformationByEmail(userEmail);
+        while(cursor.moveToNext()){
+            userName = cursor.getString(1);
+        }
         Bundle bundle = new Bundle();
         bundle.putString("type","me");
-        bundle.putString("userName","user");
+        bundle.putString("userName",userName);
+        bundle.putString("user_email", userEmail);
         Intent i = new Intent(this, profileActivity.class);
         i.putExtras(bundle);
         startActivity(i);
@@ -368,7 +390,7 @@ public class favRoutesActivity extends AppCompatActivity implements View.OnClick
                 }
             }
 
-            listRoutes.add(new routes(id, measure, name, description, creator, assessment, 0));
+            listRoutes.add(new routes(id, measure, name, description, creator, assessment, city, 0));
         }
     }
 

@@ -30,6 +30,8 @@ public class localContentActivity extends AppCompatActivity implements View.OnCl
         txtTitle.setText(localName);
         txtDescription.setText(localDescription);
         txtAssessment.setText(localAssessment);
+
+        getSupportActionBar().setTitle("Información del local");
     }
 
     @Override

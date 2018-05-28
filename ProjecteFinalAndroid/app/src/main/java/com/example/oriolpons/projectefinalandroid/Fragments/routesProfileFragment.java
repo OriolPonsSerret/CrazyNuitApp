@@ -2,6 +2,7 @@ package com.example.oriolpons.projectefinalandroid.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -14,10 +15,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.oriolpons.projectefinalandroid.R;
 import com.example.oriolpons.projectefinalandroid.Adapters.adapterRoutesProfile;
 import com.example.oriolpons.projectefinalandroid.Models.routes;
+import com.example.oriolpons.projectefinalandroid.profileActivity;
 import com.example.oriolpons.projectefinalandroid.routesContentActivity;
 
 import org.json.JSONException;
@@ -54,6 +57,7 @@ public class routesProfileFragment extends Fragment {
     private JSONObject data = null;
     private StringBuffer json;
     private String URL;
+    private TextView txtRoutesNumber;
 
     public routesProfileFragment() {
         // Required empty public constructor
@@ -91,11 +95,13 @@ public class routesProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_routes_profile,container,false);
 
-        listRoutes=new ArrayList<>();
-        recyclerView=view.findViewById(R.id.recyclerId);
+        listRoutes = new ArrayList<>();
+        recyclerView = view.findViewById(R.id.recyclerId);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        exampleRoutes();
+        txtRoutesNumber = view.findViewById(R.id.txtRoutesNumber);
+
+        databaseToRouteList();
 
         adapterRoutesProfile Adapter = new adapterRoutesProfile(listRoutes);
         Adapter.setOnClickListener(new View.OnClickListener() {
@@ -103,7 +109,7 @@ public class routesProfileFragment extends Fragment {
             public void onClick(View view) {
                 routeName = listRoutes.get(recyclerView.getChildAdapterPosition(view)).getName();
                 routeDescription = listRoutes.get(recyclerView.getChildAdapterPosition(view)).getDescription();
-                routeAssessment = listRoutes.get(recyclerView.getChildAdapterPosition(view)).getAssessment() + "/5 - 1 votos";
+                routeAssessment = listRoutes.get(recyclerView.getChildAdapterPosition(view)).getAssessment() + "/5";
                 routeCreator = listRoutes.get(recyclerView.getChildAdapterPosition(view)).getCreator();
                 intentRouteContent();
             }
@@ -168,14 +174,6 @@ public class routesProfileFragment extends Fragment {
         intent.putExtras(bundle);
         getActivity().startActivity(intent);
     }
-    private void exampleRoutes() {
-
-        for(int index = 0; index<= 3; index++){
-
-            listRoutes.add(new routes(index, "long","local " + index+ ".", "Una ruta muy entretenida.", "Creador " + index,  index + 0.0, 0));
-        }
-    }
-
 
 
     private void getJSON() {
@@ -242,7 +240,7 @@ public class routesProfileFragment extends Fragment {
 
     private void readData() throws JSONException {
         int id;
-        String name = "", description = "", creator = "";
+        String name = "", description = "", creator = "", city = "";
         double puntuation = 0.0;
 
         for (int i = 0; i < data.length(); i++) {
@@ -252,8 +250,51 @@ public class routesProfileFragment extends Fragment {
            // creator = (String) data.get("creador");
            // assessmepuntuationnt = (String) data.get("puntuación");
 
-            listRoutes.add(new routes(id, "long", name, description, creator, puntuation, 0));
+            listRoutes.add(new routes(id, "long", name, description, creator, puntuation, city, 0));
         }
     }
 
+
+    private void databaseToRouteList() {
+
+        Cursor cursor;
+        int id;
+        String measure = "", name, description, creator = "", city, rute_locals, route_date;
+        Double assessment, entrance_price;
+        int route_lenght;
+
+        cursor = profileActivity.bd.getUserInformationByName(profileActivity.userName);
+        while(cursor.moveToNext()){
+            creator = cursor.getString(1);
+        }
+
+
+        cursor = profileActivity.bd.showAllRoutesUser(creator);
+        while(cursor.moveToNext()){
+            id = cursor.getInt(0);
+            route_lenght = cursor.getInt(1);
+            name = cursor.getString(2);
+            description = cursor.getString(3);
+            assessment = cursor.getDouble(4);
+            creator = cursor.getString(5);
+            city = cursor.getString(6);
+            rute_locals = cursor.getString(7);
+            route_date = cursor.getString(8);
+
+            if (route_lenght <= 3){
+                measure = "short";
+            }else{
+                if (route_lenght <= 6){
+                    measure = "halfways";
+                }else{
+                    if (route_lenght <= 10){
+                        measure = "long";
+                    }
+                }
+            }
+
+            listRoutes.add(new routes(id, measure, name, description, creator, assessment, city, 0));
+        }
+        txtRoutesNumber.setText(listRoutes.size() + "");
+    }
 }

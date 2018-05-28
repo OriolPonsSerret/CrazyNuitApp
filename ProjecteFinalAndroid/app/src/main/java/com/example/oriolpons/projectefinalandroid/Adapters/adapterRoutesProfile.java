@@ -39,7 +39,23 @@ public class adapterRoutesProfile extends RecyclerView.Adapter<adapterRoutesProf
     public void onBindViewHolder(adapterRoutesProfile.ViewHolderRoutesProfile holder, int position) {
         holder.txtTitle.setText(listRoutes.get(position).getName());
         holder.txtDescription.setText(listRoutes.get(position).getDescription());
-        holder.txtAssessment.setText(listRoutes.get(position).getAssessment() + "/5 - 1 votos");
+        holder.txtAssessment.setText(listRoutes.get(position).getAssessment() + "/5");
+        holder.txtCity.setText(listRoutes.get(position).getCity());
+
+        if(listRoutes.get(position).getMeasure().equals("short")){
+            holder.icon.setImageResource(R.drawable.short_icon);
+        }
+        else{
+            if(listRoutes.get(position).getMeasure().equals("halfways")){
+                holder.icon.setImageResource(R.drawable.halfways_icon);
+            }
+            else{
+                if(listRoutes.get(position).getMeasure().equals("long")){
+                    holder.icon.setImageResource(R.drawable.long_icon);
+                }
+
+            }
+        }
     }
 
     @Override
@@ -60,7 +76,7 @@ public class adapterRoutesProfile extends RecyclerView.Adapter<adapterRoutesProf
 
     public class ViewHolderRoutesProfile extends RecyclerView.ViewHolder {
 
-        TextView txtTitle, txtDescription, txtAssessment;
+        TextView txtTitle, txtDescription, txtAssessment, txtCity;
         ImageView icon;
 
         public ViewHolderRoutesProfile(View itemView) {
@@ -68,7 +84,8 @@ public class adapterRoutesProfile extends RecyclerView.Adapter<adapterRoutesProf
             txtTitle = (TextView) itemView.findViewById(R.id.tvTitle);
             txtDescription = (TextView) itemView.findViewById(R.id.tvDescription);
             txtAssessment = (TextView) itemView.findViewById(R.id.tvAssessment);
-            // icon = (ImageView) itemView.findViewById(R.id.icon);
+            txtCity = (TextView) itemView.findViewById(R.id.tvCity);
+            icon = (ImageView) itemView.findViewById(R.id.icon);
         }
     }
 }
