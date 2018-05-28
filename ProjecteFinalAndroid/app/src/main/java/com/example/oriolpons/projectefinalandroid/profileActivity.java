@@ -57,7 +57,7 @@ public class profileActivity extends AppCompatActivity implements View.OnClickLi
 
     private long id = 0;
     private String name = "", description = "", bornDate = "", email = "", telephone = "";
-    public static String userEmail = "", userName = "";
+    public static String type = "", userEmail = "", userName = "", anotherUserName = "", anotherDescription = "";
     public static int userId;
 
     @Override
@@ -127,20 +127,23 @@ public class profileActivity extends AppCompatActivity implements View.OnClickLi
         tvUserName = (TextView) findViewById(R.id.tvUserName);
         tvUserDescription = (TextView) findViewById(R.id.tvUserDescription);
 
-        String type = this.getIntent().getExtras().getString("type");
-        userName = this.getIntent().getExtras().getString("userName");
+        type = this.getIntent().getExtras().getString("type");
+
         userEmail = this.getIntent().getExtras().getString("user_email");
 
-        setValuesProfile();
+
 
         if (type.equals("another")){
+            anotherUserName = this.getIntent().getExtras().getString("userName");
+            setValuesAnotherProfile();
             btnUserProfile.setEnabled(true);
             btnLogOut.setVisibility(View.GONE);
             btnEditProfile.setVisibility(View.GONE);
             btnFollow.setVisibility(View.VISIBLE);
         }
         else{
-
+            userName = this.getIntent().getExtras().getString("userName");
+            setValuesMyProfile();
             btnUserProfile.setEnabled(false);
         }
 
@@ -153,10 +156,10 @@ public class profileActivity extends AppCompatActivity implements View.OnClickLi
     {
         super.onRestart();
         linearLayoutMenu.setVisibility(View.GONE);
-        setValuesProfile();
+        setValuesMyProfile();
     }
 
-    private void setValuesProfile() {
+    private void setValuesMyProfile() {
         cursor = bd.getUserInformationByName(userName);
         while(cursor.moveToNext()){
             userName = cursor.getString(1);
@@ -165,6 +168,17 @@ public class profileActivity extends AppCompatActivity implements View.OnClickLi
 
         tvUserName.setText(userName);
         tvUserDescription.setText(description);
+    }
+
+    private void setValuesAnotherProfile() {
+        cursor = bd.getUserInformationByName(anotherUserName);
+        while(cursor.moveToNext()){
+            anotherUserName = cursor.getString(1);
+            anotherDescription = cursor.getString(2);
+        }
+
+        tvUserName.setText(anotherUserName);
+        tvUserDescription.setText(anotherDescription);
     }
 
     @Override

@@ -263,7 +263,13 @@ public class routesProfileFragment extends Fragment {
         Double assessment, entrance_price;
         int route_lenght;
 
-        cursor = profileActivity.bd.getUserInformationByName(profileActivity.userName);
+        if (profileActivity.type.equals("another")){
+            cursor = profileActivity.bd.getUserInformationByName(profileActivity.anotherUserName);
+        }
+        else{
+            cursor = profileActivity.bd.getUserInformationByName(profileActivity.userName);
+        }
+
         while(cursor.moveToNext()){
             creator = cursor.getString(1);
         }
