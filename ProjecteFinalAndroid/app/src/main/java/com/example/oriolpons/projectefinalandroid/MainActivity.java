@@ -19,6 +19,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Datasource bd;
     private Cursor cursor;
 
+    public static String localhost = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

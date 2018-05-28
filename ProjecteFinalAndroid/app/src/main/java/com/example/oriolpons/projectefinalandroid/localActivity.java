@@ -66,7 +66,7 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
     private StringBuffer json;
     private AlertDialog dialog;
     private Datasource bd;
-    private String localName, localDescription, localAssessment, NameFilter = "", typeOfLocalFilter = "restaurants", assessmentFilter = "ASC", cityOfLocalFilter= "Mataró", url =  "http://10.0.2.2/CrazyNuitApi/public/api/";
+    private String localName, localDescription, localAssessment, NameFilter = "", typeOfLocalFilter = "restaurants", assessmentFilter = "ASC", cityOfLocalFilter= "Mataró", url =  "http://10.0.2.2/ApiCrazyNuit/public/api/";
     private int cityOfLocalFilterPosition = 0;
 
     private String userEmail = "";
@@ -122,6 +122,7 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
                 //getJsonData();
                 getJsonData getJson = new getJsonData();
                 getJson.execute();
+                databaseToLocalList();
                 //addLocalsToDatabase(); //
                 //databaseToLocalList(); //
             }
@@ -151,12 +152,14 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
         //getJsonData();
         getJsonData getJson = new getJsonData();
         getJson.execute();
+        databaseToLocalList();
         //addLocalsToDatabase(); //
         //databaseToLocalList(); //
 
 
         spCity.setSelection(cityOfLocalFilterPosition);
         btnLocal.setEnabled(false);
+        getSupportActionBar().setTitle("Locales en tu zona");
     }
 
     private void addLocalsToDatabase() {
@@ -385,6 +388,7 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
                 //getJsonData();
                 getJsonData getJson = new getJsonData();
                 getJson.execute();
+                databaseToLocalList();
                 //addLocalsToDatabase(); //
                 //databaseToLocalList(); //
 
@@ -522,8 +526,8 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            System.out.println(data);
-            Toast.makeText(localActivity.this, data, Toast.LENGTH_SHORT).show();
+           System.out.println(data);
+           // Toast.makeText(localActivity.this, data, Toast.LENGTH_SHORT).show();
 
         }
     }
@@ -639,15 +643,33 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
 
             for (int i = 0; i < jArray.length(); i++) {
                 jObject = jArray.getJSONObject(i);
-                    id = (int) jObject.get("idBar-Restaurant");
-                    name = (String) jObject.get("Nom");
-                    description = (String) jObject.get("Descripcio");
-                    assessment = (double) jObject.get("Valoracio");
-                    address = (String) jObject.get("Direccio"); //Por confirmar
+
+                id = (int) jObject.get("idBarRestaurant");
+                name = (String) jObject.get("Nom");
+                description = (String) jObject.get("Descripcio");
+
+                if (jObject.get("Valoracio") == null){
+                    assessment = (Double) jObject.get("Valoracio");
+                }
+                else{assessment = 0.0;}
+                /*
+                if (jObject.get("Direccio") == null){
+                    address = (String) jObject.get("Direccio");
+                }
+                else{ address = "Mataró";}
+                if (jObject.get("Horari-Obertura") == null){
                     opening_hours = (String) jObject.get("Horari-Obertura");
+                }
+                else{ opening_hours = "";}
+                if (jObject.get("Horari-Tancament") == null){
                     schedule_close = (String) jObject.get("Horari-Tancament");
-                    gastronomy = (String) jObject.get("TipusGastronomic");
-                    category = (int) jObject.get("Categoria");
+                }
+                else{ schedule_close = "";}
+
+
+                gastronomy = (String) jObject.get("TipusGastronomic");
+                category = (int) jObject.get("Categoria");
+                */
 
                 if (bd.restaurantsAskExist(id)){
                     bd.restaurantsUpdate(id, name, description, assessment, address, opening_hours, schedule_close, gastronomy, category);
@@ -664,13 +686,21 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
                     id = (int) jObject.get("idPub");
                     name = (String) jObject.get("Nom");
                     description = (String) jObject.get("Descripcio");
-                    assessment = (Double) jObject.get("Valoracio");
-                    address = (String) jObject.get("Direccio"); //Por confirmar
-                    opening_hours = (String) jObject.get("Horari-Obertura");
-                    schedule_close = (String) jObject.get("Horari-Tancament");
+                    if (jObject.get("Valoracio") == null){
+                        assessment = (Double) jObject.get("Valoracio");
+                    }else{assessment = 0.0;}
 
-                // gastronomy = (String) data.get("TipusGastronomic");
-                // category = (int) data.get("Categoria");
+
+                 /*
+                    if (jObject.get("Direccio") == null){
+                        address = (String) jObject.get("Direccio");
+                    }
+                    else{ address = "Mataró";}*/
+                   // opening_hours = (String) jObject.get("HorariObertura");
+                   // schedule_close = (String) jObject.get("HorariTancament");
+
+                   // gastronomy = (String) data.get("TipusGastronomic");
+                   // category = (int) data.get("Categoria");
 
                 if (bd.pubsAskExist(id)){
                     bd.pubsUpdate(id, name, description, assessment, address, opening_hours, schedule_close);
@@ -687,11 +717,16 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
                     id = (int) jObject.get("idDiscoteca");
                     name = (String) jObject.get("Nom");
                     description = (String) jObject.get("Descripcio");
-                    assessment = (Double) jObject.get("Valoracio");
-                    address = (String) jObject.get("Direccio"); //Por confirmar
-                    opening_hours = (String) jObject.get("Horari-Obertura");
-                    schedule_close = (String) jObject.get("Horari-Tancament");
-                    entrance_price = (Double) jObject.get("Valoracio");//Por confirmar
+                    if (jObject.get("Valoracio") == null){
+                        assessment = (Double) jObject.get("Valoracio");
+                    }else{assessment = 0.0;}
+                   // address = (String) jObject.get("Direccio"); //NO me llega
+                   // opening_hours = (String) jObject.get("HorariObertura");
+                   // schedule_close = (String) jObject.get("HorariTancament");
+                    if (jObject.get("Valoracio") == null){
+                        entrance_price = (Double) jObject.get("PreuEntrada");
+                    }else{entrance_price = 0.0;}
+
                     // category = (int) data.get("Categoria");
 
 
@@ -704,7 +739,5 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
             }
         }
         // JSONObject jsonObjectMain = (JSONObject) data.get("main");
-
-        databaseToLocalList();
     }
 }
