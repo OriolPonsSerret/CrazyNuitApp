@@ -1,6 +1,7 @@
 package com.example.oriolpons.projectefinalandroid;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,16 +13,22 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.oriolpons.projectefinalandroid.Database.Datasource;
+
 public class editProfileActivity extends AppCompatActivity implements View.OnClickListener{
 
     private ImageButton btnBack;
     private Button btnDeleteAccount, btnUserName, btnDescription, btnPassword, btnDate;
     private AlertDialog dialog;
+    private String userEmail = "", userName = "";
+    public Datasource bd;
+    private int userId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
+        bd = new Datasource(this);
 
         btnUserName = (Button) findViewById(R.id.btnUserName);
         btnUserName.setOnClickListener(this);
@@ -38,6 +45,13 @@ public class editProfileActivity extends AppCompatActivity implements View.OnCli
         btnDeleteAccount = (Button) findViewById(R.id.btnDeleteAccount);
         btnDeleteAccount.setOnClickListener(this);
 
+        userEmail = this.getIntent().getExtras().getString("user_email");
+
+        Cursor cursor = bd.getUserInformationByEmail(userEmail);
+        while(cursor.moveToNext()){
+            userId = cursor.getInt(0);
+        }
+        getSupportActionBar().setTitle("Editar perfil de usuario");
     }
 
     @Override
@@ -57,10 +71,16 @@ public class editProfileActivity extends AppCompatActivity implements View.OnCli
     private void actionEditUserName() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = getLayoutInflater().inflate(R.layout.alert_edit_username,null);
-
-
         final EditText edtUserName = (EditText) view.findViewById(R.id.edtUserName);
         Button btnAccept = (Button) view.findViewById(R.id.btnAccept);
+
+
+        Cursor cursor = bd.getUserInformationByEmail(userEmail);
+        while(cursor.moveToNext()){
+            userName = cursor.getString(1);
+        }
+
+        edtUserName.setText(userName);
 
         builder.setView(view);
         dialog = builder.create();
@@ -76,22 +96,32 @@ public class editProfileActivity extends AppCompatActivity implements View.OnCli
 
                 if(!edtUserName.getText().toString().isEmpty()){
 
+                    if(!bd.usernameAskExist(edtUserName.getText().toString(), userId)){
+                        bd.updateRoutesCreatorWhereNameChanged(userName, edtUserName.getText().toString());//No funciona
+                        bd.userUpdateName(userEmail, edtUserName.getText().toString());
 
-                    text = "Se han guardado los cambios.";
-                    duration = 3;
 
-                    mensaje = Toast.makeText(context, text, duration);
-                    mensaje.show();
+                        text = "Se han guardado los cambios.";
+                        duration = 3;
+
+                        mensaje = Toast.makeText(context, text, duration);
+                        mensaje.show();
+
+                        dialog.cancel();
+                    }
+                    else{
+                        edtUserName.setError("Ya existe un usuario con ese nombre.");
+                        return;
+                    }
+
+
                 }
                 else{
-                    text = "El campo no puede estar vacio.";
-                    duration = 3;
-
-                    mensaje = Toast.makeText(context, text, duration);
-                    mensaje.show();
+                    edtUserName.setError("El campo no puede estar vacio.");
+                    return;
                 }
 
-                dialog.cancel();
+
             }
         });
 
@@ -100,9 +130,17 @@ public class editProfileActivity extends AppCompatActivity implements View.OnCli
     private void actionEditDescription() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         View view = getLayoutInflater().inflate(R.layout.alert_edit_description,null);
-
         final EditText edtDescription = (EditText) view.findViewById(R.id.edtDescription);
         Button btnAcceptDescription = (Button) view.findViewById(R.id.btnAcceptDescription);
+
+        String userDescription = "";
+
+        Cursor cursor = bd.getUserInformationByEmail(userEmail);
+        while(cursor.moveToNext()){
+            userDescription = cursor.getString(2);
+        }
+
+        edtDescription.setText(userDescription);
 
         builder.setView(view);
         dialog = builder.create();
@@ -116,8 +154,7 @@ public class editProfileActivity extends AppCompatActivity implements View.OnCli
                 int duration;
                 Toast mensaje;
 
-
-
+                bd.userUpdateDescription(userEmail, edtDescription.getText().toString());
 
 
                 text = "Se han guardado los cambios.";

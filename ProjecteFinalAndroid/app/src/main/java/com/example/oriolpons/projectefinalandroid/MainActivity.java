@@ -1,21 +1,31 @@
 package com.example.oriolpons.projectefinalandroid;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.example.oriolpons.projectefinalandroid.Database.Datasource;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
 
     private ImageButton btnHome, btnLocal, btnRoutes, btnUserProfile;
+    private String userEmail = "", userName = "";
+    private Datasource bd;
+    private Cursor cursor;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        bd = new Datasource(this);
 
         btnHome = (ImageButton) findViewById(R.id.btnHome);
         btnHome.setOnClickListener(this);
@@ -27,6 +37,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnUserProfile.setOnClickListener(this);
 
         btnHome.setEnabled(false);
+
+        userEmail = this.getIntent().getExtras().getString("user_email");
+
+        getSupportActionBar().setTitle("");
     }
 
     @Override
@@ -42,23 +56,36 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void intentMain() {
-       Intent i = new Intent(this, MainActivity.class );
-       startActivity(i);
-
-       // finish();
+        Bundle bundle = new Bundle();
+        bundle.putString("user_email", userEmail);
+        Intent i = new Intent(this, MainActivity.class);
+        i.putExtras(bundle);
+        startActivity(i);
     }
     private void intentLocal() {
-        Intent i = new Intent(this, localActivity.class );
+        Bundle bundle = new Bundle();
+        bundle.putString("user_email", userEmail);
+        Intent i = new Intent(this, localActivity.class);
+        i.putExtras(bundle);
         startActivity(i);
     }
     private void intentRoutes() {
-        Intent i = new Intent(this, routesActivity.class );
+        Bundle bundle = new Bundle();
+        bundle.putString("user_email", userEmail);
+        Intent i = new Intent(this, routesActivity.class);
+        i.putExtras(bundle);
         startActivity(i);
     }
     private void intentUserProfile() {
+        cursor = bd.getUserInformationByEmail(userEmail);
+        while(cursor.moveToNext()){
+            userName = cursor.getString(1);
+        }
+
         Bundle bundle = new Bundle();
         bundle.putString("type","me");
-        bundle.putString("userName","user");
+        bundle.putString("userName",userName);
+        bundle.putString("user_email", userEmail);
         Intent i = new Intent(this, profileActivity.class);
         i.putExtras(bundle);
         startActivity(i);

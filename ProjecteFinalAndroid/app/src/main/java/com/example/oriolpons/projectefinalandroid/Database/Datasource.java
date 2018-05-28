@@ -196,7 +196,6 @@ public class Datasource {
     }
 
     public Cursor filterLocalPub(String city, String order, String localName) {
-        //localName = "";
         return dbR.rawQuery("SELECT " + PUBS_ID + ", " + PUBS_NAME + ", " + PUBS_DESCRIPTION + ", " + PUBS_ASSESSMENT + ", " + PUBS_ADDRESS + ", " + PUBS_OPENING + ", " + PUBS_CLOSE+
                 " FROM " + table_PUBS +
                 " WHERE UPPER(" +  PUBS_ADDRESS + ") LIKE UPPER ('" + city +"') AND UPPER(" +  PUBS_NAME + ") LIKE UPPER ('%" + localName +"%')" +
@@ -204,7 +203,6 @@ public class Datasource {
     }
 
     public Cursor filterLocalDisco(String city, String order, String localName) {
-        //localName = "";
         return dbR.rawQuery("SELECT " + DISCOS_ID + ", " + DISCOS_NAME + ", " + DISCOS_DESCRIPTION + ", " + DISCOS_ASSESSMENT + ", " + DISCOS_ADDRESS + ", " + DISCOS_OPENING + ", " + DISCOS_CLOSE + ", " + DISCOS_PRICE +
                 " FROM " + table_DISCOS +
                 " WHERE UPPER(" +  DISCOS_ADDRESS + ") LIKE UPPER ('" + city +"') AND UPPER(" +  DISCOS_NAME + ") LIKE UPPER ('%" + localName +"%')" +
@@ -212,11 +210,23 @@ public class Datasource {
     }
 
     public Cursor filterRoutes(String city, String order, String routeName, int route_lenghtmin, int route_lenght) {
-        //localName = "";
         return dbR.rawQuery("SELECT " + ROUTES_ID + ", " + ROUTES_LENGHT +", " + ROUTES_NAME + ", " + ROUTES_DESCRIPTION + ", " + ROUTES_ASSESSMENT + ", " + ROUTES_CREATOR + ", " + ROUTES_CITY + ", " + ROUTES_LOCALS + ", " + ROUTES_DATE + ", " + ROUTES_FAVOURITE +
                 " FROM " + table_ROUTES +
                 " WHERE UPPER(" +  ROUTES_CITY + ") LIKE UPPER ('" + city +"') AND UPPER(" +  ROUTES_NAME + ") LIKE UPPER ('%" + routeName +"%') AND " +  ROUTES_LENGHT + " > " + route_lenghtmin + " AND " +  ROUTES_LENGHT + " <= " + route_lenght  +
                 " ORDER BY " + ROUTES_ASSESSMENT + " " + order, null);
+    }
+    public Cursor filterRoutesUser(String city, String order, String routeName, int route_lenghtmin, int route_lenght, String creator) {
+        return dbR.rawQuery("SELECT " + ROUTES_ID + ", " + ROUTES_LENGHT +", " + ROUTES_NAME + ", " + ROUTES_DESCRIPTION + ", " + ROUTES_ASSESSMENT + ", " + ROUTES_CREATOR + ", " + ROUTES_CITY + ", " + ROUTES_LOCALS + ", " + ROUTES_DATE + ", " + ROUTES_FAVOURITE +
+                " FROM " + table_ROUTES +
+                " WHERE UPPER(" +  ROUTES_CITY + ") LIKE UPPER ('" + city +"') AND UPPER(" +  ROUTES_NAME + ") LIKE UPPER ('%" + routeName +"%') AND UPPER(" +  ROUTES_CREATOR + ") LIKE UPPER ('%" + creator +"%') AND " +  ROUTES_LENGHT + " > " + route_lenghtmin + " AND " +  ROUTES_LENGHT + " <= " + route_lenght  +
+                " ORDER BY " + ROUTES_ASSESSMENT + " " + order, null);
+    }
+
+    public Cursor showAllRoutesUser(String creator) {
+        return dbR.rawQuery("SELECT " + ROUTES_ID + ", " + ROUTES_LENGHT +", " + ROUTES_NAME + ", " + ROUTES_DESCRIPTION + ", " + ROUTES_ASSESSMENT + ", " + ROUTES_CREATOR + ", " + ROUTES_CITY + ", " + ROUTES_LOCALS + ", " + ROUTES_DATE + ", " + ROUTES_FAVOURITE +
+                " FROM " + table_ROUTES +
+                " WHERE UPPER(" +  ROUTES_CREATOR + ") LIKE UPPER ('%" + creator +"%')" +
+                " ORDER BY " + ROUTES_CITY + " ASC", null);
     }
     public Cursor filterFavRoutes(String city, String order, String routeName, int route_lenghtmin, int route_lenght) {
         return dbR.rawQuery("SELECT " + ROUTES_ID + ", " + ROUTES_LENGHT +", " + ROUTES_NAME + ", " + ROUTES_DESCRIPTION + ", " + ROUTES_ASSESSMENT + ", " + ROUTES_CREATOR + ", " + ROUTES_CITY + ", " + ROUTES_LOCALS + ", " + ROUTES_DATE + ", " + ROUTES_FAVOURITE +
@@ -236,6 +246,74 @@ public class Datasource {
         return dbR.rawQuery("SELECT " + ROUTES_ID +
                 " FROM " + table_ROUTES +
                 " ORDER BY " + ROUTES_ID + " DESC", null);
+    }
+
+
+
+    public boolean userAskExist(String email) {
+        Cursor c = dbR.rawQuery("SELECT " + USER_EMAIL  +
+                " FROM " + table_USER +
+                " WHERE UPPER(" +  USER_EMAIL + ") LIKE UPPER ('" + email +"')", null);
+        boolean exists = c.moveToFirst();
+        c.close();
+        return exists;
+    }
+
+    public Cursor getUserInformationByEmail(String email) {
+        return dbR.rawQuery("SELECT " + USER_ID + ", " + USER_USERNAME + ", " + USER_DESCRIPTION + ", " + USER_EMAIL + ", " + USER_PHONENUMBER + ", " + USER_BIRTHDATE +
+                " FROM " + table_USER +
+                " WHERE UPPER(" +  USER_EMAIL + ") LIKE UPPER ('%" + email +"%')", null);
+    }
+
+    public Cursor getUserInformationByName(String name) {
+        return dbR.rawQuery("SELECT " + USER_ID + ", " + USER_USERNAME + ", " + USER_DESCRIPTION + ", " + USER_EMAIL + ", " + USER_PHONENUMBER + ", " + USER_BIRTHDATE +
+                " FROM " + table_USER +
+                " WHERE UPPER(" +  USER_USERNAME + ") LIKE UPPER ('%" + name +"%')", null);
+    }
+
+    public void userAdd(String username, String email) {
+        ContentValues values = new ContentValues();
+        values.put(USER_ID, 1);
+        values.put(USER_USERNAME, username);
+        values.put(USER_DESCRIPTION, "");
+        values.put(USER_EMAIL, email);
+        values.put(USER_PHONENUMBER, "");
+        values.put(USER_BIRTHDATE, "");
+
+        dbW.insert(table_USER, null, values);
+    }
+
+    public boolean usernameAskExist(String name, int id) {
+        Cursor c = dbR.rawQuery("SELECT " + USER_USERNAME  +
+                " FROM " + table_USER +
+                " WHERE " +  USER_ID + " NOT LIKE " + id + " AND UPPER(" +  USER_USERNAME + ") LIKE UPPER ('%" + name +"%')", null);
+        boolean exists = c.moveToFirst();
+        c.close();
+        return exists;
+    }
+    public void userUpdateName(String email, String username) {
+        ContentValues values = new ContentValues();
+        values.put(USER_USERNAME, username);
+
+        dbW.update(table_USER,values, USER_EMAIL + " = ?", new String[] { String.valueOf(email) });
+    }
+    public void userUpdateDescription(String email, String description) {
+        ContentValues values = new ContentValues();
+        values.put(USER_DESCRIPTION, description);
+
+        dbW.update(table_USER,values, USER_EMAIL + " = ?", new String[] { String.valueOf(email) });
+    }
+    public void userUpdatePhonenumber(String email, int phonenumber) {
+        ContentValues values = new ContentValues();
+        values.put(USER_PHONENUMBER, phonenumber);
+
+        dbW.update(table_USER,values, USER_EMAIL + " = ?", new String[] { String.valueOf(email) });
+    }
+    public void userUpdateBirthdate(String email, String birthdate) {
+        ContentValues values = new ContentValues();
+        values.put(USER_BIRTHDATE, birthdate);
+
+        dbW.update(table_USER,values, USER_EMAIL + " = ?", new String[] { String.valueOf(email) });
     }
 
     public boolean restaurantsAskExist(int id) {
@@ -275,6 +353,8 @@ public class Datasource {
 
         dbW.update(table_RESTAURANTS,values, RESTAURANTS_ID + " = ?", new String[] { String.valueOf(id) });
     }
+
+
 
     public boolean pubsAskExist(int id) {
         Cursor c = dbR.rawQuery("SELECT " + PUBS_ID  +
@@ -395,6 +475,12 @@ public class Datasource {
         values.put(ROUTES_FAVOURITE, favourite);
 
         dbW.update(table_ROUTES,values, ROUTES_ID + " = ?", new String[] { String.valueOf(id) });
+    }
+    public void updateRoutesCreatorWhereNameChanged(String oldName, String NewName){
+        ContentValues values = new ContentValues();
+        values.put(ROUTES_CREATOR, NewName);
+
+        dbW.update(table_ROUTES,values, ROUTES_CREATOR + " = ?", new String[] { String.valueOf(oldName) });
     }
 
     public void routesDelete(int id) {

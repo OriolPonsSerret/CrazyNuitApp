@@ -3,12 +3,16 @@ package com.example.oriolpons.projectefinalandroid;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -33,6 +37,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 */
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 
 public class routesActivity extends AppCompatActivity implements View.OnClickListener{
@@ -49,11 +61,12 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
     private String routeName, routeDescription, routeCreator, routeAssessment, NameFilter = "";
     private double assessment;
     private AlertDialog dialog;
+    private JSONObject data = null;
 
     private Datasource bd;
-    private String assessmentFilter = "ASC", typeOfRouteFilter = "short", cityOfRouteFilter= "Mataró", URL =  "http://localhost/ApiCrazyNuit/public/api/";
+    private String assessmentFilter = "ASC", typeOfRouteFilter = "short", cityOfRouteFilter= "Mataró", URL =  "http://localhost/CrazyNuitApi/public/api/rutes/";
     private int cityOfRouteFilterPosition = 0, RouteLenghtMin = 0, RouteLenght = 0, routeId;
-
+    private String userEmail = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -123,6 +136,7 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
                 bd.filterConfigUpdate("routes", assessmentFilter, typeOfRouteFilter, cityOfRouteFilter, cityOfRouteFilterPosition);
 
                 clearData();
+                //getJsonData();
                 addDBRoutes();
                 databaseToRouteList();
             }
@@ -139,13 +153,18 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spCity.setAdapter(adapter);
 
+        userEmail = this.getIntent().getExtras().getString("user_email");
+
         filterConfig();
         clearData();
+        //getJsonData();
         addDBRoutes();
         databaseToRouteList();
 
         spCity.setSelection(cityOfRouteFilterPosition);
         btnRoutes.setEnabled(false);
+
+        getSupportActionBar().setTitle("Rutas globales");
     }
 
 
@@ -154,10 +173,10 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
         Double assessment = 1.0;
         int route_lenght = 2;
 
-        for(int id = 0; id <= 10; id++){
+        for(int id = 0; id <= 15; id++){
 
             assessment = assessment + 0.2;
-            if (id >= 0 && id <= 10){
+            if (id >= 0 && id <= 15){
                 name = "Ruta: " + id;
                 description= "Una ruta entretenida.";
                 if (id <= 3){
@@ -174,6 +193,12 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
                     city= "Mataró";
                     assessment = 2.0;
                     route_lenght = id;
+                }
+                if (id >= 11 && id <= 15){
+                    city= "Mataró";
+                    assessment = 4.0;
+                    route_lenght = 3;
+                    creator= "Onii-chan";
                 }
                 if (bd.routesAskExist(id)){
                     bd.routesUpdate(id, route_lenght, name, description, assessment, creator, city, locals, date, "FALSE");
@@ -199,8 +224,11 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void loadFavouriteRoutes() {
-          Intent i = new Intent(this, favRoutesActivity.class );
-          startActivity(i);
+        Bundle bundle = new Bundle();
+        bundle.putString("user_email", userEmail);
+        Intent i = new Intent(this, favRoutesActivity.class);
+        i.putExtras(bundle);
+        startActivity(i);
     }
 
     @Override
@@ -322,6 +350,7 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
 
                 bd.filterConfigUpdate("routes", assessmentFilter, typeOfRouteFilter, cityOfRouteFilter, cityOfRouteFilterPosition);
                 clearData();
+                //getJsonData();
                 addDBRoutes();
                 databaseToRouteList();
 
@@ -337,25 +366,45 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
     }
 
     private void actionMyRoutes() {
-        Intent i = new Intent(this, myRoutesActivity.class );
+        Bundle bundle = new Bundle();
+        bundle.putString("user_email", userEmail);
+        Intent i = new Intent(this, myRoutesActivity.class);
+        i.putExtras(bundle);
         startActivity(i);
     }
+
     private void intentMain() {
-        Intent i = new Intent(this, MainActivity.class );
+        Bundle bundle = new Bundle();
+        bundle.putString("user_email", userEmail);
+        Intent i = new Intent(this, MainActivity.class);
+        i.putExtras(bundle);
         startActivity(i);
     }
     private void intentLocal() {
-        Intent i = new Intent(this, localActivity.class );
+        Bundle bundle = new Bundle();
+        bundle.putString("user_email", userEmail);
+        Intent i = new Intent(this, localActivity.class);
+        i.putExtras(bundle);
         startActivity(i);
     }
     private void intentRoutes() {
-        Intent i = new Intent(this, routesActivity.class );
+        Bundle bundle = new Bundle();
+        bundle.putString("user_email", userEmail);
+        Intent i = new Intent(this, routesActivity.class);
+        i.putExtras(bundle);
         startActivity(i);
     }
     private void intentUserProfile() {
+        String userName = "";
+
+        Cursor cursor = bd.getUserInformationByEmail(userEmail);
+        while(cursor.moveToNext()){
+            userName = cursor.getString(1);
+        }
         Bundle bundle = new Bundle();
         bundle.putString("type","me");
-        bundle.putString("userName","user");
+        bundle.putString("userName",userName);
+        bundle.putString("user_email", userEmail);
         Intent i = new Intent(this, profileActivity.class);
         i.putExtras(bundle);
         startActivity(i);
@@ -424,8 +473,121 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
                 }
             }
 
-            listRoutes.add(new routes(id, measure, name, description, creator, assessment, 0));
+            listRoutes.add(new routes(id, measure, name, description, creator, assessment, city, 0));
         }
+    }
+
+
+    private void getJsonData() {
+
+        new AsyncTask<Void, Void, Void>() {
+
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+
+            }
+
+            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+            @Override
+            protected Void doInBackground(Void... params) {
+                try {
+                    java.net.URL url = new URL(URL);
+
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+                    BufferedReader reader =
+                            new BufferedReader(new InputStreamReader(connection.getInputStream()));
+
+                    json = new StringBuffer(1024);
+                    String tmp = "";
+
+                    while ((tmp = reader.readLine()) != null)
+                        json.append(tmp).append("\n");
+                    reader.close();
+
+                    data = new JSONObject(json.toString());
+
+                    if (data.getInt("cod") != 200) {
+                        System.out.println("Cancelled");
+                        return null;
+                    }
+
+
+                } catch (Exception e) {
+
+                    System.out.println("Exception " + e.getMessage());
+                    // mostrarOpcion();
+                    return null;
+                }
+
+                return null;
+            }
+            /*
+                        private void mostrarOpcion() {
+                            Context context = getApplicationContext();
+                            Toast mensaje;
+                            duration = 4;
+
+                            String text = "No existeix una ciutat amb aquest nom.";
+                            mensaje = Toast.makeText(context, text, duration);
+                            mensaje.show();
+                        }
+            */
+            @Override
+            protected void onPostExecute(Void Void) {
+                if (data != null) {
+                    Log.d("my weather received", data.toString());
+
+                    try {
+                        readDataFromJson();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+        }.execute();
+    }
+
+    private void readDataFromJson() throws JSONException {
+        int id, idLocal;
+        String name = "", description= "", creator= "Senpai", city= "", locals = "", date = "", favourite = "FALSE";
+        Double assessment = 1.0;
+        int route_lenght = 2;
+
+        JSONArray jArray = new JSONArray(data);
+
+
+        for (int i = 0; i < jArray.length(); i++) {
+            JSONObject jObject = jArray.getJSONObject(i);
+            id = (int) jObject.get("idrutes");
+            route_lenght = (int) jObject.get("rutmida");
+            name = (String) jObject.get("nombre");
+            description = (String) jObject.get("descripcion");
+            assessment = (Double) jObject.get("rutvaloracio");
+            creator = (String) jObject.get("creador");
+            city = (String) jObject.get("ciudad");
+            locals = (String) jObject.get("rutlocals");// Desconozco si vendrá con []
+            date = (String) jObject.get("rutdata");
+
+            //En el caso de rutlocals[]
+            JSONArray jArrayLocals = new JSONArray("rutlocals");
+            for (int i2 = 0; i2 < jArrayLocals.length(); i2++) {
+                JSONObject jObjectLocals = jArrayLocals.getJSONObject(i);
+
+            }
+
+            if (bd.routesAskExist(id)){
+                bd.routesUpdate(id, route_lenght, name, description, assessment, creator, city, locals, date, "FALSE");
+            }
+            else{
+                bd.routesAdd(id, route_lenght, name, description, assessment, creator, city, locals, date, favourite);
+            }
+        }
+
+        databaseToRouteList();
     }
 
 /*

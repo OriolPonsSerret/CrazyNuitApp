@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.oriolpons.projectefinalandroid.R;
 import com.example.oriolpons.projectefinalandroid.Adapters.adapterUser;
@@ -39,7 +40,8 @@ public class followerProfileFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private ArrayList<user> listUsers;
     private RecyclerView recyclerView;
-    private String userName;
+    private String name = "";
+    private TextView txtFollowerNumber;
 
     public followerProfileFragment() {
         // Required empty public constructor
@@ -78,18 +80,19 @@ public class followerProfileFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_follower_profile,container,false);
 
-        listUsers=new ArrayList<>();
-        recyclerView=view.findViewById(R.id.recyclerId);
+        listUsers = new ArrayList<>();
+        recyclerView = view.findViewById(R.id.recyclerId);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-        exampleUsers();
+        txtFollowerNumber = view.findViewById(R.id.txtFollowerNumber);
 
+        exampleUsers();
 
         adapterUser Adapter = new adapterUser(listUsers);
         Adapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                userName = listUsers.get(recyclerView.getChildAdapterPosition(view)).getName();
+                name = listUsers.get(recyclerView.getChildAdapterPosition(view)).getName();
                 intentUserProfile();
             }
         });
@@ -143,17 +146,18 @@ public class followerProfileFragment extends Fragment {
     private void intentUserProfile() {
         Bundle bundle = new Bundle();
         bundle.putString("type","another");
-        bundle.putString("userName",userName);
+        bundle.putString("userName",name);
+        bundle.putString("user_email", profileActivity.userEmail);
         Intent intent = new Intent(getActivity(), profileActivity.class);
         intent.putExtras(bundle);
         getActivity().startActivity(intent);
     }
 
     private void exampleUsers() {
+        int id = profileActivity.userId;
 
-        for(int index = 4; index<= 7; index++){
+        listUsers.add(new user(0,"Senpai", "El senpai de tus sueños."));
 
-            listUsers.add(new user(index,"Usuario nº" + index+ ".", "El mejor usuario de esta app."));
-        }
+        txtFollowerNumber.setText(listUsers.size() + "");
     }
 }

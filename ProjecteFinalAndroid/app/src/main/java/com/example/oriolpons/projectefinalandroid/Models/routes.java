@@ -13,16 +13,18 @@ public class routes {
     private String description;
     private String creator;
     private Double assessment;
+    private String city;
     private int icon;
     //private ArrayList<String> locals;
 
-    public routes(int id, String measure, String name, String description, String creator, Double assessment, int icon) {
+    public routes(int id, String measure, String name, String description, String creator, Double assessment, String city, int icon) {
         this.id = id;
         this.measure = measure;
         this.name = name;
         this.description = description;
         this.creator = creator;
         this.assessment = assessment;
+        this.city = city;
         this.icon = icon;
     }
 
@@ -72,6 +74,14 @@ public class routes {
 
     public void setAssessment(Double assessment) {
         this.assessment = assessment;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 
     public int getIcon() {

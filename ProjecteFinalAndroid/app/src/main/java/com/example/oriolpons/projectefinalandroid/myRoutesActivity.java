@@ -46,6 +46,7 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
     private Datasource bd;
     private String assessmentFilter = "ASC", typeOfRouteFilter = "short", cityOfRouteFilter= "Mataró", URL =  "http://localhost/ApiCrazyNuit/public/api/";
     private int cityOfRouteFilterPosition = 0, RouteLenghtMin = 0, RouteLenght = 0, routeId;
+    private String userEmail = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,6 +132,10 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spCity.setAdapter(adapter);
 
+
+        userEmail = this.getIntent().getExtras().getString("user_email");
+
+
         filterConfig();
         clearData();
         addDBRoutes();
@@ -138,6 +143,8 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
 
         spCity.setSelection(cityOfRouteFilterPosition);
         btnRoutes.setEnabled(false);
+
+        getSupportActionBar().setTitle("Mis rutas");
     }
 
     private void addDBRoutes() {
@@ -146,10 +153,10 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
         int route_lenght = 2;
 
 
-        for(int id = 0; id <= 10; id++){
+        for(int id = 0; id <= 15; id++){
 
             assessment = assessment + 0.2;
-            if (id >= 0 && id <= 10){
+            if (id >= 0 && id <= 15){
                 name = "Ruta: " + id;
                 description= "Una ruta entretenida.";
                 if (id <= 3){
@@ -166,6 +173,12 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
                     city= "Mataró";
                     assessment = 2.0;
                     route_lenght = id;
+                }
+                if (id >= 11 && id <= 15){
+                    city= "Mataró";
+                    assessment = 4.0;
+                    route_lenght = 3;
+                    creator= "Onii-chan";
                 }
                 if (bd.routesAskExist(id)){
                     bd.routesUpdate(id, route_lenght, name, description, assessment, creator, city, locals, date, "FALSE");
@@ -331,21 +344,37 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void intentMain() {
-       Intent i = new Intent(this, MainActivity.class );
-       startActivity(i);
+        Bundle bundle = new Bundle();
+        bundle.putString("user_email", userEmail);
+        Intent i = new Intent(this, MainActivity.class);
+        i.putExtras(bundle);
+        startActivity(i);
     }
     private void intentLocal() {
-         Intent i = new Intent(this, localActivity.class );
-         startActivity(i);
+        Bundle bundle = new Bundle();
+        bundle.putString("user_email", userEmail);
+        Intent i = new Intent(this, localActivity.class);
+        i.putExtras(bundle);
+        startActivity(i);
     }
     private void intentRoutes() {
-        Intent i = new Intent(this, routesActivity.class );
+        Bundle bundle = new Bundle();
+        bundle.putString("user_email", userEmail);
+        Intent i = new Intent(this, routesActivity.class);
+        i.putExtras(bundle);
         startActivity(i);
     }
     private void intentUserProfile() {
+        String userName = "";
+
+        Cursor cursor = bd.getUserInformationByEmail(userEmail);
+        while(cursor.moveToNext()){
+            userName = cursor.getString(1);
+        }
         Bundle bundle = new Bundle();
         bundle.putString("type","me");
-        bundle.putString("userName","user");
+        bundle.putString("userName",userName);
+        bundle.putString("user_email", userEmail);
         Intent i = new Intent(this, profileActivity.class);
         i.putExtras(bundle);
         startActivity(i);
@@ -368,9 +397,14 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
 
         Cursor cursor;
         int id;
-        String measure = "", name, description, creator, city, rute_locals, route_date;
+        String measure = "", name, description, creator = "", city, rute_locals, route_date;
         Double assessment, entrance_price;
         int route_lenght;
+
+        cursor = bd.getUserInformationByEmail(userEmail);
+        while(cursor.moveToNext()){
+            creator = cursor.getString(1);
+        }
 
         if (typeOfRouteFilter.equals("short")) {
             RouteLenghtMin = 0;
@@ -389,7 +423,7 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
             }
         }
 
-        cursor = bd.filterRoutes(cityOfRouteFilter, assessmentFilter, NameFilter, RouteLenghtMin, RouteLenght);
+        cursor = bd.filterRoutesUser(cityOfRouteFilter, assessmentFilter, NameFilter, RouteLenghtMin, RouteLenght, creator);
         while(cursor.moveToNext()){
             id = cursor.getInt(0);
             route_lenght = cursor.getInt(1);
@@ -413,7 +447,7 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
                 }
             }
 
-            listRoutes.add(new routes(id, measure, name, description, creator, assessment, 0));
+            listRoutes.add(new routes(id, measure, name, description, creator, assessment, city, 0));
         }
     }
 
