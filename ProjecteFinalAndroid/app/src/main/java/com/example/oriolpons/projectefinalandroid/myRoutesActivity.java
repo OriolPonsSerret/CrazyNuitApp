@@ -116,7 +116,7 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
                 bd.filterConfigUpdate("routes", assessmentFilter, typeOfRouteFilter, cityOfRouteFilter, cityOfRouteFilterPosition);
 
                 clearData();
-                addDBRoutes();
+                //addDBRoutes();
                 databaseToRouteList();
             }
 
@@ -138,7 +138,7 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
 
         filterConfig();
         clearData();
-        addDBRoutes();
+        //addDBRoutes();
         databaseToRouteList();
 
         spCity.setSelection(cityOfRouteFilterPosition);
@@ -146,7 +146,7 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
 
         getSupportActionBar().setTitle("Mis rutas");
     }
-
+/*
     private void addDBRoutes() {
         String name = "", description= "", creator= "Senpai", city= "", locals = "", date = "", favourite = "FALSE";
         Double assessment = 1.0;
@@ -181,15 +181,15 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
                     creator= "Onii-chan";
                 }
                 if (bd.routesAskExist(id)){
-                    bd.routesUpdate(id, route_lenght, name, description, assessment, creator, city, locals, date, "FALSE");
+                    bd.routesUpdate(id, route_lenght, name, description, assessment, creator, city, locals, date);
                 }
                 else{
-                    bd.routesAdd(id, route_lenght, name, description, assessment, creator, city, locals, date, favourite);
+                    bd.routesAdd(id, route_lenght, name, description, assessment, creator, city, locals, date);
                 }
             }
         }
     }
-
+*/
     @Override
     public void onClick(View v) {
 
@@ -300,7 +300,7 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
 
                 bd.filterConfigUpdate("routes", assessmentFilter, typeOfRouteFilter, cityOfRouteFilter, cityOfRouteFilterPosition);
                 clearData();
-                addDBRoutes();
+                //addDBRoutes();
                 databaseToRouteList();
 
                 text = "Se han aplicado los filtros.";
@@ -487,7 +487,7 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
 
         filterConfig();
         clearData();
-        addDBRoutes();
+        //addDBRoutes();
         databaseToRouteList();
 
     }

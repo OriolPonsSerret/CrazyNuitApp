@@ -259,6 +259,11 @@ public class Datasource {
         return exists;
     }
 
+    public Cursor getUserInformationById(int id) {
+        return dbR.rawQuery("SELECT " + USER_ID + ", " + USER_USERNAME + ", " + USER_DESCRIPTION + ", " + USER_EMAIL + ", " + USER_PHONENUMBER + ", " + USER_BIRTHDATE +
+                " FROM " + table_USER +
+                " WHERE " +  USER_ID + " LIKE " + id , null);
+    }
     public Cursor getUserInformationByEmail(String email) {
         return dbR.rawQuery("SELECT " + USER_ID + ", " + USER_USERNAME + ", " + USER_DESCRIPTION + ", " + USER_EMAIL + ", " + USER_PHONENUMBER + ", " + USER_BIRTHDATE +
                 " FROM " + table_USER +
@@ -445,44 +450,43 @@ public class Datasource {
         return exists;
     }
 
-    public void routesAdd(int id, int route_lenght, String name, String description, Double assessment, String creator, String city, String locals, String date, String favourite) {
+    public void routesAdd(int id, int route_lenght, String name, String description, Double assessment, int idCreator, String city, String locals, String date) {
         ContentValues values = new ContentValues();
         values.put(ROUTES_ID, id);
         values.put(ROUTES_LENGHT, route_lenght);
         values.put(ROUTES_NAME, name);
         values.put(ROUTES_DESCRIPTION, description);
         values.put(ROUTES_ASSESSMENT, assessment);
-        values.put(ROUTES_CREATOR, creator);
+        values.put(ROUTES_CREATOR, idCreator);
         values.put(ROUTES_CITY, city);
         values.put(ROUTES_LOCALS, locals);
         values.put(ROUTES_DATE, date);
-        values.put(ROUTES_FAVOURITE, favourite);
 
         dbW.insert(table_ROUTES, null, values);
     }
 
-    public void routesUpdate(int id, int route_lenght, String name, String description, Double assessment, String creator, String city, String locals, String date, String favourite) {
+    public void routesUpdate(int id, int route_lenght, String name, String description, Double assessment, int idCreator, String city, String locals, String date) {
         ContentValues values = new ContentValues();
         values.put(ROUTES_LENGHT, route_lenght);
         values.put(ROUTES_NAME, name);
         values.put(ROUTES_DESCRIPTION, description);
         values.put(ROUTES_ASSESSMENT, assessment);
-        values.put(ROUTES_CREATOR, creator);
+        values.put(ROUTES_CREATOR, idCreator);
         values.put(ROUTES_CITY, city);
         values.put(ROUTES_LOCALS, locals);
         values.put(ROUTES_DATE, date);
         values.put(ROUTES_FAVOURITE, date);
-        values.put(ROUTES_FAVOURITE, favourite);
 
         dbW.update(table_ROUTES,values, ROUTES_ID + " = ?", new String[] { String.valueOf(id) });
     }
+    /*
     public void updateRoutesCreatorWhereNameChanged(String oldName, String NewName){
         ContentValues values = new ContentValues();
         values.put(ROUTES_CREATOR, NewName);
 
         dbW.update(table_ROUTES,values, ROUTES_CREATOR + " = ?", new String[] { String.valueOf(oldName) });
     }
-
+*/
     public void routesDelete(int id) {
         dbW.delete(table_ROUTES,ROUTES_ID + " = ?", new String[] { String.valueOf(id) });
     }

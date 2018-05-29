@@ -27,9 +27,24 @@ import com.example.oriolpons.projectefinalandroid.Database.Datasource;
 import com.example.oriolpons.projectefinalandroid.Models.local;
 import com.example.oriolpons.projectefinalandroid.Adapters.adapterLocal;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.os.Bundle;
+import android.util.Log;
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.gson.JsonObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -47,11 +62,11 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
     private LinearLayout linearLayoutMenu;
     private  Spinner spCity;
     private int duration = 4;
-    private JSONObject data = null;
+    //private JSONObject data = null;
     private StringBuffer json;
     private AlertDialog dialog;
     private Datasource bd;
-    private String localName, localDescription, localAssessment, NameFilter = "", typeOfLocalFilter = "restaurants", assessmentFilter = "ASC", cityOfLocalFilter= "Mataró", URL =  "http://10.0.2.2/CrazyNuitApi/public/api/";
+    private String localName, localDescription, localAssessment, NameFilter = "", typeOfLocalFilter = "restaurants", assessmentFilter = "ASC", cityOfLocalFilter= "Mataró", url =  "http://10.0.2.2/ApiCrazyNuit/public/api/";
     private int cityOfLocalFilterPosition = 0;
 
     private String userEmail = "";
@@ -104,7 +119,10 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
 
                 //filterConfig();
                 clearData();
-                getJsonData();
+                //getJsonData();
+                getJsonData getJson = new getJsonData();
+                getJson.execute();
+                databaseToLocalList();
                 //addLocalsToDatabase(); //
                 //databaseToLocalList(); //
             }
@@ -131,15 +149,19 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
 
         filterConfig();
         clearData();
-        getJsonData();
+        //getJsonData();
+        getJsonData getJson = new getJsonData();
+        getJson.execute();
+        databaseToLocalList();
         //addLocalsToDatabase(); //
         //databaseToLocalList(); //
 
 
         spCity.setSelection(cityOfLocalFilterPosition);
         btnLocal.setEnabled(false);
+        getSupportActionBar().setTitle("Locales en tu zona");
     }
-
+/*
     private void addLocalsToDatabase() {
         String name = "", description= "", address= "", opening_hours= "", schedule_close= "", gastronomy= "";
         Double assessment = 1.0, entrance_price = 10.0;
@@ -209,7 +231,7 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
             }
         }
     }
-
+*/
     private void filterConfig() {
         Cursor cursor = bd.filterConfigLocal();
         while(cursor.moveToNext()){
@@ -363,7 +385,10 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
 
                 bd.filterConfigUpdate("local", assessmentFilter, typeOfLocalFilter, cityOfLocalFilter, cityOfLocalFilterPosition);
                 clearData();
-                getJsonData();
+                //getJsonData();
+                getJsonData getJson = new getJsonData();
+                getJson.execute();
+                databaseToLocalList();
                 //addLocalsToDatabase(); //
                 //databaseToLocalList(); //
 
@@ -459,8 +484,84 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
+    private class getJsonData extends AsyncTask<Void, Void, String> {
+
+        protected String doInBackground(Void... argumentos) {
+
+            StringBuffer bufferCadena = new StringBuffer("");
+
+            try {
+                HttpClient cliente = new DefaultHttpClient();
+                HttpGet peticion = new HttpGet(url + typeOfLocalFilter);
+                // ejecuta una petición get
+                HttpResponse respuesta = cliente.execute(peticion);
+
+                //lee el resultado
+                BufferedReader entrada = new BufferedReader(new InputStreamReader(
+                        respuesta.getEntity().getContent()));
+                // Log.i("ResponseObject: ", respuesta.toString());
+
+                String separador = "";
+                String NL = System.getProperty("line.separator");
+                //almacena el resultado en bufferCadena
+
+                while ((separador = entrada.readLine()) != null) {
+                    bufferCadena.append(separador + NL);
+                }
+                entrada.close();
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                //e.printStackTrace();
+                Log.i("ResponseObject: ", e.toString());
+            }
+
+            return bufferCadena.toString();
+
+        }
+
+        protected void onPostExecute(String data) {
+
+            try {
+                readDataFromJson(data);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+           System.out.println(data);
+           // Toast.makeText(localActivity.this, data, Toast.LENGTH_SHORT).show();
+
+        }
+    }
+/*
     private void getJsonData() {
 
+        String URL = url + typeOfLocalFilter;
+        RequestQueue rq = Volley.newRequestQueue(this);
+        JsonObjectRequest or = new JsonObjectRequest(Request.Method.GET
+                , URL, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject data) {
+                try {
+                    Log.i("Data: ", data.toString());
+                    readDataFromJson(data);
+
+                    //gestionarJSON(response);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                        Log.i("Error Response: ", error.toString());
+                    }
+                }
+
+        );
+        rq.add(or);
+    }*/
+/*
         new AsyncTask<Void, Void, Void>() {
 
 
@@ -474,7 +575,9 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
             @Override
             protected Void doInBackground(Void... params) {
                 try {
-                    URL url = new URL(URL + typeOfLocalFilter);
+                    URL = "http://10.0.2.2/CrazyNuitApi/public/api/";
+                    URL = URL + typeOfLocalFilter;
+                    URL url = new URL(URL);
 
                     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
@@ -488,7 +591,8 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
                         json.append(tmp).append("\n");
                     reader.close();
 
-                    data = new JSONObject(json.toString());
+                    data = new JSONArray(json.toString());
+
 
                     if (data.getInt("cod") != 200) {
                         System.out.println("Cancelled");
@@ -497,25 +601,14 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
 
 
                 } catch (Exception e) {
-
+                    System.out.println("Data: " + data);
                     System.out.println("Exception " + e.getMessage());
-                    // mostrarOpcion();
                     return null;
                 }
 
                 return null;
             }
-/*
-            private void mostrarOpcion() {
-                Context context = getApplicationContext();
-                Toast mensaje;
-                duration = 4;
 
-                String text = "No existeix una ciutat amb aquest nom.";
-                mensaje = Toast.makeText(context, text, duration);
-                mensaje.show();
-            }
-*/
             @Override
             protected void onPostExecute(Void Void) {
                 if (data != null) {
@@ -531,8 +624,8 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
             }
         }.execute();
     }
-
-    private void readDataFromJson() throws JSONException {
+*/
+    private void readDataFromJson(String data) throws JSONException {
         int id;
         String name = "", description= "", address= "Mataró", opening_hours= "", schedule_close= "", gastronomy= "";
         Double assessment = 1.0, entrance_price = 10.0;
@@ -542,21 +635,41 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
         // String type, name, description, address, opening_hours, schedule_close, gastronomy, entrance_price;
         // Double assessment;
         // int category;
+
         JSONArray jArray = new JSONArray(data);
+        JSONObject jObject = jArray.getJSONObject(0);
 
         if (typeOfLocalFilter.equals("restaurants")){
 
             for (int i = 0; i < jArray.length(); i++) {
-                JSONObject jObject = jArray.getJSONObject(i);
-                    id = (int) jObject.get("idBar-Restaurant");
-                    name = (String) jObject.get("Nom");
-                    description = (String) jObject.get("Descripcio");
-                    assessment = (double) jObject.get("Valoracio");
-                    address = (String) jObject.get("Direccio"); //Por confirmar
+                jObject = jArray.getJSONObject(i);
+
+                id = (int) jObject.get("idBarRestaurant");
+                name = (String) jObject.get("Nom");
+                description = (String) jObject.get("Descripcio");
+
+                if (jObject.get("Valoracio") == null){
+                    assessment = (Double) jObject.get("Valoracio");
+                }
+                else{assessment = 0.0;}
+                /*
+                if (jObject.get("Direccio") == null){
+                    address = (String) jObject.get("Direccio");
+                }
+                else{ address = "Mataró";}
+                if (jObject.get("Horari-Obertura") == null){
                     opening_hours = (String) jObject.get("Horari-Obertura");
+                }
+                else{ opening_hours = "";}
+                if (jObject.get("Horari-Tancament") == null){
                     schedule_close = (String) jObject.get("Horari-Tancament");
-                    gastronomy = (String) jObject.get("TipusGastronomic");
-                    category = (int) jObject.get("Categoria");
+                }
+                else{ schedule_close = "";}
+
+
+                gastronomy = (String) jObject.get("TipusGastronomic");
+                category = (int) jObject.get("Categoria");
+                */
 
                 if (bd.restaurantsAskExist(id)){
                     bd.restaurantsUpdate(id, name, description, assessment, address, opening_hours, schedule_close, gastronomy, category);
@@ -569,17 +682,25 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
 
         if (typeOfLocalFilter.equals("pubs")){
             for (int i = 0; i < jArray.length(); i++) {
-                JSONObject jObject = jArray.getJSONObject(i);
+                jObject = jArray.getJSONObject(i);
                     id = (int) jObject.get("idPub");
                     name = (String) jObject.get("Nom");
                     description = (String) jObject.get("Descripcio");
-                    assessment = (Double) jObject.get("Valoracio");
-                    address = (String) jObject.get("Direccio"); //Por confirmar
-                    opening_hours = (String) jObject.get("Horari-Obertura");
-                    schedule_close = (String) jObject.get("Horari-Tancament");
+                    if (jObject.get("Valoracio") == null){
+                        assessment = (Double) jObject.get("Valoracio");
+                    }else{assessment = 0.0;}
 
-                // gastronomy = (String) data.get("TipusGastronomic");
-                // category = (int) data.get("Categoria");
+
+                 /*
+                    if (jObject.get("Direccio") == null){
+                        address = (String) jObject.get("Direccio");
+                    }
+                    else{ address = "Mataró";}*/
+                   // opening_hours = (String) jObject.get("HorariObertura");
+                   // schedule_close = (String) jObject.get("HorariTancament");
+
+                   // gastronomy = (String) data.get("TipusGastronomic");
+                   // category = (int) data.get("Categoria");
 
                 if (bd.pubsAskExist(id)){
                     bd.pubsUpdate(id, name, description, assessment, address, opening_hours, schedule_close);
@@ -592,15 +713,20 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
 
         if (typeOfLocalFilter.equals("discoteques")){
             for (int i = 0; i < jArray.length(); i++) {
-                JSONObject jObject = jArray.getJSONObject(i);
+                jObject = jArray.getJSONObject(i);
                     id = (int) jObject.get("idDiscoteca");
                     name = (String) jObject.get("Nom");
                     description = (String) jObject.get("Descripcio");
-                    assessment = (Double) jObject.get("Valoracio");
-                    address = (String) jObject.get("Direccio"); //Por confirmar
-                    opening_hours = (String) jObject.get("Horari-Obertura");
-                    schedule_close = (String) jObject.get("Horari-Tancament");
-                    entrance_price = (Double) jObject.get("Valoracio");//Por confirmar
+                    if (jObject.get("Valoracio") == null){
+                        assessment = (Double) jObject.get("Valoracio");
+                    }else{assessment = 0.0;}
+                   // address = (String) jObject.get("Direccio"); //NO me llega
+                   // opening_hours = (String) jObject.get("HorariObertura");
+                   // schedule_close = (String) jObject.get("HorariTancament");
+                    if (jObject.get("Valoracio") == null){
+                        entrance_price = (Double) jObject.get("PreuEntrada");
+                    }else{entrance_price = 0.0;}
+
                     // category = (int) data.get("Categoria");
 
 
@@ -613,7 +739,5 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
             }
         }
         // JSONObject jsonObjectMain = (JSONObject) data.get("main");
-
-        databaseToLocalList();
     }
 }
