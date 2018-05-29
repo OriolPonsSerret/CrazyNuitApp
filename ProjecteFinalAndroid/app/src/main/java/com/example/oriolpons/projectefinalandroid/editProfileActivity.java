@@ -97,7 +97,7 @@ public class editProfileActivity extends AppCompatActivity implements View.OnCli
                 if(!edtUserName.getText().toString().isEmpty()){
 
                     if(!bd.usernameAskExist(edtUserName.getText().toString(), userId)){
-                        bd.updateRoutesCreatorWhereNameChanged(userName, edtUserName.getText().toString());//No funciona
+                        //bd.updateRoutesCreatorWhereNameChanged(userName, edtUserName.getText().toString());//No funciona
                         bd.userUpdateName(userEmail, edtUserName.getText().toString());
 
 

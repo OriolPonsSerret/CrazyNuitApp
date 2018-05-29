@@ -28,6 +28,7 @@ import com.example.oriolpons.projectefinalandroid.Database.Datasource;
 import com.example.oriolpons.projectefinalandroid.Models.local;
 import com.example.oriolpons.projectefinalandroid.Models.routes;
 import com.example.oriolpons.projectefinalandroid.Adapters.adapterRoutes;
+import com.google.gson.JsonObject;
 /*
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -37,6 +38,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 */
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -61,10 +66,9 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
     private String routeName, routeDescription, routeCreator, routeAssessment, NameFilter = "";
     private double assessment;
     private AlertDialog dialog;
-    private JSONObject data = null;
 
     private Datasource bd;
-    private String assessmentFilter = "ASC", typeOfRouteFilter = "short", cityOfRouteFilter= "Mataró", URL =  "http://localhost/CrazyNuitApi/public/api/rutes/";
+    private String assessmentFilter = "ASC", typeOfRouteFilter = "short", cityOfRouteFilter= "Mataró", URL =  "http://10.0.2.2/ApiCrazyNuit/public/api/rutes";
     private int cityOfRouteFilterPosition = 0, RouteLenghtMin = 0, RouteLenght = 0, routeId;
     private String userEmail = "";
 
@@ -137,7 +141,8 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
 
                 clearData();
                 //getJsonData();
-                addDBRoutes();
+                getJsonData getJson = new getJsonData();
+                getJson.execute();
                 databaseToRouteList();
             }
 
@@ -158,7 +163,8 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
         filterConfig();
         clearData();
         //getJsonData();
-        addDBRoutes();
+        getJsonData getJson = new getJsonData();
+        getJson.execute();
         databaseToRouteList();
 
         spCity.setSelection(cityOfRouteFilterPosition);
@@ -167,11 +173,11 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
         getSupportActionBar().setTitle("Rutas globales");
     }
 
-
+/*
     private void addDBRoutes() {
-        String name = "", description= "", creator= "Senpai", city= "", locals = "", date = "", favourite = "FALSE";
+        String name = "", description= "", city= "", locals = "", date = "", favourite = "FALSE";
         Double assessment = 1.0;
-        int route_lenght = 2;
+        int route_lenght = 2, idCreator = 1;
 
         for(int id = 0; id <= 15; id++){
 
@@ -198,18 +204,18 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
                     city= "Mataró";
                     assessment = 4.0;
                     route_lenght = 3;
-                    creator= "Onii-chan";
+                    idCreator= 0;
                 }
                 if (bd.routesAskExist(id)){
-                    bd.routesUpdate(id, route_lenght, name, description, assessment, creator, city, locals, date, "FALSE");
+                    bd.routesUpdate(id, route_lenght, name, description, assessment, idCreator, city, locals, date);
                 }
                 else{
-                    bd.routesAdd(id, route_lenght, name, description, assessment, creator, city, locals, date, favourite);
+                    bd.routesAdd(id, route_lenght, name, description, assessment, idCreator, city, locals, date);
                 }
             }
         }
     }
-
+*/
 
     private void intentRouteContent() {
         Bundle bundle = new Bundle();
@@ -351,7 +357,8 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
                 bd.filterConfigUpdate("routes", assessmentFilter, typeOfRouteFilter, cityOfRouteFilter, cityOfRouteFilterPosition);
                 clearData();
                 //getJsonData();
-                addDBRoutes();
+                getJsonData getJson = new getJsonData();
+                getJson.execute();
                 databaseToRouteList();
 
                 text = "Se han aplicado los filtros.";
@@ -426,11 +433,11 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
     }
     private void databaseToRouteList() {
 
-        Cursor cursor;
+        Cursor cursor, cursor2;
         int id;
-        String measure = "", name, description, creator, city, rute_locals, route_date;
+        String measure = "", name, description, creator = "", city, rute_locals, route_date;
         Double assessment, entrance_price;
-        int route_lenght;
+        int route_lenght = 2, idCreator = 0;
 
         if (typeOfRouteFilter.equals("short")) {
             RouteLenghtMin = 0;
@@ -456,7 +463,7 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
             name = cursor.getString(2);
             description = cursor.getString(3);
             assessment = cursor.getDouble(4);
-            creator = cursor.getString(5);
+            idCreator = cursor.getInt(5);
             city = cursor.getString(6);
             rute_locals = cursor.getString(7);
             route_date = cursor.getString(8);
@@ -473,121 +480,104 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
                 }
             }
 
+            cursor2 = bd.getUserInformationById(idCreator);
+            while(cursor2.moveToNext()){
+                creator = cursor2.getString(1);
+            }
+
             listRoutes.add(new routes(id, measure, name, description, creator, assessment, city, 0));
         }
     }
 
 
-    private void getJsonData() {
+    private class getJsonData extends AsyncTask<Void, Void, String> {
 
-        new AsyncTask<Void, Void, Void>() {
+        protected String doInBackground(Void... argumentos) {
 
+            StringBuffer bufferCadena = new StringBuffer("");
 
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
+            try {
+                HttpClient cliente = new DefaultHttpClient();
+                HttpGet peticion = new HttpGet(URL);
+                // ejecuta una petición get
+                HttpResponse respuesta = cliente.execute(peticion);
 
-            }
+                //lee el resultado
+                BufferedReader entrada = new BufferedReader(new InputStreamReader(
+                        respuesta.getEntity().getContent()));
+                // Log.i("ResponseObject: ", respuesta.toString());
 
-            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-            @Override
-            protected Void doInBackground(Void... params) {
-                try {
-                    java.net.URL url = new URL(URL);
+                String separador = "";
+                String NL = System.getProperty("line.separator");
+                //almacena el resultado en bufferCadena
 
-                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-                    BufferedReader reader =
-                            new BufferedReader(new InputStreamReader(connection.getInputStream()));
-
-                    json = new StringBuffer(1024);
-                    String tmp = "";
-
-                    while ((tmp = reader.readLine()) != null)
-                        json.append(tmp).append("\n");
-                    reader.close();
-
-                    data = new JSONObject(json.toString());
-
-                    if (data.getInt("cod") != 200) {
-                        System.out.println("Cancelled");
-                        return null;
-                    }
-
-
-                } catch (Exception e) {
-
-                    System.out.println("Exception " + e.getMessage());
-                    // mostrarOpcion();
-                    return null;
+                while ((separador = entrada.readLine()) != null) {
+                    bufferCadena.append(separador + NL);
                 }
-
-                return null;
+                entrada.close();
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                //e.printStackTrace();
+                Log.i("ResponseObject: ", e.toString());
             }
-            /*
-                        private void mostrarOpcion() {
-                            Context context = getApplicationContext();
-                            Toast mensaje;
-                            duration = 4;
 
-                            String text = "No existeix una ciutat amb aquest nom.";
-                            mensaje = Toast.makeText(context, text, duration);
-                            mensaje.show();
-                        }
-            */
-            @Override
-            protected void onPostExecute(Void Void) {
-                if (data != null) {
-                    Log.d("my weather received", data.toString());
+            return bufferCadena.toString();
 
-                    try {
-                        readDataFromJson();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
+        }
 
+        protected void onPostExecute(String data) {
+
+            try {
+                readDataFromJson(data);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        }.execute();
+            System.out.println(data);
+            // Toast.makeText(localActivity.this, data, Toast.LENGTH_SHORT).show();
+
+        }
     }
 
-    private void readDataFromJson() throws JSONException {
+    private void readDataFromJson(String data) throws JSONException {
         int id, idLocal;
-        String name = "", description= "", creator= "Senpai", city= "", locals = "", date = "", favourite = "FALSE";
+        String name = "", description= "", city= "Mataró", locals = "", date = "", favourite = "FALSE";
         Double assessment = 1.0;
-        int route_lenght = 2;
+        int route_lenght = 2, idCreator = 0;
 
         JSONArray jArray = new JSONArray(data);
-
 
         for (int i = 0; i < jArray.length(); i++) {
             JSONObject jObject = jArray.getJSONObject(i);
             id = (int) jObject.get("idrutes");
             route_lenght = (int) jObject.get("rutmida");
-            name = (String) jObject.get("nombre");
-            description = (String) jObject.get("descripcion");
-            assessment = (Double) jObject.get("rutvaloracio");
-            creator = (String) jObject.get("creador");
-            city = (String) jObject.get("ciudad");
-            locals = (String) jObject.get("rutlocals");// Desconozco si vendrá con []
-            date = (String) jObject.get("rutdata");
-
+            name = (String) jObject.get("rutnom");
+            if (jObject.get("rutdescripcio") == null){
+                 description = (String) jObject.get("rutdescripcio");
+            }
+            else{description = "";}
+            if (jObject.get("rutvaloracio") == null){
+                assessment = (Double) jObject.get("rutvaloracio");
+            }
+            else{assessment = 0.0;}
+            idCreator = (int) jObject.get("rutcreador");
+            //city = (String) jObject.get("ciudad"); //No existe porque lo hacemos por zonas.
+            //locals = (String) jObject.get("rutlocals");// Desconozco si vendrá con [] Por el momento no.
+            //date = (String) jObject.get("rutdata");
+/*
             //En el caso de rutlocals[]
             JSONArray jArrayLocals = new JSONArray("rutlocals");
             for (int i2 = 0; i2 < jArrayLocals.length(); i2++) {
                 JSONObject jObjectLocals = jArrayLocals.getJSONObject(i);
 
-            }
+            }*/
 
             if (bd.routesAskExist(id)){
-                bd.routesUpdate(id, route_lenght, name, description, assessment, creator, city, locals, date, "FALSE");
+                bd.routesUpdate(id, route_lenght, name, description, assessment, idCreator, city, locals, date);
             }
             else{
-                bd.routesAdd(id, route_lenght, name, description, assessment, creator, city, locals, date, favourite);
+                bd.routesAdd(id, route_lenght, name, description, assessment, idCreator, city, locals, date);
             }
         }
-
-        databaseToRouteList();
     }
 
 /*

@@ -88,7 +88,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         "name TEXT NOT NULL, " +
                         "description TEXT, " +
                         "assessment REAL, " +
-                        "creator TEXT NOT NULL, " +
+                        "creator INTEGER NOT NULL, " +
                         "city TEXT NOT NULL, " +
                         "rute_locals TEXT, " +
                         "route_date TEXT, " +

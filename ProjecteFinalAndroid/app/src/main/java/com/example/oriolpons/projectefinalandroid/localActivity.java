@@ -161,7 +161,7 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
         btnLocal.setEnabled(false);
         getSupportActionBar().setTitle("Locales en tu zona");
     }
-
+/*
     private void addLocalsToDatabase() {
         String name = "", description= "", address= "", opening_hours= "", schedule_close= "", gastronomy= "";
         Double assessment = 1.0, entrance_price = 10.0;
@@ -231,7 +231,7 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
             }
         }
     }
-
+*/
     private void filterConfig() {
         Cursor cursor = bd.filterConfigLocal();
         while(cursor.moveToNext()){
