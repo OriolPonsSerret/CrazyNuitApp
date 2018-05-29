@@ -156,14 +156,21 @@ public class profileActivity extends AppCompatActivity implements View.OnClickLi
     {
         super.onRestart();
         linearLayoutMenu.setVisibility(View.GONE);
+
         setValuesMyProfile();
+
+
     }
 
     private void setValuesMyProfile() {
         cursor = bd.getUserInformationByName(userName);
         while(cursor.moveToNext()){
+            userId = cursor.getInt(0);
             userName = cursor.getString(1);
             description = cursor.getString(2);
+            if (userEmail.equals(cursor.getString(3))){
+                type = "me";
+            }else{type = "another";}
         }
 
         tvUserName.setText(userName);
@@ -355,84 +362,6 @@ public class profileActivity extends AppCompatActivity implements View.OnClickLi
     public void onFragmentInteraction(Uri uri) {
 
     }
-
-
-    private void getJSON() {
-
-        new AsyncTask<Void, Void, Void>() {
-
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-
-            }
-
-            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-            @Override
-            protected Void doInBackground(Void... params) {
-                try {
-                    URL url = new URL(URL);//------------------------------------------------------------<<<<<<<<<<<<<< URL <<<<<<
-
-                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-                    BufferedReader reader =
-                            new BufferedReader(new InputStreamReader(connection.getInputStream()));
-
-                    json = new StringBuffer(1024);
-                    String tmp = "";
-
-                    while ((tmp = reader.readLine()) != null)
-                        json.append(tmp).append("\n");
-                    reader.close();
-
-                    data = new JSONObject(json.toString());
-
-                    if (data.getInt("cod") != 200) {
-                        System.out.println("Cancelled");
-                        return null;
-                    }
-
-
-                } catch (Exception e) {
-
-                    //System.out.println("Exception " + e.getMessage());
-                    // mostrarOpcion();
-                    return null;
-                }
-
-                return null;
-            }
-            @Override
-            protected void onPostExecute(Void Void) {
-                if (data != null) {
-                    Log.d("my weather received", data.toString());
-
-                    try {
-                        readData();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-            }
-        }.execute();
-    }
-
-    private void readData() throws JSONException {
-
-        id = (long) data.get("idusuaris");
-        name = (String) data.get("Nom");
-        //description = (String) data.get("Descripcio");
-        bornDate = (String) data.get("DataNaixement");
-        email = (String) data.get("correu_electronic");
-        telephone = (String) data.get("telefon");
-
-        tvUserName.setText(name);
-        //tvUserDescription.setText(description);
-    }
-
-
 
 
 }

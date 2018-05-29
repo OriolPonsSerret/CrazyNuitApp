@@ -399,11 +399,11 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
         int id;
         String measure = "", name, description, creator = "", city, rute_locals, route_date;
         Double assessment, entrance_price;
-        int route_lenght;
+        int route_lenght, idCreator = 0;
 
         cursor = bd.getUserInformationByEmail(userEmail);
         while(cursor.moveToNext()){
-            creator = cursor.getString(1);
+            idCreator = cursor.getInt(0);
         }
 
         if (typeOfRouteFilter.equals("short")) {
@@ -423,14 +423,14 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
             }
         }
 
-        cursor = bd.filterRoutesUser(cityOfRouteFilter, assessmentFilter, NameFilter, RouteLenghtMin, RouteLenght, creator);
+        cursor = bd.filterRoutesUser(cityOfRouteFilter, assessmentFilter, NameFilter, RouteLenghtMin, RouteLenght, idCreator);
         while(cursor.moveToNext()){
             id = cursor.getInt(0);
             route_lenght = cursor.getInt(1);
             name = cursor.getString(2);
             description = cursor.getString(3);
             assessment = cursor.getDouble(4);
-            creator = cursor.getString(5);
+            idCreator = cursor.getInt(5);
             city = cursor.getString(6);
             rute_locals = cursor.getString(7);
             route_date = cursor.getString(8);
@@ -445,6 +445,11 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
                         measure = "long";
                     }
                 }
+            }
+
+            Cursor cursor2 = bd.getUserInformationById(idCreator);
+            while(cursor2.moveToNext()){
+                creator = cursor2.getString(1);
             }
 
             listRoutes.add(new routes(id, measure, name, description, creator, assessment, city, 0));

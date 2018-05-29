@@ -71,7 +71,11 @@ public class routesContentActivity extends AppCompatActivity implements View.OnC
             txtTitle.setText(cursor.getString(1));
             txtDescription.setText(cursor.getString(2));
             txtAssessment.setText(cursor.getString(3));
-            txtCreator.setText(cursor.getString(4));
+
+            Cursor cursor2 = bd.getUserInformationById(cursor.getInt(4));
+            while(cursor2.moveToNext()){
+                txtCreator.setText(cursor2.getString(1));
+            }
             city = cursor.getString(5);
             rute_locals = cursor.getString(6);
             route_date = cursor.getString(7);
@@ -103,7 +107,7 @@ public class routesContentActivity extends AppCompatActivity implements View.OnC
 
 
 
-        if (favourite.equals("FALSE")|| favourite == null){
+        if (favourite.equals("FALSE")|| favourite != null){
             btnAddFav.setVisibility(View.VISIBLE);
             btnRemoveFav.setVisibility(View.GONE);
         }else{

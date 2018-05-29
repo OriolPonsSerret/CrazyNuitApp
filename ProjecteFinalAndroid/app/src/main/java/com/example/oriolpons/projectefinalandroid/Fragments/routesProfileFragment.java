@@ -176,84 +176,6 @@ public class routesProfileFragment extends Fragment {
     }
 
 
-    private void getJSON() {
-
-        new AsyncTask<Void, Void, Void>() {
-
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-
-            }
-
-            @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-            @Override
-            protected Void doInBackground(Void... params) {
-                try {
-                    URL url = new URL(URL);//------------------------------------------------------------<<<<<<<<<<<<<< URL <<<<<<
-
-                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-                    BufferedReader reader =
-                            new BufferedReader(new InputStreamReader(connection.getInputStream()));
-
-                    json = new StringBuffer(1024);
-                    String tmp = "";
-
-                    while ((tmp = reader.readLine()) != null)
-                        json.append(tmp).append("\n");
-                    reader.close();
-
-                    data = new JSONObject(json.toString());
-
-                    if (data.getInt("cod") != 200) {
-                        System.out.println("Cancelled");
-                        return null;
-                    }
-
-
-                } catch (Exception e) {
-
-                    //System.out.println("Exception " + e.getMessage());
-                    // mostrarOpcion();
-                    return null;
-                }
-
-                return null;
-            }
-            @Override
-            protected void onPostExecute(Void Void) {
-                if (data != null) {
-                    Log.d("my weather received", data.toString());
-
-                    try {
-                        readData();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-            }
-        }.execute();
-    }
-
-    private void readData() throws JSONException {
-        int id;
-        String name = "", description = "", creator = "", city = "";
-        double puntuation = 0.0;
-
-        for (int i = 0; i < data.length(); i++) {
-            id = (int) data.get("idusuaris");
-           // name = (String) data.get("Nom");
-           // description = (String) data.get("description");
-           // creator = (String) data.get("creador");
-           // assessmepuntuationnt = (String) data.get("puntuación");
-
-            listRoutes.add(new routes(id, "long", name, description, creator, puntuation, city, 0));
-        }
-    }
-
 
     private void databaseToRouteList() {
 
@@ -261,7 +183,7 @@ public class routesProfileFragment extends Fragment {
         int id;
         String measure = "", name, description, creator = "", city, rute_locals, route_date;
         Double assessment, entrance_price;
-        int route_lenght;
+        int route_lenght, idCreator = 0;
 
         if (profileActivity.type.equals("another")){
             cursor = profileActivity.bd.getUserInformationByName(profileActivity.anotherUserName);
@@ -271,18 +193,18 @@ public class routesProfileFragment extends Fragment {
         }
 
         while(cursor.moveToNext()){
-            creator = cursor.getString(1);
+            idCreator = cursor.getInt(0);
         }
 
 
-        cursor = profileActivity.bd.showAllRoutesUser(creator);
+        cursor = profileActivity.bd.showAllRoutesUser(idCreator);
         while(cursor.moveToNext()){
             id = cursor.getInt(0);
             route_lenght = cursor.getInt(1);
             name = cursor.getString(2);
             description = cursor.getString(3);
             assessment = cursor.getDouble(4);
-            creator = cursor.getString(5);
+            idCreator = cursor.getInt(5);
             city = cursor.getString(6);
             rute_locals = cursor.getString(7);
             route_date = cursor.getString(8);
@@ -297,6 +219,11 @@ public class routesProfileFragment extends Fragment {
                         measure = "long";
                     }
                 }
+            }
+
+            Cursor cursor2 = profileActivity.bd.getUserInformationById(idCreator);
+            while(cursor2.moveToNext()){
+                creator = cursor2.getString(1);
             }
 
             listRoutes.add(new routes(id, measure, name, description, creator, assessment, city, 0));

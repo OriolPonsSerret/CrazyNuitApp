@@ -215,18 +215,18 @@ public class Datasource {
                 " WHERE UPPER(" +  ROUTES_CITY + ") LIKE UPPER ('" + city +"') AND UPPER(" +  ROUTES_NAME + ") LIKE UPPER ('%" + routeName +"%') AND " +  ROUTES_LENGHT + " > " + route_lenghtmin + " AND " +  ROUTES_LENGHT + " <= " + route_lenght  +
                 " ORDER BY " + ROUTES_ASSESSMENT + " " + order, null);
     }
-    public Cursor filterRoutesUser(String city, String order, String routeName, int route_lenghtmin, int route_lenght, String creator) {
+    public Cursor filterRoutesUser(String city, String order, String routeName, int route_lenghtmin, int route_lenght, int idCreator) {
         return dbR.rawQuery("SELECT " + ROUTES_ID + ", " + ROUTES_LENGHT +", " + ROUTES_NAME + ", " + ROUTES_DESCRIPTION + ", " + ROUTES_ASSESSMENT + ", " + ROUTES_CREATOR + ", " + ROUTES_CITY + ", " + ROUTES_LOCALS + ", " + ROUTES_DATE + ", " + ROUTES_FAVOURITE +
                 " FROM " + table_ROUTES +
-                " WHERE UPPER(" +  ROUTES_CITY + ") LIKE UPPER ('" + city +"') AND UPPER(" +  ROUTES_NAME + ") LIKE UPPER ('%" + routeName +"%') AND UPPER(" +  ROUTES_CREATOR + ") LIKE UPPER ('%" + creator +"%') AND " +  ROUTES_LENGHT + " > " + route_lenghtmin + " AND " +  ROUTES_LENGHT + " <= " + route_lenght  +
+                " WHERE UPPER(" +  ROUTES_CITY + ") LIKE UPPER ('" + city +"') AND UPPER(" +  ROUTES_NAME + ") LIKE UPPER ('%" + routeName +"%') AND " +  ROUTES_CREATOR + " LIKE " + idCreator +" AND " +  ROUTES_LENGHT + " > " + route_lenghtmin + " AND " +  ROUTES_LENGHT + " <= " + route_lenght  +
                 " ORDER BY " + ROUTES_ASSESSMENT + " " + order, null);
     }
 
-    public Cursor showAllRoutesUser(String creator) {
+    public Cursor showAllRoutesUser(int idCreator) {
         return dbR.rawQuery("SELECT " + ROUTES_ID + ", " + ROUTES_LENGHT +", " + ROUTES_NAME + ", " + ROUTES_DESCRIPTION + ", " + ROUTES_ASSESSMENT + ", " + ROUTES_CREATOR + ", " + ROUTES_CITY + ", " + ROUTES_LOCALS + ", " + ROUTES_DATE + ", " + ROUTES_FAVOURITE +
                 " FROM " + table_ROUTES +
-                " WHERE UPPER(" +  ROUTES_CREATOR + ") LIKE UPPER ('%" + creator +"%')" +
-                " ORDER BY " + ROUTES_CITY + " ASC", null);
+                " WHERE UPPER(" +  ROUTES_CREATOR + ") LIKE " + idCreator+
+                " ORDER BY " + ROUTES_LENGHT + " ASC", null);
     }
     public Cursor filterFavRoutes(String city, String order, String routeName, int route_lenghtmin, int route_lenght) {
         return dbR.rawQuery("SELECT " + ROUTES_ID + ", " + ROUTES_LENGHT +", " + ROUTES_NAME + ", " + ROUTES_DESCRIPTION + ", " + ROUTES_ASSESSMENT + ", " + ROUTES_CREATOR + ", " + ROUTES_CITY + ", " + ROUTES_LOCALS + ", " + ROUTES_DATE + ", " + ROUTES_FAVOURITE +
@@ -259,6 +259,15 @@ public class Datasource {
         return exists;
     }
 
+    public boolean usersAskExist(int id) {
+        Cursor c = dbR.rawQuery("SELECT " + USER_ID  +
+                " FROM " + table_USER +
+                " WHERE " +  USER_ID + " LIKE " + id, null);
+        boolean exists = c.moveToFirst();
+        c.close();
+        return exists;
+    }
+
     public Cursor getUserInformationById(int id) {
         return dbR.rawQuery("SELECT " + USER_ID + ", " + USER_USERNAME + ", " + USER_DESCRIPTION + ", " + USER_EMAIL + ", " + USER_PHONENUMBER + ", " + USER_BIRTHDATE +
                 " FROM " + table_USER +
@@ -274,6 +283,28 @@ public class Datasource {
         return dbR.rawQuery("SELECT " + USER_ID + ", " + USER_USERNAME + ", " + USER_DESCRIPTION + ", " + USER_EMAIL + ", " + USER_PHONENUMBER + ", " + USER_BIRTHDATE +
                 " FROM " + table_USER +
                 " WHERE UPPER(" +  USER_USERNAME + ") LIKE UPPER ('%" + name +"%')", null);
+    }
+
+    public void userAddedByJson(int id, String username, String description, String email, String phonenumber, String birthdate) {
+        ContentValues values = new ContentValues();
+        values.put(USER_ID, id);
+        values.put(USER_USERNAME, username);
+        values.put(USER_DESCRIPTION, description);
+        values.put(USER_EMAIL, email);
+        values.put(USER_PHONENUMBER, phonenumber);
+        values.put(USER_BIRTHDATE, birthdate);
+
+        dbW.insert(table_USER, null, values);
+    }
+    public void userUpdateByJson(int id, String username, String description, String email, String phonenumber, String birthdate) {
+        ContentValues values = new ContentValues();
+        values.put(USER_USERNAME, username);
+        values.put(USER_DESCRIPTION, description);
+        values.put(USER_EMAIL, email);
+        values.put(USER_PHONENUMBER, phonenumber);
+        values.put(USER_BIRTHDATE, birthdate);
+
+        dbW.update(table_USER,values, USER_ID + " = ?", new String[] { String.valueOf(id) });
     }
 
     public void userAdd(String username, String email) {

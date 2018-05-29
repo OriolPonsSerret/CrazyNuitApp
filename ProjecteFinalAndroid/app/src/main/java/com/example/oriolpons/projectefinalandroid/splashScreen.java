@@ -130,8 +130,11 @@ public class splashScreen extends Activity {
 
         protected void onPostExecute(String data) {
 
+
             try {
+
                 readDataFromJson(data);
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -143,9 +146,9 @@ public class splashScreen extends Activity {
 
     private void readDataFromJson(String data) throws JSONException {
         int id;
-        String name = "", description= "", address= "Mataró", opening_hours= "", schedule_close= "", gastronomy= "";
+        String city = "Mataró", username = "", email = "", phonenumber = "", birthdate = "", name = "", description= "", address= "Mataró", opening_hours= "", schedule_close= "", gastronomy= "", locals = "", date = "";
         Double assessment = 1.0, entrance_price = 10.0;
-        int category = 4;
+        int category = 4, route_lenght = 2, idCreator = 0;
 
         // Long id;
         // String type, name, description, address, opening_hours, schedule_close, gastronomy, entrance_price;
@@ -194,6 +197,8 @@ public class splashScreen extends Activity {
                     bd.restaurantsAdd(id, name, description, assessment, address, opening_hours, schedule_close, gastronomy, category);
                 }
             }
+            type = "pubs";
+            downloadDataFromApi();
         }
 
         if (type.equals("pubs")){
@@ -206,18 +211,6 @@ public class splashScreen extends Activity {
                     assessment = (Double) jObject.get("Valoracio");
                 }else{assessment = 0.0;}
 
-
-                 /*
-                    if (jObject.get("Direccio") == null){
-                        address = (String) jObject.get("Direccio");
-                    }
-                    else{ address = "Mataró";}*/
-                // opening_hours = (String) jObject.get("HorariObertura");
-                // schedule_close = (String) jObject.get("HorariTancament");
-
-                // gastronomy = (String) data.get("TipusGastronomic");
-                // category = (int) data.get("Categoria");
-
                 if (bd.pubsAskExist(id)){
                     bd.pubsUpdate(id, name, description, assessment, address, opening_hours, schedule_close);
                 }
@@ -225,6 +218,8 @@ public class splashScreen extends Activity {
                     bd.pubsAdd(id, name, description, assessment, address, opening_hours, schedule_close);
                 }
             }
+            type = "discoteques";
+            downloadDataFromApi();
         }
 
         if (type.equals("discoteques")){
@@ -253,7 +248,65 @@ public class splashScreen extends Activity {
                     bd.discosAdd(id, name, description, assessment, address, opening_hours, schedule_close, entrance_price);
                 }
             }
+            type = "rutes";
+            downloadDataFromApi();
         }
-        // JSONObject jsonObjectMain = (JSONObject) data.get("main");
+        if (type.equals("rutes")){
+            for (int i = 0; i < jArray.length(); i++) {
+                jObject = jArray.getJSONObject(i);
+                id = (int) jObject.get("idrutes");
+                route_lenght = (int) jObject.get("rutmida");
+                name = (String) jObject.get("rutnom");
+                if (jObject.get("rutdescripcio") == null){
+                    description = (String) jObject.get("rutdescripcio");
+                }
+                else{description = "";}
+                if (jObject.get("rutvaloracio") == null){
+                    assessment = (Double) jObject.get("rutvaloracio");
+                }
+                else{assessment = 0.0;}
+                idCreator = (int) jObject.get("rutcreador");
+
+
+                if (bd.routesAskExist(id)){
+                    bd.routesUpdate(id, route_lenght, name, description, assessment, idCreator, city, locals, date);
+                }
+                else{
+                    bd.routesAdd(id, route_lenght, name, description, assessment, idCreator, city, locals, date);
+                }
+            }
+            type = "usuaris";
+            downloadDataFromApi();
+        }
+        if (type.equals("usuaris")){
+            for (int i = 0; i < jArray.length(); i++) {
+                jObject = jArray.getJSONObject(i);
+                id = (int) jObject.get("idusuaris");
+                username = (String) jObject.get("name");
+                if (jObject.get("descripcio") == null){
+                    description = (String) jObject.get("descripcio");
+                }
+                else{description = "";}
+                email = (String) jObject.get("email");
+                if (jObject.get("telefon") == null){
+                    phonenumber = (String) jObject.get("telefon");
+                }
+                else{phonenumber = "";}
+                if (jObject.get("DataNaixement") == null){
+                    birthdate = (String) jObject.get("DataNaixement");
+                }
+                else{birthdate = "";}
+
+
+                if (bd.usersAskExist(id)){
+                    bd.userAddedByJson(id, username, description, email, phonenumber, birthdate);
+                }
+                else{
+                    bd.userUpdateByJson(id, username, description, email, phonenumber, birthdate);
+                }
+            }
+            type = "";
+        }
     }
+
 }

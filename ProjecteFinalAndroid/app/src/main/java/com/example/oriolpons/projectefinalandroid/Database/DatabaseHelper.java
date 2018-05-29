@@ -34,7 +34,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         "username TEXT, " +
                         "description TEXT, " +
                         "email TEXT, " +
-                        "phonenumber INTEGER, " +
+                        "phonenumber TEXT, " +
                         "birthdate DATE)";
 
         db.execSQL(CREATE_TABLE);
