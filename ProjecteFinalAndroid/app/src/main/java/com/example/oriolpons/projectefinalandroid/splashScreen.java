@@ -62,9 +62,9 @@ public class splashScreen extends Activity {
 
                     downloadDataFromApi();
 
-                    while (logoTimer<5000){
+                    while (logoTimer<10000){
                         sleep(100);
-                        if (progressStatus < 50) {
+                        if (progressStatus < 100) {
                             progressStatus += 1;
                             progressBar.setProgress(progressStatus);
                         }
@@ -299,10 +299,10 @@ public class splashScreen extends Activity {
 
 
                 if (bd.usersAskExist(id)){
-                    bd.userAddedByJson(id, username, description, email, phonenumber, birthdate);
+                    bd.userUpdateByJson(id, username, description, email, phonenumber, birthdate);
                 }
                 else{
-                    bd.userUpdateByJson(id, username, description, email, phonenumber, birthdate);
+                    bd.userAddedByJson(id, username, description, email, phonenumber, birthdate);
                 }
             }
             type = "";

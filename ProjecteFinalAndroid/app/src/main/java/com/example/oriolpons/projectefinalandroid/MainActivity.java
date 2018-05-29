@@ -19,8 +19,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Datasource bd;
     private Cursor cursor;
 
-    public static String localhost = "";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startActivity(i);
     }
     private void intentUserProfile() {
-        cursor = bd.getUserInformationByEmail(userEmail);
+        Cursor cursor = bd.getUserInformationByEmail(userEmail);
         while(cursor.moveToNext()){
             userName = cursor.getString(1);
         }

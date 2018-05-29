@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:max="50" />
+        android:max="100" />
 
     <TextView
         android:layout_width="fill_parent"
