@@ -58,6 +58,7 @@ public class routesProfileFragment extends Fragment {
     private StringBuffer json;
     private String URL;
     private TextView txtRoutesNumber;
+    private int routeId;
 
     public routesProfileFragment() {
         // Required empty public constructor
@@ -107,6 +108,7 @@ public class routesProfileFragment extends Fragment {
         Adapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                routeId = listRoutes.get(recyclerView.getChildAdapterPosition(view)).getId();
                 routeName = listRoutes.get(recyclerView.getChildAdapterPosition(view)).getName();
                 routeDescription = listRoutes.get(recyclerView.getChildAdapterPosition(view)).getDescription();
                 routeAssessment = listRoutes.get(recyclerView.getChildAdapterPosition(view)).getAssessment() + "/5";
@@ -166,6 +168,7 @@ public class routesProfileFragment extends Fragment {
 
     private void intentRouteContent() {
         Bundle bundle = new Bundle();
+        bundle.putInt("id",routeId);
         bundle.putString("name",routeName);
         bundle.putString("description",routeDescription);
         bundle.putString("assessment",routeAssessment);

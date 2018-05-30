@@ -66,8 +66,10 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
     private StringBuffer json;
     private AlertDialog dialog;
     private Datasource bd;
-    private String localName, localDescription, localAssessment, NameFilter = "", typeOfLocalFilter = "restaurants", assessmentFilter = "ASC", cityOfLocalFilter= "Mataró", url =  "http://10.0.2.2/ApiCrazyNuit/public/api/";
+    private String localName, localAddress, localDescription, NameFilter = "", typeOfLocalFilter = "restaurants", assessmentFilter = "ASC", cityOfLocalFilter= "Mataró", url =  "http://10.0.2.2/ApiCrazyNuit/public/api/";
     private int cityOfLocalFilterPosition = 0;
+    private long localId = 0;
+    private Double localAssessment;
 
     private String userEmail = "";
 
@@ -137,9 +139,11 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
         adapterLocal.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                localId = listLocals.get(recyclerLocals.getChildAdapterPosition(view)).getId();
                 localName = listLocals.get(recyclerLocals.getChildAdapterPosition(view)).getName();
                 localDescription = listLocals.get(recyclerLocals.getChildAdapterPosition(view)).getDescription();
-                localAssessment = listLocals.get(recyclerLocals.getChildAdapterPosition(view)).getAssessment() + "/5";
+                localAssessment = listLocals.get(recyclerLocals.getChildAdapterPosition(view)).getAssessment();
+                localAddress = listLocals.get(recyclerLocals.getChildAdapterPosition(view)).getAddress();
                 intentLocalContent();
             }
         });
@@ -409,9 +413,11 @@ public class localActivity extends AppCompatActivity implements View.OnClickList
 
     private void intentLocalContent() {
         Bundle bundle = new Bundle();
+        bundle.putLong("id", localId);
         bundle.putString("name", localName);
         bundle.putString("description", localDescription);
-        bundle.putString("assessment", localAssessment);
+        bundle.putDouble("assessment", localAssessment);
+        bundle.putString("address", localAddress);
         Intent intent = new Intent(this, localContentActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);

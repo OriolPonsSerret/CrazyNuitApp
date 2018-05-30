@@ -2,9 +2,11 @@ package com.example.oriolpons.projectefinalandroid;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -13,7 +15,22 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.example.oriolpons.projectefinalandroid.Database.Datasource;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONException;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.Map;
 
 public class editProfileActivity extends AppCompatActivity implements View.OnClickListener{
 
@@ -23,6 +40,7 @@ public class editProfileActivity extends AppCompatActivity implements View.OnCli
     private String userEmail = "", userName = "";
     public Datasource bd;
     private int userId = 0;
+    private String url = "http://10.0.2.2/ApiCrazyNuit/public/api/usuaris/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -288,10 +306,46 @@ public class editProfileActivity extends AppCompatActivity implements View.OnCli
                 dialog.cancel();
             }
         });
-
     }
+
     private void actionBack() {
         finish();
     }
 
+/*
+    private class putJsonData extends AsyncTask<String, String, Void> {
+
+        StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
+                new Response.Listener<String>()
+                {
+                    @Override
+                    public void onResponse(String response) {
+                        // response
+                        Log.d("Response", response);
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // error
+                        Log.d("Error.Response", response);
+                    }
+                }
+        ) {
+
+            @Override
+            protected Map<String, String> getParams()
+            {
+                Map<String, String>  params = new HashMap<String, String>();
+                params.put("name", "Alif");
+                params.put("domain", "http://itsalif.info");
+
+                return params;
+            }
+
+        };
+
+            queue.add(putRequest);
+    }*/
 }

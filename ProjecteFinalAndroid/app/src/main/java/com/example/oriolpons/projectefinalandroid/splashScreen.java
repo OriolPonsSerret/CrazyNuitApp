@@ -62,9 +62,9 @@ public class splashScreen extends Activity {
 
                     downloadDataFromApi();
 
-                    while (logoTimer<10000){
+                    while (logoTimer<5000){
                         sleep(100);
-                        if (progressStatus < 100) {
+                        if (progressStatus < 50) {
                             progressStatus += 1;
                             progressBar.setProgress(progressStatus);
                         }

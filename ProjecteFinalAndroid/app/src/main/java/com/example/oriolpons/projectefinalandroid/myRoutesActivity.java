@@ -3,12 +3,14 @@ package com.example.oriolpons.projectefinalandroid;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -24,8 +26,16 @@ import com.example.oriolpons.projectefinalandroid.Database.Datasource;
 import com.example.oriolpons.projectefinalandroid.Models.routes;
 import com.example.oriolpons.projectefinalandroid.Adapters.adapterRoutes;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class myRoutesActivity extends AppCompatActivity implements View.OnClickListener{
@@ -47,6 +57,7 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
     private String assessmentFilter = "ASC", typeOfRouteFilter = "short", cityOfRouteFilter= "Mataró", URL =  "http://localhost/ApiCrazyNuit/public/api/";
     private int cityOfRouteFilterPosition = 0, RouteLenghtMin = 0, RouteLenght = 0, routeId;
     private String userEmail = "";
+    private int idCreator = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -207,9 +218,11 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
     }
 
     private void loadCreateRoutes() {
+
         Bundle bundle = new Bundle();
         bundle.putInt("id",-1);
         bundle.putString("city",cityOfRouteFilter);
+        bundle.putInt("userId",idCreator);
         Intent intent = new Intent(this, createEditRouteActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
@@ -399,7 +412,7 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
         int id;
         String measure = "", name, description, creator = "", city, rute_locals, route_date;
         Double assessment, entrance_price;
-        int route_lenght, idCreator = 0;
+        int route_lenght;
 
         cursor = bd.getUserInformationByEmail(userEmail);
         while(cursor.moveToNext()){
@@ -485,6 +498,97 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
         databaseToRouteList();
     }
 */
+
+    private class getJsonData extends AsyncTask<Void, Void, String> {
+
+        protected String doInBackground(Void... argumentos) {
+
+            StringBuffer bufferCadena = new StringBuffer("");
+
+            try {
+                HttpClient cliente = new DefaultHttpClient();
+                HttpGet peticion = new HttpGet(URL);
+                // ejecuta una petición get
+                HttpResponse respuesta = cliente.execute(peticion);
+
+                //lee el resultado
+                BufferedReader entrada = new BufferedReader(new InputStreamReader(
+                        respuesta.getEntity().getContent()));
+                // Log.i("ResponseObject: ", respuesta.toString());
+
+                String separador = "";
+                String NL = System.getProperty("line.separator");
+                //almacena el resultado en bufferCadena
+
+                while ((separador = entrada.readLine()) != null) {
+                    bufferCadena.append(separador + NL);
+                }
+                entrada.close();
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                //e.printStackTrace();
+                Log.i("ResponseObject: ", e.toString());
+            }
+
+            return bufferCadena.toString();
+
+        }
+
+        protected void onPostExecute(String data) {
+
+            try {
+                readDataFromJson(data);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            System.out.println(data);
+            // Toast.makeText(localActivity.this, data, Toast.LENGTH_SHORT).show();
+
+        }
+    }
+
+    private void readDataFromJson(String data) throws JSONException {
+        int id, idLocal;
+        String name = "", description= "", city= "Mataró", locals = "", date = "", favourite = "FALSE";
+        Double assessment = 1.0;
+        int route_lenght = 2, idCreator = 0;
+
+        JSONArray jArray = new JSONArray(data);
+
+        for (int i = 0; i < jArray.length(); i++) {
+            JSONObject jObject = jArray.getJSONObject(i);
+            id = (int) jObject.get("idrutes");
+            route_lenght = (int) jObject.get("rutmida");
+            name = (String) jObject.get("rutnom");
+            if (jObject.get("rutdescripcio") == null){
+                description = (String) jObject.get("rutdescripcio");
+            }
+            else{description = "";}
+            if (jObject.get("rutvaloracio") == null){
+                assessment = (Double) jObject.get("rutvaloracio");
+            }
+            else{assessment = 0.0;}
+            idCreator = (int) jObject.get("rutcreador");
+            //city = (String) jObject.get("ciudad"); //No existe porque lo hacemos por zonas.
+            //locals = (String) jObject.get("rutlocals");// Desconozco si vendrá con [] Por el momento no.
+            //date = (String) jObject.get("rutdata");
+/*
+            //En el caso de rutlocals[]
+            JSONArray jArrayLocals = new JSONArray("rutlocals");
+            for (int i2 = 0; i2 < jArrayLocals.length(); i2++) {
+                JSONObject jObjectLocals = jArrayLocals.getJSONObject(i);
+
+            }*/
+
+            if (bd.routesAskExist(id)){
+                bd.routesUpdate(id, route_lenght, name, description, assessment, idCreator, city, locals, date);
+            }
+            else{
+                bd.routesAdd(id, route_lenght, name, description, assessment, idCreator, city, locals, date);
+            }
+        }
+    }
+
     public void onRestart()
     {
         super.onRestart();
@@ -493,6 +597,8 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
         filterConfig();
         clearData();
         //addDBRoutes();
+        //getJsonData getJson = new getJsonData();
+        //getJson.execute();
         databaseToRouteList();
 
     }

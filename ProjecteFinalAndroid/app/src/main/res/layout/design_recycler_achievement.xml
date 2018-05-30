@@ -25,7 +25,7 @@
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="10dp"
                 android:layout_weight="1"
-                android:src="@mipmap/ic_launcher_round" />
+                android:src="@drawable/top_users_icon_black" />
 
             <LinearLayout
                 android:layout_width="325dp"

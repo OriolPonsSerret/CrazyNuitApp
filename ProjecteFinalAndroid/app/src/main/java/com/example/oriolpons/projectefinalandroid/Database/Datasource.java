@@ -309,7 +309,7 @@ public class Datasource {
 
     public void userAdd(String username, String email) {
         ContentValues values = new ContentValues();
-        values.put(USER_ID, 1);
+        values.put(USER_ID, 0);
         values.put(USER_USERNAME, username);
         values.put(USER_DESCRIPTION, "");
         values.put(USER_EMAIL, email);
@@ -473,7 +473,7 @@ public class Datasource {
     }
 
     public boolean routesAskExistName(String name) {
-        Cursor c = dbR.rawQuery("SELECT " + ROUTES_ID  +
+        Cursor c = dbR.rawQuery("SELECT " + ROUTES_NAME  +
                 " FROM " + table_ROUTES +
                 " WHERE UPPER(" +  ROUTES_NAME + ") LIKE UPPER ('" + name + "')", null);
         boolean exists = c.moveToFirst();
@@ -507,6 +507,14 @@ public class Datasource {
         values.put(ROUTES_LOCALS, locals);
         values.put(ROUTES_DATE, date);
         values.put(ROUTES_FAVOURITE, date);
+
+        dbW.update(table_ROUTES,values, ROUTES_ID + " = ?", new String[] { String.valueOf(id) });
+    }
+
+    public void routesUpdatedByUser(int id, String name, String description) {
+        ContentValues values = new ContentValues();
+        values.put(ROUTES_NAME, name);
+        values.put(ROUTES_DESCRIPTION, description);
 
         dbW.update(table_ROUTES,values, ROUTES_ID + " = ?", new String[] { String.valueOf(id) });
     }

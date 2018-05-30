@@ -646,6 +646,8 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
 
         filterConfig();
         clearData();
+       // getJsonData getJson = new getJsonData();
+       // getJson.execute();
         databaseToRouteList();
 
         spCity.setSelection(cityOfRouteFilterPosition);

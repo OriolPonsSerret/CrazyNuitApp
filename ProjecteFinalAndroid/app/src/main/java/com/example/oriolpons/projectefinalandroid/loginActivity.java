@@ -158,7 +158,10 @@ public class loginActivity extends AppCompatActivity implements View.OnClickList
 
 
     private void goBack() {
+        Bundle bundle = new Bundle();
+        bundle.putString("user_email", email);
         Intent i = new Intent(this, MainActivity.class);
+        i.putExtras(bundle);
         startActivityForResult(i, 1);
     }
 
