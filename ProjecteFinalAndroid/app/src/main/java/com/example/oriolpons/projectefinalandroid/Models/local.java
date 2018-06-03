@@ -16,10 +16,10 @@ public class local {
     private String schedule_close;
     private String gastronomy;
     private int category;
-    private Double entrance_price;
+    private String entrance_price;
     private int icon;
 
-    public local(long id, String type, String name, String description, Double assessment, String address, String opening_hours, String schedule_close, String gastronomy, int category, Double entrance_price, int icon) {
+    public local(long id, String type, String name, String description, Double assessment, String address, String opening_hours, String schedule_close, String gastronomy, int category, String entrance_price, int icon) {
         this.id = id;
         this.type = type;
         this.name = name;
@@ -114,11 +114,11 @@ public class local {
         this.category = category;
     }
 
-    public Double getEntrance_price() {
+    public String getEntrance_price() {
         return entrance_price;
     }
 
-    public void setEntrance_price(Double entrance_price) {
+    public void setEntrance_price(String entrance_price) {
         this.entrance_price = entrance_price;
     }
 

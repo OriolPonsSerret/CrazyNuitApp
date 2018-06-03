@@ -242,6 +242,23 @@ public class Datasource {
                 " WHERE " +  ROUTES_ID + " LIKE " + id , null);
     }
 
+
+    public Cursor getRestaurantsInformationByName(String localName) {
+        return dbR.rawQuery("SELECT " + RESTAURANTS_ID +", " + RESTAURANTS_NAME + ", " + RESTAURANTS_DESCRIPTION + ", " + RESTAURANTS_ASSESSMENT + ", " + RESTAURANTS_ADDRESS + ", " + RESTAURANTS_OPENING + ", " + RESTAURANTS_CLOSE + ", " + RESTAURANTS_GASTRONOMY + ", " + RESTAURANTS_CATEGORY +
+                " FROM " + table_RESTAURANTS +
+                " WHERE UPPER(" +  RESTAURANTS_NAME + ") LIKE UPPER ('" + localName +"')" , null);
+    }
+    public Cursor getPubsInformationByName(String localName) {
+        return dbR.rawQuery("SELECT " + PUBS_ID +", " + PUBS_NAME + ", " + PUBS_DESCRIPTION + ", " + PUBS_ASSESSMENT + ", " + PUBS_ADDRESS + ", " + PUBS_OPENING + ", " + PUBS_CLOSE +
+                " FROM " + table_PUBS +
+                " WHERE UPPER(" +  PUBS_NAME + ") LIKE UPPER ('" + localName +"')" , null);
+    }
+    public Cursor getDiscosInformationByName(String localName) {
+        return dbR.rawQuery("SELECT " + DISCOS_ID +", " + DISCOS_NAME + ", " + DISCOS_DESCRIPTION + ", " + DISCOS_ASSESSMENT + ", " + DISCOS_ADDRESS + ", " + DISCOS_OPENING + ", " + DISCOS_CLOSE + ", " + DISCOS_PRICE +
+                " FROM " + table_DISCOS +
+                " WHERE UPPER(" +  DISCOS_NAME + ") LIKE UPPER ('" + localName +"')" , null);
+    }
+
     public Cursor routeLastId(){
         return dbR.rawQuery("SELECT " + ROUTES_ID +
                 " FROM " + table_ROUTES +
@@ -361,6 +378,15 @@ public class Datasource {
         return exists;
     }
 
+    public boolean restaurantsAskExistByName(String localName) {
+        Cursor c = dbR.rawQuery("SELECT " + RESTAURANTS_NAME  +
+                " FROM " + table_RESTAURANTS +
+                " WHERE UPPER(" +  RESTAURANTS_NAME + ") LIKE UPPER ('%" + localName +"%')", null);
+        boolean exists = c.moveToFirst();
+        c.close();
+        return exists;
+    }
+
     public void restaurantsAdd(int id, String name, String description, Double assessment, String address, String opening, String close, String gastronomy, int category) {
         ContentValues values = new ContentValues();
         values.put(RESTAURANTS_ID, id);
@@ -391,11 +417,19 @@ public class Datasource {
     }
 
 
-
     public boolean pubsAskExist(int id) {
         Cursor c = dbR.rawQuery("SELECT " + PUBS_ID  +
                 " FROM " + table_PUBS +
                 " WHERE " +  PUBS_ID + " LIKE " + id, null);
+        boolean exists = c.moveToFirst();
+        c.close();
+        return exists;
+    }
+
+    public boolean pubsAskExistByName(String localName) {
+        Cursor c = dbR.rawQuery("SELECT " + PUBS_NAME  +
+                " FROM " + table_PUBS +
+                " WHERE UPPER(" +  PUBS_NAME + ") LIKE UPPER ('%" + localName +"%')", null);
         boolean exists = c.moveToFirst();
         c.close();
         return exists;
@@ -435,8 +469,16 @@ public class Datasource {
         c.close();
         return exists;
     }
+    public boolean discoAskExistByName(String localName) {
+        Cursor c = dbR.rawQuery("SELECT " + DISCOS_NAME  +
+                " FROM " + table_DISCOS +
+                " WHERE UPPER(" +  DISCOS_NAME + ") LIKE UPPER ('%" + localName +"%')", null);
+        boolean exists = c.moveToFirst();
+        c.close();
+        return exists;
+    }
 
-    public void discosAdd(int id, String name, String description, Double assessment, String address, String opening, String close, Double price) {
+    public void discosAdd(int id, String name, String description, Double assessment, String address, String opening, String close, String price) {
         ContentValues values = new ContentValues();
         values.put(DISCOS_ID, id);
         values.put(DISCOS_NAME, name);
@@ -450,7 +492,7 @@ public class Datasource {
         dbW.insert(table_DISCOS, null, values);
     }
 
-    public void discosUpdate(int id, String name, String description, Double assessment, String address, String opening, String close, Double price) {
+    public void discosUpdate(int id, String name, String description, Double assessment, String address, String opening, String close, String price) {
         ContentValues values = new ContentValues();
         values.put(DISCOS_NAME, name);
         values.put(DISCOS_DESCRIPTION, description);

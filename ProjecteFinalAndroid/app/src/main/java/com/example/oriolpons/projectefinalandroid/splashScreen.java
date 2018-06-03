@@ -62,9 +62,9 @@ public class splashScreen extends Activity {
 
                     downloadDataFromApi();
 
-                    while (logoTimer<5000){
+                    while (logoTimer<10000){
                         sleep(100);
-                        if (progressStatus < 50) {
+                        if (progressStatus < 100) {
                             progressStatus += 1;
                             progressBar.setProgress(progressStatus);
                         }
@@ -146,8 +146,8 @@ public class splashScreen extends Activity {
 
     private void readDataFromJson(String data) throws JSONException {
         int id;
-        String city = "Mataró", username = "", email = "", phonenumber = "", birthdate = "", name = "", description= "", address= "Mataró", opening_hours= "", schedule_close= "", gastronomy= "", locals = "", date = "";
-        Double assessment = 1.0, entrance_price = 10.0;
+        String entrance_price = "", city = "Mataró", username = "", email = "", phonenumber = "", birthdate = "", name = "", description= "", address= "Mataró", opening_hours= "", schedule_close= "", gastronomy= "", locals = "", date = "";
+        Double assessment = 1.0;
         int category = 4, route_lenght = 2, idCreator = 0;
 
         // Long id;
@@ -167,8 +167,10 @@ public class splashScreen extends Activity {
                 name = (String) jObject.get("Nom");
                 description = (String) jObject.get("Descripcio");
 
-                if (jObject.get("Valoracio") == null){
-                    assessment = (Double) jObject.get("Valoracio");
+                if (!jObject.get("Valoracio").equals(null)){
+                    int value;
+                    value = (int) jObject.get("Valoracio");
+                    assessment = (double) value;
                 }
                 else{assessment = 0.0;}
                 /*
@@ -207,9 +209,12 @@ public class splashScreen extends Activity {
                 id = (int) jObject.get("idPub");
                 name = (String) jObject.get("Nom");
                 description = (String) jObject.get("Descripcio");
-                if (jObject.get("Valoracio") == null){
-                    assessment = (Double) jObject.get("Valoracio");
-                }else{assessment = 0.0;}
+                if (!jObject.get("Valoracio").equals(null)){
+                    int value;
+                    value = (int) jObject.get("Valoracio");
+                    assessment = (double) value;
+                }
+                else{assessment = 0.0;}
 
                 if (bd.pubsAskExist(id)){
                     bd.pubsUpdate(id, name, description, assessment, address, opening_hours, schedule_close);
@@ -228,15 +233,21 @@ public class splashScreen extends Activity {
                 id = (int) jObject.get("idDiscoteca");
                 name = (String) jObject.get("Nom");
                 description = (String) jObject.get("Descripcio");
-                if (jObject.get("Valoracio") == null){
-                    assessment = (Double) jObject.get("Valoracio");
-                }else{assessment = 0.0;}
+                if (!jObject.get("Valoracio").equals(null)){
+                    int value;
+                    value = (int) jObject.get("Valoracio");
+                    assessment = (double) value;
+                }
+                else{assessment = 0.0;}
                 // address = (String) jObject.get("Direccio"); //NO me llega
                 // opening_hours = (String) jObject.get("HorariObertura");
                 // schedule_close = (String) jObject.get("HorariTancament");
-                if (jObject.get("Valoracio") == null){
-                    entrance_price = (Double) jObject.get("PreuEntrada");
-                }else{entrance_price = 0.0;}
+                if (!jObject.get("PreuEntrada").equals(null)){
+                    int value;
+                    entrance_price = (String) jObject.get("PreuEntrada");
+                }
+                else{entrance_price = "";}
+
 
                 // category = (int) data.get("Categoria");
 
@@ -257,16 +268,22 @@ public class splashScreen extends Activity {
                 id = (int) jObject.get("idrutes");
                 route_lenght = (int) jObject.get("rutmida");
                 name = (String) jObject.get("rutnom");
-                if (jObject.get("rutdescripcio") == null){
+                if (!jObject.get("rutdescripcio").equals(null)){
                     description = (String) jObject.get("rutdescripcio");
                 }
                 else{description = "";}
-                if (jObject.get("rutvaloracio") == null){
-                    assessment = (Double) jObject.get("rutvaloracio");
+                assessment = 0.0;
+                /*if (!jObject.get("Valoracio").equals(null)){
+                    int value;
+                    value = (int) jObject.get("Valoracio");
+                    assessment = (double) value;
                 }
-                else{assessment = 0.0;}
+                else{assessment = 0.0;}*/
                 idCreator = (int) jObject.get("rutcreador");
-
+                if (!jObject.get("rutlocals").equals(null)){
+                    locals = (String) jObject.get("rutlocals");
+                }
+                else{locals = "";}
 
                 if (bd.routesAskExist(id)){
                     bd.routesUpdate(id, route_lenght, name, description, assessment, idCreator, city, locals, date);
@@ -283,16 +300,16 @@ public class splashScreen extends Activity {
                 jObject = jArray.getJSONObject(i);
                 id = (int) jObject.get("idusuaris");
                 username = (String) jObject.get("name");
-                if (jObject.get("descripcio") == null){
+                if (!jObject.get("descripcio").equals(null)){
                     description = (String) jObject.get("descripcio");
                 }
                 else{description = "";}
                 email = (String) jObject.get("email");
-                if (jObject.get("telefon") == null){
+                if (!jObject.get("telefon").equals(null)){
                     phonenumber = (String) jObject.get("telefon");
                 }
                 else{phonenumber = "";}
-                if (jObject.get("DataNaixement") == null){
+                if (!jObject.get("DataNaixement").equals(null)){
                     birthdate = (String) jObject.get("DataNaixement");
                 }
                 else{birthdate = "";}

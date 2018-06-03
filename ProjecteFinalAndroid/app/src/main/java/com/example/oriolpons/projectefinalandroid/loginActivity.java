@@ -1,7 +1,7 @@
 package com.example.oriolpons.projectefinalandroid;
 
 import android.app.AlertDialog;
-import android.content.Context;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -16,8 +16,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.example.oriolpons.projectefinalandroid.Database.Datasource;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 // import com.google.android.gms.auth.api.signin.GoogleSignIn;
 // import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -35,8 +44,8 @@ public class loginActivity extends AppCompatActivity implements View.OnClickList
     private CheckBox chbxRemember;
     private Datasource bd;
     private int quantity = 0, id = 0;
-    private String email = "";
-
+    private String email = "", TAG = "LoginActivity", url = "http://10.0.2.2/ApiCrazyNuit/public/api/login";;
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,8 +126,6 @@ public class loginActivity extends AppCompatActivity implements View.OnClickList
                 bd.UserRemembermeAdd(email);
             }
 
-
-
             Bundle bundle = new Bundle();
             bundle.putString("user_email", email);
             Intent i = new Intent(this, MainActivity.class);
@@ -168,5 +175,84 @@ public class loginActivity extends AppCompatActivity implements View.OnClickList
     private boolean ValidationEmail() {
         Pattern pattern = Patterns.EMAIL_ADDRESS;
         return pattern.matcher(email).matches();
+    }
+
+
+
+
+/*
+    private void loginUser( final String email, final String password) {
+        // Tag used to cancel the request
+        String cancel_req_tag = "login";
+        progressDialog.setMessage("Logging you in...");
+        showDialog();
+        StringRequest strReq = new StringRequest(Request.Method.POST,
+                url, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                Log.d(TAG, "Register Response: " + response.toString());
+                hideDialog();
+                try {
+                    JSONObject jObj = new JSONObject(response);
+                    boolean error = jObj.getBoolean("error");
+
+                    if (!error) {
+                        String user = jObj.getJSONObject("user").getString("name");
+                        // Launch User activity
+
+                        loginComplete();
+                        //finish();
+                    } else {
+
+                        String errorMsg = jObj.getString("error_msg");
+                        Toast.makeText(getApplicationContext(),
+                                errorMsg, Toast.LENGTH_LONG).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, "Login Error: " + error.getMessage());
+                Toast.makeText(getApplicationContext(),
+                        error.getMessage(), Toast.LENGTH_LONG).show();
+                hideDialog();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                // Posting params to login url
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("email", email);
+                params.put("password", password);
+                return params;
+            }
+        };
+        // Adding request to request queue
+        AppSingleton.getInstance(getApplicationContext()).addToRequestQueue(strReq,cancel_req_tag);
+    }
+
+
+
+    private void showDialog() {
+        if (!progressDialog.isShowing())
+            progressDialog.show();
+    }
+    private void hideDialog() {
+        if (progressDialog.isShowing())
+            progressDialog.dismiss();
+    }
+*/
+
+    private void loginComplete() {
+        Bundle bundle = new Bundle();
+        bundle.putString("user_email", email);
+        Intent i = new Intent(this, MainActivity.class);
+        i.putExtras(bundle);
+        startActivityForResult(i, 1);
     }
 }

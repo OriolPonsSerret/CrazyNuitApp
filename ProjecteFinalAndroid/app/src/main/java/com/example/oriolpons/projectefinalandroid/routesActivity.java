@@ -165,7 +165,6 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
         //getJsonData();
         getJsonData getJson = new getJsonData();
         getJson.execute();
-        databaseToRouteList();
 
         spCity.setSelection(cityOfRouteFilterPosition);
         btnRoutes.setEnabled(false);
@@ -490,7 +489,7 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
     }
 
 
-    private class getJsonData extends AsyncTask<Void, Void, String> {
+    public class getJsonData extends AsyncTask<Void, Void, String> {
 
         protected String doInBackground(Void... argumentos) {
 
@@ -548,20 +547,27 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
 
         for (int i = 0; i < jArray.length(); i++) {
             JSONObject jObject = jArray.getJSONObject(i);
+
             id = (int) jObject.get("idrutes");
             route_lenght = (int) jObject.get("rutmida");
             name = (String) jObject.get("rutnom");
-            if (jObject.get("rutdescripcio") == null){
+            if (!jObject.get("rutdescripcio").equals(null)){
                  description = (String) jObject.get("rutdescripcio");
             }
             else{description = "";}
-            if (jObject.get("rutvaloracio") == null){
-                assessment = (Double) jObject.get("rutvaloracio");
+            //assessment = 0.0;
+            if (!jObject.get("rutvaloracio").equals(null)){
+                int value;
+                value = (int) jObject.get("Valoracio");
+                assessment = (double) value;
             }
             else{assessment = 0.0;}
             idCreator = (int) jObject.get("rutcreador");
             //city = (String) jObject.get("ciudad"); //No existe porque lo hacemos por zonas.
-            //locals = (String) jObject.get("rutlocals");// Desconozco si vendrá con [] Por el momento no.
+            if (!jObject.get("rutlocals").equals(null)){
+                locals = (String) jObject.get("rutlocals");
+            }
+            else{locals = "";}
             //date = (String) jObject.get("rutdata");
 /*
             //En el caso de rutlocals[]
@@ -578,6 +584,7 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
                 bd.routesAdd(id, route_lenght, name, description, assessment, idCreator, city, locals, date);
             }
         }
+        databaseToRouteList();
     }
 
 /*
@@ -646,8 +653,8 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
 
         filterConfig();
         clearData();
-       // getJsonData getJson = new getJsonData();
-       // getJson.execute();
+        getJsonData getJson = new getJsonData();
+        getJson.execute();
         databaseToRouteList();
 
         spCity.setSelection(cityOfRouteFilterPosition);

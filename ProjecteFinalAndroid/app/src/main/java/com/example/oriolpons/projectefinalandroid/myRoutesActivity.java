@@ -560,15 +560,22 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
             id = (int) jObject.get("idrutes");
             route_lenght = (int) jObject.get("rutmida");
             name = (String) jObject.get("rutnom");
-            if (jObject.get("rutdescripcio") == null){
+            if (!jObject.get("rutdescripcio").equals(null)){
                 description = (String) jObject.get("rutdescripcio");
             }
             else{description = "";}
-            if (jObject.get("rutvaloracio") == null){
-                assessment = (Double) jObject.get("rutvaloracio");
+            if (!jObject.get("rutvaloracio").equals(null)){
+                int value;
+                value = (int) jObject.get("Valoracio");
+                assessment = (double) value;
             }
             else{assessment = 0.0;}
             idCreator = (int) jObject.get("rutcreador");
+            if (!jObject.get("rutlocals").equals(null)){
+                locals = (String) jObject.get("rutlocals");
+            }
+            else{locals = "";}
+
             //city = (String) jObject.get("ciudad"); //No existe porque lo hacemos por zonas.
             //locals = (String) jObject.get("rutlocals");// Desconozco si vendrá con [] Por el momento no.
             //date = (String) jObject.get("rutdata");
@@ -597,8 +604,8 @@ public class myRoutesActivity extends AppCompatActivity implements View.OnClickL
         filterConfig();
         clearData();
         //addDBRoutes();
-        //getJsonData getJson = new getJsonData();
-        //getJson.execute();
+        getJsonData getJson = new getJsonData();
+        getJson.execute();
         databaseToRouteList();
 
     }

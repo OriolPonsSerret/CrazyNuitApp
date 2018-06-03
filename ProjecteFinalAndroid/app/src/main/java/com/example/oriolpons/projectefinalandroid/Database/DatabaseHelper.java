@@ -79,7 +79,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         "address TEXT, " +
                         "opening_hours TEXT, " +
                         "schedule_close TEXT, " +
-                        "entrance_price REAL)";
+                        "entrance_price TEXT)";
         db.execSQL(CREATE_TABLE);
 
         CREATE_TABLE =
