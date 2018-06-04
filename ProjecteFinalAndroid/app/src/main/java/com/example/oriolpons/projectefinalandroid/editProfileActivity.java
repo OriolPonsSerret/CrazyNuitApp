@@ -1,6 +1,7 @@
 package com.example.oriolpons.projectefinalandroid;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
@@ -23,11 +24,14 @@ import com.example.oriolpons.projectefinalandroid.Database.Datasource;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
@@ -288,12 +292,8 @@ public class editProfileActivity extends AppCompatActivity implements View.OnCli
 
                 if(!edtPasswordDelete.getText().toString().isEmpty()){
 
+                    new HttpAsyncTaskDelete().execute("http://10.0.2.2/ApiCrazyNuit/public/api/usuaris/" + userId);
 
-                    text = "Se han guardado los cambios.";
-                    duration = 3;
-
-                    mensaje = Toast.makeText(context, text, duration);
-                    mensaje.show();
                 }
                 else{
                     text = "Debes confirmar tu contraseña para eliminar la cuenta.";
@@ -312,40 +312,72 @@ public class editProfileActivity extends AppCompatActivity implements View.OnCli
         finish();
     }
 
-/*
-    private class putJsonData extends AsyncTask<String, String, Void> {
 
-        StringRequest putRequest = new StringRequest(Request.Method.PUT, url,
-                new Response.Listener<String>()
-                {
-                    @Override
-                    public void onResponse(String response) {
-                        // response
-                        Log.d("Response", response);
-                    }
-                },
-                new Response.ErrorListener()
-                {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // error
-                        Log.d("Error.Response", response);
-                    }
-                }
-        ) {
 
-            @Override
-            protected Map<String, String> getParams()
-            {
-                Map<String, String>  params = new HashMap<String, String>();
-                params.put("name", "Alif");
-                params.put("domain", "http://itsalif.info");
 
-                return params;
-            }
 
-        };
 
-            queue.add(putRequest);
-    }*/
+    public static String DELETE (String url){
+        InputStream inputStream = null;
+        String result = "";
+        try {
+
+            // 1. create HttpClient
+            HttpClient httpclient = new DefaultHttpClient();
+
+            // 2. make DELETE request to the given URL
+            HttpDelete httpDelete = new HttpDelete(url);
+
+            // 3. Set some headers to inform server about the type of the content
+            httpDelete.setHeader("Accept", "application/json");
+            httpDelete.setHeader("Content-type", "application/json");
+
+            // 4. Execute DELETE request to the given URL
+            HttpResponse httpResponse = httpclient.execute(httpDelete);
+
+            // 5. receive response as inputStream
+            inputStream = httpResponse.getEntity().getContent();
+
+            // 6. convert inputstream to string
+            if(inputStream != null)
+                result = convertInputStreamToString(inputStream);
+            else
+                result = "Did not work!";
+
+        } catch (Exception e) {
+            Log.d("InputStream", e.getLocalizedMessage());
+        }
+
+        // 11. return result
+        return result;
+    }
+    private class HttpAsyncTaskDelete extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+
+            return DELETE(urls[0]);
+        }
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+            Toast.makeText(getBaseContext(), "¡Se ha eliminado tu cuenta!", Toast.LENGTH_LONG).show();
+            bd.userDelete(userId);
+            bd.RemembermeRemove();
+            startActivity(new Intent(getBaseContext(), splashScreen.class)
+                    .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
+            finish();
+        }
+    }
+
+    private static String convertInputStreamToString(InputStream inputStream) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+        String line = "";
+        String result = "";
+        while((line = bufferedReader.readLine()) != null)
+            result += line;
+
+        inputStream.close();
+        return result;
+
+    }
 }

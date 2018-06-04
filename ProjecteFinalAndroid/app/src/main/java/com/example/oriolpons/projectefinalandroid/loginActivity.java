@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -22,9 +23,18 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.example.oriolpons.projectefinalandroid.Database.Datasource;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -44,9 +54,9 @@ public class loginActivity extends AppCompatActivity implements View.OnClickList
     private CheckBox chbxRemember;
     private Datasource bd;
     private int quantity = 0, id = 0;
-    private String email = "", TAG = "LoginActivity", url = "http://10.0.2.2/ApiCrazyNuit/public/api/login";;
+    private String TAG = "LoginActivity", url = "http://10.0.2.2/ApiCrazyNuit/public/api/login";
     private ProgressDialog progressDialog;
-
+    private static String email = "", password = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -98,7 +108,6 @@ public class loginActivity extends AppCompatActivity implements View.OnClickList
 
 
     private void loginData() {
-        String Password;
 
         TextView tv;
 
@@ -110,8 +119,8 @@ public class loginActivity extends AppCompatActivity implements View.OnClickList
         }
 
         tv = (TextView) findViewById(R.id.edtPassword);
-        Password = tv.getText().toString();
-        if (Password.trim().equals("")) {
+        password = tv.getText().toString();
+        if (password.trim().equals("")) {
             edtPassword.setError("La Contraseña és obligatoria.");
             return;
         }
@@ -125,12 +134,7 @@ public class loginActivity extends AppCompatActivity implements View.OnClickList
             if (chbxRemember.isChecked()) {
                 bd.UserRemembermeAdd(email);
             }
-
-            Bundle bundle = new Bundle();
-            bundle.putString("user_email", email);
-            Intent i = new Intent(this, MainActivity.class);
-            i.putExtras(bundle);
-            startActivityForResult(i, 1);
+            new HttpAsyncTask().execute("http://10.0.2.2/ApiCrazyNuit/public/api/login");
         }
     }
 
@@ -175,6 +179,96 @@ public class loginActivity extends AppCompatActivity implements View.OnClickList
     private boolean ValidationEmail() {
         Pattern pattern = Patterns.EMAIL_ADDRESS;
         return pattern.matcher(email).matches();
+    }
+
+
+
+
+    public static String POST(String url){
+        InputStream inputStream = null;
+        String result = "";
+        try {
+
+            // 1. create HttpClient
+            HttpClient httpclient = new DefaultHttpClient();
+
+            // 2. make POST request to the given URL
+            HttpPost httpPost = new HttpPost(url);
+
+            String json = "";
+
+            // 3. build jsonObject
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.accumulate("email", email);
+            jsonObject.accumulate("password", password);
+
+            // 4. convert JSONObject to JSON to String
+            json = jsonObject.toString();
+
+            // ** Alternative way to convert Person object to JSON string usin Jackson Lib
+            // ObjectMapper mapper = new ObjectMapper();
+            // json = mapper.writeValueAsString(person);
+
+            // 5. set json to StringEntity
+            StringEntity se = new StringEntity(json);
+
+            // 6. set httpPost Entity
+            httpPost.setEntity(se);
+
+            // 7. Set some headers to inform server about the type of the content
+            httpPost.setHeader("Accept", "application/json");
+            httpPost.setHeader("Content-type", "application/json");
+
+            // 8. Execute POST request to the given URL
+            HttpResponse httpResponse = httpclient.execute(httpPost);
+
+            // 9. receive response as inputStream
+            inputStream = httpResponse.getEntity().getContent();
+
+            // 10. convert inputstream to string
+            if(inputStream != null)
+                result = convertInputStreamToString(inputStream);
+            else
+                result = "Did not work!";
+
+        } catch (Exception e) {
+            Log.d("InputStream", e.getLocalizedMessage());
+        }
+
+        // 11. return result
+        return result;
+    }
+    private class HttpAsyncTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+
+            return POST(urls[0]);
+        }
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+            if (result.length() < 150){
+                edtPassword.setError("El correo o la contraseña es incorrecta.");
+            }
+            else{
+                loginComplete();
+            }
+            //Log.i("Resultado: ", result.length() + "");
+            //Toast.makeText(getBaseContext(), result, Toast.LENGTH_LONG).show();
+            //Toast.makeText(getBaseContext(), "¡Se ha creado la ruta correctamente!", Toast.LENGTH_LONG).show();
+
+        }
+    }
+    private static String convertInputStreamToString(InputStream inputStream) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+        String line = "";
+        String result = "";
+        while((line = bufferedReader.readLine()) != null)
+            result += line;
+
+        inputStream.close();
+        return result;
+
     }
 
 

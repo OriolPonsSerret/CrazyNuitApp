@@ -31,9 +31,11 @@ import com.example.oriolpons.projectefinalandroid.Database.Datasource;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -295,6 +297,8 @@ public class registerActivity extends AppCompatActivity {
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
+            getJsonData getJson = new getJsonData();
+            getJson.execute();
             Toast.makeText(getBaseContext(), "¡Te has registrado correctamente!", Toast.LENGTH_LONG).show();
         }
     }
@@ -309,6 +313,96 @@ public class registerActivity extends AppCompatActivity {
         return result;
 
     }
+
+
+    private class getJsonData extends AsyncTask<Void, Void, String> {
+
+        protected String doInBackground(Void... argumentos) {
+
+            StringBuffer bufferCadena = new StringBuffer("");
+
+            try {
+                HttpClient cliente = new DefaultHttpClient();
+                HttpGet peticion = new HttpGet("http://10.0.2.2/ApiCrazyNuit/public/api/usuaris");
+                // ejecuta una petición get
+                HttpResponse respuesta = cliente.execute(peticion);
+
+                //lee el resultado
+                BufferedReader entrada = new BufferedReader(new InputStreamReader(
+                        respuesta.getEntity().getContent()));
+                // Log.i("ResponseObject: ", respuesta.toString());
+
+                String separador = "";
+                String NL = System.getProperty("line.separator");
+                //almacena el resultado en bufferCadena
+
+                while ((separador = entrada.readLine()) != null) {
+                    bufferCadena.append(separador + NL);
+                }
+                entrada.close();
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                //e.printStackTrace();
+                Log.i("ResponseObject: ", e.toString());
+            }
+
+            return bufferCadena.toString();
+
+        }
+
+        protected void onPostExecute(String data) {
+
+
+            try {
+
+                readDataFromJson(data);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            System.out.println(data);
+            // Toast.makeText(localActivity.this, data, Toast.LENGTH_SHORT).show();
+
+        }
+    }
+
+    private void readDataFromJson(String data) throws JSONException {
+        int id;
+        String entrance_price = "", city = "Mataró", username = "", email = "", phonenumber = "", birthdate = "", name = "", description= "", address= "Mataró", opening_hours= "", schedule_close= "", gastronomy= "", locals = "", date = "";
+        Double assessment = 1.0;
+        int category = 4, route_lenght = 2, idCreator = 0;
+
+        JSONArray jArray = new JSONArray(data);
+        JSONObject jObject = jArray.getJSONObject(0);
+
+        for (int i = 0; i < jArray.length(); i++) {
+            jObject = jArray.getJSONObject(i);
+            id = (int) jObject.get("idusuaris");
+            username = (String) jObject.get("name");
+            if (!jObject.get("descripcio").equals(null)){
+                description = (String) jObject.get("descripcio");
+            }
+            else{description = "";}
+            email = (String) jObject.get("email");
+            if (!jObject.get("telefon").equals(null)){
+                phonenumber = (String) jObject.get("telefon");
+            }
+            else{phonenumber = "";}
+            if (!jObject.get("DataNaixement").equals(null)){
+                birthdate = (String) jObject.get("DataNaixement");
+            }
+            else{birthdate = "";}
+
+
+            if (bd.usersAskExist(id)){
+                bd.userUpdateByJson(id, username, description, email, phonenumber, birthdate);
+            }
+            else{
+                bd.userAddedByJson(id, username, description, email, phonenumber, birthdate);
+            }
+        }
+    }
+
 }
 
 

@@ -568,14 +568,25 @@ public class Datasource {
         dbW.update(table_ROUTES,values, ROUTES_CREATOR + " = ?", new String[] { String.valueOf(oldName) });
     }
 */
-    public void routesDelete(int id) {
-        dbW.delete(table_ROUTES,ROUTES_ID + " = ?", new String[] { String.valueOf(id) });
-    }
+
 
     public void routesAddOrRemoveFavourite(int id, String favourite) {
         ContentValues values = new ContentValues();
         values.put(ROUTES_FAVOURITE, favourite);
 
         dbW.update(table_ROUTES,values, ROUTES_ID + " = ?", new String[] { String.valueOf(id) });
+    }
+
+
+
+
+    //DELETE
+
+    public void userDelete(int id) {
+        dbW.delete(table_USER,USER_ID + " = ?", new String[] { String.valueOf(id) });
+    }
+
+    public void routesDelete(int id) {
+        dbW.delete(table_ROUTES,ROUTES_ID + " = ?", new String[] { String.valueOf(id) });
     }
 }
