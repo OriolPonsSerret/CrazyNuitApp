@@ -156,7 +156,7 @@ public class followerProfileFragment extends Fragment {
     private void exampleUsers() {
         int id = profileActivity.userId;
 
-        listUsers.add(new user(0,"Senpai", "El senpai de tus sueños."));
+        listUsers.add(new user(0,"Pere", "El senpai de tus sueños."));
 
         txtFollowerNumber.setText(listUsers.size() + "");
     }

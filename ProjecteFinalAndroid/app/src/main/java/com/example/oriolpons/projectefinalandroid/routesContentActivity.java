@@ -26,9 +26,10 @@ public class routesContentActivity extends AppCompatActivity implements View.OnC
     private com.example.oriolpons.projectefinalandroid.Adapters.adapterLocal AdapterLocal;
     private RecyclerView recyclerLocals;
 
-    private String localName, localDescription, localAssessment, city, rute_locals, route_date, favourite;
+    private String localName, localDescription, localAssessment, city, rute_locals, route_date, favourite = "false";
     private int id, route_lenght;
     private Datasource bd;
+    private String[] locals;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,72 +72,7 @@ public class routesContentActivity extends AppCompatActivity implements View.OnC
             txtTitle.setText(cursor.getString(1));
             txtDescription.setText(cursor.getString(2));
             txtAssessment.setText(cursor.getString(3));
-            String[] locals = cursor.getString(6).split(",");
-
-            long localId = 0;
-            int localcategory = 0;
-            String localtype = "", localname = "", localdescription = "", localaddress = "", localopening_hours = "", localschedule_close = "", localgastronomy = "", localentrance_price = "";
-            Double localassessment = 0.0;
-            for (int i = 0; i < locals.length;i++){
-                if (bd.restaurantsAskExistByName(locals[i])){
-                    Cursor cursor3 = bd.getRestaurantsInformationByName(locals[i]);
-                    while(cursor3.moveToNext()) {
-                        localId = cursor3.getLong(0);
-                        localtype = "restaurants";
-                        localname = cursor3.getString(1);
-                        localdescription = cursor3.getString(2);
-                        localassessment = cursor3.getDouble(3);
-                        localaddress = cursor3.getString(4);
-                        localopening_hours = cursor3.getString(5);
-                        localschedule_close = cursor3.getString(6);
-                        localgastronomy = cursor3.getString(7);
-                        localcategory = cursor3.getInt(8);
-                        localentrance_price = "";
-                        listLocals.add(new local(localId, localtype, localname, localdescription, localassessment, localaddress, localopening_hours, localschedule_close, localgastronomy, localcategory, localentrance_price, 0));
-                    }
-                }
-                else{
-                    if (bd.pubsAskExistByName(locals[i])){
-                        Cursor cursor3 = bd.getPubsInformationByName(locals[i]);
-                        while(cursor3.moveToNext()) {
-                            localId = cursor3.getLong(0);
-                            localtype = "pubs";
-                            localname = cursor3.getString(1);
-                            localdescription = cursor3.getString(2);
-                            localassessment = cursor3.getDouble(3);
-                            localaddress = cursor3.getString(4);
-                            localopening_hours = cursor3.getString(5);
-                            localschedule_close = cursor3.getString(6);
-                            localgastronomy = "";
-                            localcategory = 0;
-                            localentrance_price = "";
-                            listLocals.add(new local(localId, localtype, localname, localdescription, localassessment, localaddress, localopening_hours, localschedule_close, localgastronomy, localcategory, localentrance_price, 0));
-                        }
-                    }else{
-                        if (bd.discoAskExistByName(locals[i])){
-                            Cursor cursor3 = bd.getDiscosInformationByName(locals[i]);
-
-                            while(cursor3.moveToNext()) {
-                                localId = cursor3.getLong(0);
-                                localtype = "discoteques";
-                                localname = cursor3.getString(1);
-                                localdescription = cursor3.getString(2);
-                                localassessment = cursor3.getDouble(3);
-                                localaddress = cursor3.getString(4);
-                                localopening_hours = cursor3.getString(5);
-                                localschedule_close = cursor3.getString(6);
-                                localgastronomy = "";
-                                localcategory = 0;
-                                localentrance_price = cursor3.getString(7);
-                                listLocals.add(new local(localId, localtype, localname, localdescription, localassessment, localaddress, localopening_hours, localschedule_close, localgastronomy, localcategory, localentrance_price, 0));
-                            }
-                        }
-                    }
-                }
-
-
-            }
-
+            locals = cursor.getString(6).split(",");
 
             Cursor cursor2 = bd.getUserInformationById(cursor.getInt(4));
             while(cursor2.moveToNext()){
@@ -172,8 +108,8 @@ public class routesContentActivity extends AppCompatActivity implements View.OnC
         recyclerLocals.setAdapter(AdapterLocal);
 
 
-
-        if (favourite.equals("FALSE")|| favourite != null){
+/*
+        if (favourite.equals("FALSE")){
             btnAddFav.setVisibility(View.VISIBLE);
             btnRemoveFav.setVisibility(View.GONE);
         }else{
@@ -181,8 +117,75 @@ public class routesContentActivity extends AppCompatActivity implements View.OnC
             btnRemoveFav.setVisibility(View.VISIBLE);
 
         }
-        //exampleLocal();
+*/
+       setLocalsInRoute();
+
         getSupportActionBar().setTitle("Contenido de la ruta");
+    }
+
+    private void setLocalsInRoute() {
+        long localId = 0;
+        int localcategory = 0;
+        String localtype = "", localname = "", localdescription = "", localaddress = "", localopening_hours = "", localschedule_close = "", localgastronomy = "", localentrance_price = "";
+        Double localassessment = 0.0;
+        for (int i = 0; i < locals.length;i++){
+            if (bd.restaurantsAskExistByName(locals[i])){
+                Cursor cursor3 = bd.getRestaurantsInformationByName(locals[i]);
+                while(cursor3.moveToNext()) {
+                    localId = cursor3.getLong(0);
+                    localtype = "restaurants";
+                    localname = cursor3.getString(1);
+                    localdescription = cursor3.getString(2);
+                    localassessment = cursor3.getDouble(3);
+                    localaddress = cursor3.getString(4);
+                    localopening_hours = cursor3.getString(5);
+                    localschedule_close = cursor3.getString(6);
+                    localgastronomy = cursor3.getString(7);
+                    localcategory = cursor3.getInt(8);
+                    localentrance_price = "";
+                    listLocals.add(new local(localId, localtype, localname, localdescription, localassessment, localaddress, localopening_hours, localschedule_close, localgastronomy, localcategory, localentrance_price, 0));
+                }
+            }
+            else{
+                if (bd.pubsAskExistByName(locals[i])){
+                    Cursor cursor3 = bd.getPubsInformationByName(locals[i]);
+                    while(cursor3.moveToNext()) {
+                        localId = cursor3.getLong(0);
+                        localtype = "pubs";
+                        localname = cursor3.getString(1);
+                        localdescription = cursor3.getString(2);
+                        localassessment = cursor3.getDouble(3);
+                        localaddress = cursor3.getString(4);
+                        localopening_hours = cursor3.getString(5);
+                        localschedule_close = cursor3.getString(6);
+                        localgastronomy = "";
+                        localcategory = 0;
+                        localentrance_price = "";
+                        listLocals.add(new local(localId, localtype, localname, localdescription, localassessment, localaddress, localopening_hours, localschedule_close, localgastronomy, localcategory, localentrance_price, 0));
+                    }
+                }else{
+                    if (bd.discoAskExistByName(locals[i])){
+                        Cursor cursor3 = bd.getDiscosInformationByName(locals[i]);
+                        while(cursor3.moveToNext()) {
+                            localId = cursor3.getLong(0);
+                            localtype = "discoteques";
+                            localname = cursor3.getString(1);
+                            localdescription = cursor3.getString(2);
+                            localassessment = cursor3.getDouble(3);
+                            localaddress = cursor3.getString(4);
+                            localopening_hours = cursor3.getString(5);
+                            localschedule_close = cursor3.getString(6);
+                            localgastronomy = "";
+                            localcategory = 0;
+                            localentrance_price = cursor3.getString(7);
+                            listLocals.add(new local(localId, localtype, localname, localdescription, localassessment, localaddress, localopening_hours, localschedule_close, localgastronomy, localcategory, localentrance_price, 0));
+                        }
+                    }
+                }
+            }
+        }
+
+
     }
 
     @Override

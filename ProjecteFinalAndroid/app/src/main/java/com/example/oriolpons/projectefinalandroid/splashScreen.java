@@ -130,9 +130,7 @@ public class splashScreen extends Activity {
 
         protected void onPostExecute(String data) {
 
-
             try {
-
                 readDataFromJson(data);
 
             } catch (JSONException e) {
@@ -323,7 +321,29 @@ public class splashScreen extends Activity {
                 }
             }
             type = "";
-        }
+            //type = "assoliments";
+            //downloadDataFromApi();
+        }/*
+        if (type.equals("assoliments")){
+            for (int i = 0; i < jArray.length(); i++) {
+                jObject = jArray.getJSONObject(i);
+                id = (int) jObject.get("idassoliments");
+                name = (String) jObject.get("assonom");
+                if (!jObject.get("assodescripcio").equals(null)){
+                    description = (String) jObject.get("assodescripcio");
+                }
+                else{description = "";}
+
+
+                if (bd.achievementAskExistById(id)){
+                    bd.achievementUpdateByJson(id, name, description);
+                }
+                else{
+                    bd.achievementAddedByJson(id, name, description);
+                }
+            }
+            type = "";
+        }*/
     }
 
 }

@@ -72,6 +72,13 @@ public class Datasource {
     public static final String ROUTES_DATE = "route_date";
     public static final String ROUTES_FAVOURITE = "favourite";
 
+
+    public static final String table_ACHIEVEMENTS= "routes";
+    public static final String ACHIEVEMENTS_ID = "_id";
+    public static final String ACHIEVEMENTS_NAME = "name";
+    public static final String ACHIEVEMENTS_DESCRIPTION = "description";
+
+
     private DatabaseHelper dbHelper;
     private SQLiteDatabase dbW, dbR;
 
@@ -92,7 +99,7 @@ public class Datasource {
         dbR.close();
     }
 
-    // LOGIN SCREEN
+    // REMEMBERME
     public Cursor remembermeCount() {
         return dbR.rawQuery("SELECT COUNT(*)" +
                 " FROM " + table_REMEMBERME, null);
@@ -266,24 +273,12 @@ public class Datasource {
     }
 
 
-
-    public boolean userAskExist(String email) {
-        Cursor c = dbR.rawQuery("SELECT " + USER_EMAIL  +
-                " FROM " + table_USER +
-                " WHERE UPPER(" +  USER_EMAIL + ") LIKE UPPER ('" + email +"')", null);
-        boolean exists = c.moveToFirst();
-        c.close();
-        return exists;
+    public Cursor getAchievementById(int id) {
+        return dbR.rawQuery("SELECT " + ACHIEVEMENTS_ID + ", " + ACHIEVEMENTS_NAME + ", " + ACHIEVEMENTS_DESCRIPTION +
+                " FROM " + table_ACHIEVEMENTS +
+                " WHERE " +  ACHIEVEMENTS_ID + " LIKE " + id , null);
     }
 
-    public boolean usersAskExist(int id) {
-        Cursor c = dbR.rawQuery("SELECT " + USER_ID  +
-                " FROM " + table_USER +
-                " WHERE " +  USER_ID + " LIKE " + id, null);
-        boolean exists = c.moveToFirst();
-        c.close();
-        return exists;
-    }
 
     public Cursor getUserInformationById(int id) {
         return dbR.rawQuery("SELECT " + USER_ID + ", " + USER_USERNAME + ", " + USER_DESCRIPTION + ", " + USER_EMAIL + ", " + USER_PHONENUMBER + ", " + USER_BIRTHDATE +
@@ -336,14 +331,7 @@ public class Datasource {
         dbW.insert(table_USER, null, values);
     }
 
-    public boolean usernameAskExist(String name, int id) {
-        Cursor c = dbR.rawQuery("SELECT " + USER_USERNAME  +
-                " FROM " + table_USER +
-                " WHERE " +  USER_ID + " NOT LIKE " + id + " AND UPPER(" +  USER_USERNAME + ") LIKE UPPER ('%" + name +"%')", null);
-        boolean exists = c.moveToFirst();
-        c.close();
-        return exists;
-    }
+
     public void userUpdateName(String email, String username) {
         ContentValues values = new ContentValues();
         values.put(USER_USERNAME, username);
@@ -369,23 +357,7 @@ public class Datasource {
         dbW.update(table_USER,values, USER_EMAIL + " = ?", new String[] { String.valueOf(email) });
     }
 
-    public boolean restaurantsAskExist(int id) {
-        Cursor c = dbR.rawQuery("SELECT " + RESTAURANTS_ID  +
-                " FROM " + table_RESTAURANTS +
-                " WHERE " +  RESTAURANTS_ID + " LIKE " + id, null);
-        boolean exists = c.moveToFirst();
-        c.close();
-        return exists;
-    }
 
-    public boolean restaurantsAskExistByName(String localName) {
-        Cursor c = dbR.rawQuery("SELECT " + RESTAURANTS_NAME  +
-                " FROM " + table_RESTAURANTS +
-                " WHERE UPPER(" +  RESTAURANTS_NAME + ") LIKE UPPER ('%" + localName +"%')", null);
-        boolean exists = c.moveToFirst();
-        c.close();
-        return exists;
-    }
 
     public void restaurantsAdd(int id, String name, String description, Double assessment, String address, String opening, String close, String gastronomy, int category) {
         ContentValues values = new ContentValues();
@@ -417,23 +389,7 @@ public class Datasource {
     }
 
 
-    public boolean pubsAskExist(int id) {
-        Cursor c = dbR.rawQuery("SELECT " + PUBS_ID  +
-                " FROM " + table_PUBS +
-                " WHERE " +  PUBS_ID + " LIKE " + id, null);
-        boolean exists = c.moveToFirst();
-        c.close();
-        return exists;
-    }
 
-    public boolean pubsAskExistByName(String localName) {
-        Cursor c = dbR.rawQuery("SELECT " + PUBS_NAME  +
-                " FROM " + table_PUBS +
-                " WHERE UPPER(" +  PUBS_NAME + ") LIKE UPPER ('%" + localName +"%')", null);
-        boolean exists = c.moveToFirst();
-        c.close();
-        return exists;
-    }
 
     public void pubsAdd(int id, String name, String description, Double assessment, String address, String opening, String close) {
         ContentValues values = new ContentValues();
@@ -461,22 +417,7 @@ public class Datasource {
     }
 
 
-    public boolean discoAskExist(int id) {
-        Cursor c = dbR.rawQuery("SELECT " + DISCOS_ID  +
-                " FROM " + table_DISCOS +
-                " WHERE " +  DISCOS_ID + " LIKE " + id, null);
-        boolean exists = c.moveToFirst();
-        c.close();
-        return exists;
-    }
-    public boolean discoAskExistByName(String localName) {
-        Cursor c = dbR.rawQuery("SELECT " + DISCOS_NAME  +
-                " FROM " + table_DISCOS +
-                " WHERE UPPER(" +  DISCOS_NAME + ") LIKE UPPER ('%" + localName +"%')", null);
-        boolean exists = c.moveToFirst();
-        c.close();
-        return exists;
-    }
+
 
     public void discosAdd(int id, String name, String description, Double assessment, String address, String opening, String close, String price) {
         ContentValues values = new ContentValues();
@@ -505,23 +446,7 @@ public class Datasource {
         dbW.update(table_DISCOS,values, DISCOS_ID + " = ?", new String[] { String.valueOf(id) });
     }
 
-    public boolean routesAskExist(int id) {
-        Cursor c = dbR.rawQuery("SELECT " + ROUTES_ID  +
-                " FROM " + table_ROUTES +
-                " WHERE " +  ROUTES_ID + " LIKE " + id, null);
-        boolean exists = c.moveToFirst();
-        c.close();
-        return exists;
-    }
 
-    public boolean routesAskExistName(String name) {
-        Cursor c = dbR.rawQuery("SELECT " + ROUTES_NAME  +
-                " FROM " + table_ROUTES +
-                " WHERE UPPER(" +  ROUTES_NAME + ") LIKE UPPER ('" + name + "')", null);
-        boolean exists = c.moveToFirst();
-        c.close();
-        return exists;
-    }
 
     public void routesAdd(int id, int route_lenght, String name, String description, Double assessment, int idCreator, String city, String locals, String date) {
         ContentValues values = new ContentValues();
@@ -569,6 +494,22 @@ public class Datasource {
     }
 */
 
+    public void achievementAddedByJson(int id, String name, String description) {
+        ContentValues values = new ContentValues();
+        values.put(ACHIEVEMENTS_ID, id);
+        values.put(ACHIEVEMENTS_NAME, name);
+        values.put(ACHIEVEMENTS_DESCRIPTION, description);
+
+        dbW.insert(table_ACHIEVEMENTS, null, values);
+    }
+    public void achievementUpdateByJson(int id, String username, String description) {
+        ContentValues values = new ContentValues();
+        values.put(ACHIEVEMENTS_NAME, username);
+        values.put(ACHIEVEMENTS_DESCRIPTION, description);
+
+        dbW.update(table_ACHIEVEMENTS,values, ACHIEVEMENTS_ID + " = ?", new String[] { String.valueOf(id) });
+    }
+
 
     public void routesAddOrRemoveFavourite(int id, String favourite) {
         ContentValues values = new ContentValues();
@@ -578,10 +519,117 @@ public class Datasource {
     }
 
 
+//---------------------------------------------------------------------------------------------------------------
+    //ASK EXIST
+    public boolean userAskExist(String email) {
+        Cursor c = dbR.rawQuery("SELECT " + USER_EMAIL  +
+                " FROM " + table_USER +
+                " WHERE UPPER(" +  USER_EMAIL + ") LIKE UPPER ('" + email +"')", null);
+        boolean exists = c.moveToFirst();
+        c.close();
+        return exists;
+    }
 
+    public boolean usersAskExist(int id) {
+        Cursor c = dbR.rawQuery("SELECT " + USER_ID  +
+                " FROM " + table_USER +
+                " WHERE " +  USER_ID + " LIKE " + id, null);
+        boolean exists = c.moveToFirst();
+        c.close();
+        return exists;
+    }
 
+    public boolean usernameAskExist(String name, int id) {
+        Cursor c = dbR.rawQuery("SELECT " + USER_USERNAME  +
+                " FROM " + table_USER +
+                " WHERE " +  USER_ID + " NOT LIKE " + id + " AND UPPER(" +  USER_USERNAME + ") LIKE UPPER ('%" + name +"%')", null);
+        boolean exists = c.moveToFirst();
+        c.close();
+        return exists;
+    }
+
+    public boolean restaurantsAskExist(int id) {
+        Cursor c = dbR.rawQuery("SELECT " + RESTAURANTS_ID  +
+                " FROM " + table_RESTAURANTS +
+                " WHERE " +  RESTAURANTS_ID + " LIKE " + id, null);
+        boolean exists = c.moveToFirst();
+        c.close();
+        return exists;
+    }
+
+    public boolean restaurantsAskExistByName(String localName) {
+        Cursor c = dbR.rawQuery("SELECT " + RESTAURANTS_NAME  +
+                " FROM " + table_RESTAURANTS +
+                " WHERE UPPER(" +  RESTAURANTS_NAME + ") LIKE UPPER ('%" + localName +"%')", null);
+        boolean exists = c.moveToFirst();
+        c.close();
+        return exists;
+    }
+
+    public boolean pubsAskExist(int id) {
+        Cursor c = dbR.rawQuery("SELECT " + PUBS_ID  +
+                " FROM " + table_PUBS +
+                " WHERE " +  PUBS_ID + " LIKE " + id, null);
+        boolean exists = c.moveToFirst();
+        c.close();
+        return exists;
+    }
+
+    public boolean pubsAskExistByName(String localName) {
+        Cursor c = dbR.rawQuery("SELECT " + PUBS_NAME  +
+                " FROM " + table_PUBS +
+                " WHERE UPPER(" +  PUBS_NAME + ") LIKE UPPER ('%" + localName +"%')", null);
+        boolean exists = c.moveToFirst();
+        c.close();
+        return exists;
+    }
+
+    public boolean discoAskExist(int id) {
+        Cursor c = dbR.rawQuery("SELECT " + DISCOS_ID  +
+                " FROM " + table_DISCOS +
+                " WHERE " +  DISCOS_ID + " LIKE " + id, null);
+        boolean exists = c.moveToFirst();
+        c.close();
+        return exists;
+    }
+    public boolean discoAskExistByName(String localName) {
+        Cursor c = dbR.rawQuery("SELECT " + DISCOS_NAME  +
+                " FROM " + table_DISCOS +
+                " WHERE UPPER(" +  DISCOS_NAME + ") LIKE UPPER ('%" + localName +"%')", null);
+        boolean exists = c.moveToFirst();
+        c.close();
+        return exists;
+    }
+
+    public boolean routesAskExist(int id) {
+        Cursor c = dbR.rawQuery("SELECT " + ROUTES_ID  +
+                " FROM " + table_ROUTES +
+                " WHERE " +  ROUTES_ID + " LIKE " + id, null);
+        boolean exists = c.moveToFirst();
+        c.close();
+        return exists;
+    }
+
+    public boolean routesAskExistName(String name) {
+        Cursor c = dbR.rawQuery("SELECT " + ROUTES_NAME  +
+                " FROM " + table_ROUTES +
+                " WHERE UPPER(" +  ROUTES_NAME + ") LIKE UPPER ('" + name + "')", null);
+        boolean exists = c.moveToFirst();
+        c.close();
+        return exists;
+    }
+
+    public boolean achievementAskExistById(int id) {
+        Cursor c = dbR.rawQuery("SELECT " + ACHIEVEMENTS_ID  +
+                " FROM " + table_ACHIEVEMENTS +
+                " WHERE " +  ACHIEVEMENTS_ID + " LIKE " + id, null);
+        boolean exists = c.moveToFirst();
+        c.close();
+        return exists;
+    }
+
+//---------------------------------------------------------------------------------------------------------------
     //DELETE
-
     public void userDelete(int id) {
         dbW.delete(table_USER,USER_ID + " = ?", new String[] { String.valueOf(id) });
     }

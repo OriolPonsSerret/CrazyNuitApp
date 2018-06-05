@@ -30,6 +30,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
@@ -65,9 +66,10 @@ public class createEditRouteActivity extends Activity implements View.OnClickLis
     private int category;
 
     //Routes
-    private int routeId;
-    private static String routeName, routeDescription, listLocalNameInRoute = "";
-    private static int route_lenght, userId;
+    private int routeId, routeAssessment;
+    private String routeName = "", routeDescription = ""; //listLocalNameInRoute = "";
+    private int route_lenght = 0, userId = 0;
+    private String listLocalNameInRoute = "", routeDate = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -162,6 +164,19 @@ public class createEditRouteActivity extends Activity implements View.OnClickLis
             routeDescription = this.getIntent().getExtras().getString("description");
             edtRouteName.setText(routeName);
             edtRouteDescription.setText(routeDescription);
+
+            Cursor cursor = bd.getRouteInformation(routeId);
+            while(cursor.moveToNext()){
+                route_lenght = cursor.getInt(0);
+                routeName = cursor.getString(1);
+                routeDescription = cursor.getString(2);
+                routeAssessment = cursor.getInt(3);
+                userId = cursor.getInt(4);
+                listLocalNameInRoute = cursor.getString(5);
+                routeDate = cursor.getString(6);
+                }
+
+
             txtCity.setVisibility(View.GONE);
             txtLocalsRoute.setVisibility(View.GONE);
             layoutRoute.setVisibility(View.GONE);
@@ -170,11 +185,11 @@ public class createEditRouteActivity extends Activity implements View.OnClickLis
             LocalsInMyRoute.setVisibility(View.GONE);
         }
         else{
+            btnDelete.setVisibility(View.GONE);
             if(isConnected()){
             }
-            else{
-            }
             userId = this.getIntent().getExtras().getInt("userId");
+
         }
         txtCity.setText(txtCity.getText().toString() + cityOfLocalFilter);
 
@@ -254,10 +269,8 @@ public class createEditRouteActivity extends Activity implements View.OnClickLis
                     }
                     else{
                         bd.routesUpdatedByUser(routeId, routeName, routeDescription);
-                        text = "¡Se ha modificado la ruta!";
+                        new HttpAsyncTaskUpdate().execute("http://10.0.2.2/ApiCrazyNuit/public/api/rutes/" + routeId);
 
-                        mensaje = Toast.makeText(context, text, text.length());
-                        mensaje.show();
 
                        //Put
                         //  route_lenght, name, description, assessment, creator, cityOfLocalFilter, locals, date,
@@ -269,7 +282,7 @@ public class createEditRouteActivity extends Activity implements View.OnClickLis
     }
 
     private void setLocalsFromList() {
-
+        listLocalNameInRoute = "";
         for (int index = 0; index < listLocalRoute.size(); index++){
             listLocalNameInRoute = listLocalNameInRoute +  listLocalRoute.get(index).getName() + ",";
         }
@@ -451,24 +464,6 @@ public class createEditRouteActivity extends Activity implements View.OnClickLis
                     assessment = (double) value;
                 }
                 else{assessment = 0.0;}
-                /*
-                if (jObject.get("Direccio") == null){
-                    address = (String) jObject.get("Direccio");
-                }
-                else{ address = "Mataró";}
-                if (jObject.get("Horari-Obertura") == null){
-                    opening_hours = (String) jObject.get("Horari-Obertura");
-                }
-                else{ opening_hours = "";}
-                if (jObject.get("Horari-Tancament") == null){
-                    schedule_close = (String) jObject.get("Horari-Tancament");
-                }
-                else{ schedule_close = "";}
-
-
-                gastronomy = (String) jObject.get("TipusGastronomic");
-                category = (int) jObject.get("Categoria");
-                */
 
                 if (bd.restaurantsAskExist(id)){
                     bd.restaurantsUpdate(id, name, description, assessment, address, opening_hours, schedule_close, gastronomy, category);
@@ -538,6 +533,35 @@ public class createEditRouteActivity extends Activity implements View.OnClickLis
                 }
             }
         }
+        if (typeF.equals("rutes")){
+            for (int i = 0; i < jArray.length(); i++) {
+                jObject = jArray.getJSONObject(i);
+                id = (int) jObject.get("idrutes");
+                route_lenght = (int) jObject.get("rutmida");
+                name = (String) jObject.get("rutnom");
+                if (!jObject.get("rutdescripcio").equals(null)){
+                    description = (String) jObject.get("rutdescripcio");
+                }
+                else{description = "";}
+                assessment = 0.0;
+
+                idCreator = (int) jObject.get("rutcreador");
+                if (!jObject.get("rutlocals").equals(null)){
+                    locals = (String) jObject.get("rutlocals");
+                }
+                else{locals = "";}
+
+                if (bd.routesAskExist(id)){
+                    bd.routesUpdate(id, route_lenght, name, description, assessment, idCreator, city, locals, date);
+                }
+                else{
+                    bd.routesAdd(id, route_lenght, name, description, assessment, idCreator, city, locals, date);
+                }
+            }
+            finish();
+        }
+
+
     }
 
     private void downloadDataFromApi() {
@@ -549,7 +573,7 @@ public class createEditRouteActivity extends Activity implements View.OnClickLis
 
 
 
-    public static String POST(String url){
+    public String POST(String url){
         InputStream inputStream = null;
         String result = "";
         try {
@@ -608,6 +632,68 @@ public class createEditRouteActivity extends Activity implements View.OnClickLis
         // 11. return result
         return result;
     }
+
+    public String PUT (String url){
+        InputStream inputStream = null;
+        String result = "";
+        try {
+
+            // 1. create HttpClient
+            HttpClient httpclient = new DefaultHttpClient();
+
+            // 2. make POST request to the given URL
+            HttpPut httpPut = new HttpPut(url);
+
+            String json = "";
+
+            // 3. build jsonObject
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.accumulate("idrutes", userId);
+            jsonObject.accumulate("rutmida", route_lenght);
+            jsonObject.accumulate("rutnom", routeName);
+            jsonObject.accumulate("rutdescripcio", routeDescription);
+            jsonObject.accumulate("rutvaloracio", routeAssessment);
+            jsonObject.accumulate("rutcreador", userId);
+            jsonObject.accumulate("rutlocals", listLocalNameInRoute);
+            jsonObject.accumulate("rutdata", routeDate);
+
+
+            // 4. convert JSONObject to JSON to String
+            json = jsonObject.toString();
+
+            // ** Alternative way to convert Person object to JSON string usin Jackson Lib
+            // ObjectMapper mapper = new ObjectMapper();
+            // json = mapper.writeValueAsString(person);
+
+            // 5. set json to StringEntity
+            StringEntity se = new StringEntity(json);
+
+            // 6. set httpPost Entity
+            httpPut.setEntity(se);
+
+            // 7. Set some headers to inform server about the type of the content
+            httpPut.setHeader("Accept", "application/json");
+            httpPut.setHeader("Content-type", "application/json");
+
+            // 8. Execute POST request to the given URL
+            HttpResponse httpResponse = httpclient.execute(httpPut);
+
+            // 9. receive response as inputStream
+            inputStream = httpResponse.getEntity().getContent();
+
+            // 10. convert inputstream to string
+            if(inputStream != null)
+                result = convertInputStreamToString(inputStream);
+            else
+                result = "Did not work!";
+
+        } catch (Exception e) {
+            Log.d("InputStream", e.getLocalizedMessage());
+        }
+
+        // 11. return result
+        return result;
+    }
     private class HttpAsyncTask extends AsyncTask<String, Void, String> {
         @Override
         protected String doInBackground(String... urls) {
@@ -618,6 +704,21 @@ public class createEditRouteActivity extends Activity implements View.OnClickLis
         @Override
         protected void onPostExecute(String result) {
             Toast.makeText(getBaseContext(), "¡Se ha creado la ruta correctamente!", Toast.LENGTH_LONG).show();
+            typeF = "rutes";
+            downloadDataFromApi();
+        }
+    }
+
+    private class HttpAsyncTaskUpdate extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+
+            return PUT(urls[0]);
+        }
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+            Toast.makeText(getBaseContext(), "¡Se han aplicado los cambios a la ruta!", Toast.LENGTH_LONG).show();
             finish();
         }
     }
@@ -698,74 +799,65 @@ public class createEditRouteActivity extends Activity implements View.OnClickLis
 
 
 
-/*
-    private void addLocalsToDatabase() {
-        String name = "", description= "", address= "", opening_hours= "", schedule_close= "", gastronomy= "";
-        Double assessment = 1.0, entrance_price = 10.0;
-        int category = 4;
 
 
-        for(int id = 0; id <= 30; id++){
 
-            assessment = assessment + 0.2;
-            if (id >= 0 && id <= 10){
-                name = "Restaurante: " + id;
-                description= "Un restaurante con los mejores chefs.";
-                if (id <= 3){
-                    address= "Mataró";
+
+
+
+
+
+
+
+
+
+
+    private class getJsonDataRoutes extends AsyncTask<Void, Void, String> {
+
+        protected String doInBackground(Void... argumentos) {
+
+            StringBuffer bufferCadena = new StringBuffer("");
+
+            try {
+                HttpClient cliente = new DefaultHttpClient();
+                HttpGet peticion = new HttpGet("http://10.0.2.2/ApiCrazyNuit/public/api/rutes");
+                // ejecuta una petición get
+                HttpResponse respuesta = cliente.execute(peticion);
+
+                //lee el resultado
+                BufferedReader entrada = new BufferedReader(new InputStreamReader(
+                        respuesta.getEntity().getContent()));
+                // Log.i("ResponseObject: ", respuesta.toString());
+
+                String separador = "";
+                String NL = System.getProperty("line.separator");
+                //almacena el resultado en bufferCadena
+
+                while ((separador = entrada.readLine()) != null) {
+                    bufferCadena.append(separador + NL);
                 }
-                if (id >= 4 && id <= 7){
-                    address= "Barcelona";
-                }
-                if (id >= 8 && id <= 10){
-                    address= "Girona";
-                }
-                if (bd.restaurantsAskExist(id)){
-                    bd.restaurantsUpdate(id, name, description, assessment, address, opening_hours, schedule_close, gastronomy, category);
-                }
-                else{
-                    bd.restaurantsAdd(id, name, description, assessment, address, opening_hours, schedule_close, gastronomy, category);
-                }
+                entrada.close();
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                //e.printStackTrace();
+                Log.i("ResponseObject: ", e.toString());
             }
 
-            if (id >= 11 && id <= 20){
-                name = "Pub: " + id;
-                description= "Un pub interesante.";
-                if (id <= 13){
-                    address= "Mataró";
-                }
-                if (id >= 14 && id <= 17){
-                    address= "Barcelona";
-                }
-                if (id >= 18 && id <= 20){
-                    address= "Girona";
-                }
-                if (bd.pubsAskExist(id)){
-                    bd.pubsUpdate(id, name, description, assessment, address, opening_hours, schedule_close);
-                }
-                else{
-                    bd.pubsAdd(id, name, description, assessment, address, opening_hours, schedule_close);
-                }
-            }
-            if (id >= 21 && id <= 30){
-                name = "Disco: " + id;
-                description= "Una disco con música de ánime.";
-                if (id <= 23){
-                    address= "Mataró";
-                }
-                if (id >= 24 && id <= 27){
-                    address= "Barcelona";
-                }
-                if (id >= 28 && id <= 30){
-                    address= "Girona";
-                }
-                if (bd.discoAskExist(id)){
-                    bd.discosUpdate(id, name, description, assessment, address, opening_hours, schedule_close, entrance_price);
-                }
-                else{
-                    bd.discosAdd(id, name, description, assessment, address, opening_hours, schedule_close, entrance_price);
-                }
-            }
+            return bufferCadena.toString();
+
         }
-    }*/
+
+        protected void onPostExecute(String data) {
+
+            try {
+                readDataFromJson(data);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            System.out.println(data);
+            // Toast.makeText(localActivity.this, data, Toast.LENGTH_SHORT).show();
+
+        }
+    }
 }

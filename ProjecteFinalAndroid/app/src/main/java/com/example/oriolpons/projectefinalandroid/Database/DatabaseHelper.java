@@ -95,6 +95,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         "favourite TEXT)";
         db.execSQL(CREATE_TABLE);
 
+        CREATE_TABLE =
+                "CREATE TABLE achievements ( _id INTEGER PRIMARY KEY, " +
+                        "name TEXT NOT NULL, " +
+                        "description TEXT NOT NULL)";
+        db.execSQL(CREATE_TABLE);
 /*
         CREATE_TABLE =
                 "CREATE TABLE local ( _id INTEGER PRIMARY KEY, " +
