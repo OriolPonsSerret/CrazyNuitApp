@@ -26,8 +26,11 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -379,5 +382,90 @@ public class editProfileActivity extends AppCompatActivity implements View.OnCli
         inputStream.close();
         return result;
 
+    }
+
+
+
+
+
+
+
+    //PUT
+    private class HttpAsyncTaskUpdate extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+
+            return PUT(urls[0]);
+        }
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+            Toast.makeText(getBaseContext(), "¡Se han aplicado los cambios a la ruta!", Toast.LENGTH_LONG).show();
+        }
+    }
+
+    public String PUT (String url){
+        InputStream inputStream = null;
+        String result = "";
+        try {
+
+            // 1. create HttpClient
+            HttpClient httpclient = new DefaultHttpClient();
+
+            // 2. make PUT request to the given URL
+            HttpPut httpPut = new HttpPut(url);
+
+            String json = "";
+
+            // 3. build jsonObject
+            JSONObject jsonObject = new JSONObject();
+            //jsonObject.accumulate("idrutes", routeId);
+            //jsonObject.put("rutmida", route_lenght);
+            jsonObject.put("name", "");
+            jsonObject.put("descripcio", "");
+            jsonObject.put("telefon", "");
+            jsonObject.put("DataNaixement", "");
+            // jsonObject.put("rutvaloracio", routeAssessment);
+            //jsonObject.put("rutcreador", userId);
+            //jsonObject.put("rutlocals", listLocalNameInRoute);
+            //jsonObject.put("rutdata", null);//routeDate
+
+
+            // 4. convert JSONObject to JSON to String
+            json = jsonObject.toString();
+
+            // ** Alternative way to convert Person object to JSON string usin Jackson Lib
+            // ObjectMapper mapper = new ObjectMapper();
+            // json = mapper.writeValueAsString(person);
+
+            // 5. set json to StringEntity
+            StringEntity se = new StringEntity(json);
+
+            // 6. set httpPut Entity
+            httpPut.setEntity(se);
+
+            // 7. Set some headers to inform server about the type of the content
+            httpPut.setHeader("Accept", "application/json");
+            httpPut.setHeader("Content-type", "application/json");
+
+            // 8. Execute PUT request to the given URL
+            HttpResponse httpResponse = httpclient.execute(httpPut);
+            //ResponseObject:: org.apache.http.conn.HttpHostConnectException: Connection to http://localhost refused
+
+            // 9. receive response as inputStream
+            inputStream = httpResponse.getEntity().getContent();
+
+            // 10. convert inputstream to string
+            if(inputStream != null)
+                result = convertInputStreamToString(inputStream);
+            else
+                result = "Did not work!";
+
+        } catch (Exception e) {
+            Log.d("InputStream", e.getLocalizedMessage());
+        }
+        Log.d("InputStream", result.toString());
+        // 11. return result
+        return result;
     }
 }

@@ -20,6 +20,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.example.oriolpons.projectefinalandroid.Database.Datasource;
 import com.example.oriolpons.projectefinalandroid.Models.local;
 import com.example.oriolpons.projectefinalandroid.Adapters.adapterLocalAdd;
@@ -44,7 +50,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static java.lang.Boolean.FALSE;
 
 public class createEditRouteActivity extends Activity implements View.OnClickListener{
 
@@ -159,6 +169,10 @@ public class createEditRouteActivity extends Activity implements View.OnClickLis
         routeId = this.getIntent().getExtras().getInt("id");
         cityOfLocalFilter = this.getIntent().getExtras().getString("city");
 
+
+        if(isConnected()){
+        }
+
         if (routeId != -1){
             routeName = this.getIntent().getExtras().getString("name");
             routeDescription = this.getIntent().getExtras().getString("description");
@@ -174,8 +188,7 @@ public class createEditRouteActivity extends Activity implements View.OnClickLis
                 userId = cursor.getInt(4);
                 listLocalNameInRoute = cursor.getString(5);
                 routeDate = cursor.getString(6);
-                }
-
+            }
 
             txtCity.setVisibility(View.GONE);
             txtLocalsRoute.setVisibility(View.GONE);
@@ -186,8 +199,7 @@ public class createEditRouteActivity extends Activity implements View.OnClickLis
         }
         else{
             btnDelete.setVisibility(View.GONE);
-            if(isConnected()){
-            }
+
             userId = this.getIntent().getExtras().getInt("userId");
 
         }
@@ -269,11 +281,58 @@ public class createEditRouteActivity extends Activity implements View.OnClickLis
                     }
                     else{
                         bd.routesUpdatedByUser(routeId, routeName, routeDescription);
+                        cursor = bd.getRouteInformation(routeId);
+                        while(cursor.moveToNext()){
+                            route_lenght = cursor.getInt(0);
+                            routeName = cursor.getString(1);
+                            routeDescription = cursor.getString(2);
+                            routeAssessment = cursor.getInt(3);
+                            userId = cursor.getInt(4);
+                            listLocalNameInRoute = cursor.getString(5);
+                            routeDate = cursor.getString(6);
+                        }
                         new HttpAsyncTaskUpdate().execute("http://10.0.2.2/ApiCrazyNuit/public/api/rutes/" + routeId);
+/*
+                        RequestQueue queue = Volley.newRequestQueue(this);
+                        StringRequest putRequest = new StringRequest(Request.Method.PUT, "http://10.0.2.2/ApiCrazyNuit/public/api/rutes/" + routeId,
+                                new Response.Listener<String>()
+                                {
+                                    @Override
+                                    public void onResponse(String response) {
+                                        // response
+                                        Log.d("Response", response);
+                                    }
+                                },
+                                new Response.ErrorListener()
+                                {
+                                    @Override
+                                    public void onErrorResponse(VolleyError response) {
+                                        // error
+                                        Log.d("Error.Response", String.valueOf(response));
+                                    }
+                                }
+                        ) {
 
+                            @Override
+                            protected Map<String, String> getParams()
+                            {
+                                Map<String, String>  params = new HashMap<String, String>();
+                                params.put("idrutes", String.valueOf(routeId));
+                                params.put("rutmida", String.valueOf(route_lenght));
+                                params.put("rutnom", routeName);
+                                params.put("rutdescripcio", routeDescription);
+                                params.put("rutvaloracio",  String.valueOf(routeAssessment));
+                                params.put("rutcreador", String.valueOf(userId));
+                                params.put("rutlocals", listLocalNameInRoute);
+                                params.put("rutdata", null);
 
-                       //Put
-                        //  route_lenght, name, description, assessment, creator, cityOfLocalFilter, locals, date,
+                                return params;
+                            }
+
+                        };
+
+                        queue.add(putRequest);
+                        finish();*/
                     }
                     //finish();
                 }
@@ -573,6 +632,92 @@ public class createEditRouteActivity extends Activity implements View.OnClickLis
 
 
 
+
+
+
+
+
+
+    public boolean isConnected(){
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isConnected())
+            return true;
+        else
+            return false;
+    }
+
+    private static String convertInputStreamToString(InputStream inputStream) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
+        String line = "";
+        String result = "";
+        while((line = bufferedReader.readLine()) != null)
+            result += line;
+
+        inputStream.close();
+        return result;
+
+    }
+
+
+
+    //POST
+    private class HttpAsyncTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+
+            return POST(urls[0]);
+        }
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+            Toast.makeText(getBaseContext(), "¡Se ha creado la ruta correctamente!", Toast.LENGTH_LONG).show();
+            typeF = "rutes";
+            downloadDataFromApi();
+        }
+    }
+
+    //PUT
+    private class HttpAsyncTaskUpdate extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+
+            return PUT(urls[0]);
+        }
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+            Toast.makeText(getBaseContext(), "¡Se han aplicado los cambios a la ruta!", Toast.LENGTH_LONG).show();
+            typeF = "rutes";
+            downloadDataFromApi();
+        }
+    }
+    //DELETE
+    private class HttpAsyncTaskDelete extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... urls) {
+
+            return DELETE(urls[0]);
+        }
+        // onPostExecute displays the results of the AsyncTask.
+        @Override
+        protected void onPostExecute(String result) {
+            Toast.makeText(getBaseContext(), "¡Se ha eliminado la ruta!", Toast.LENGTH_LONG).show();
+            finish();
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
     public String POST(String url){
         InputStream inputStream = null;
         String result = "";
@@ -636,26 +781,73 @@ public class createEditRouteActivity extends Activity implements View.OnClickLis
     public String PUT (String url){
         InputStream inputStream = null;
         String result = "";
+/*
+        try {
+            // 1. create HttpClient
+            HttpClient httpclient = new DefaultHttpClient();
+            // 2. make POST request to the given URL
+            HttpPut httpPUT = new
+                    HttpPut(url);
+            String json = "";
+            // 3. build jsonObject
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("idrutes", routeId);
+            jsonObject.put("rutmida", route_lenght);
+            jsonObject.put("rutnom", routeName);
+            jsonObject.put("rutdescripcio", routeDescription);
+            jsonObject.put("rutvaloracio", routeAssessment);
+            jsonObject.put("rutcreador", userId);
+            jsonObject.put("rutlocals", listLocalNameInRoute);
+            jsonObject.put("rutdata", null);//routeDate
+
+            // 4. convert JSONObject to JSON to String
+            json = jsonObject.toString();
+
+            // 5. set json to StringEntity
+            StringEntity se = new StringEntity(json);
+            // 6. set httpPost Entity
+            httpPUT.setEntity(se);
+            // 7. Set some headers to inform server about the type of the content
+            httpPUT.setHeader("Accept", "application/json");
+            httpPUT.setHeader("Content-type", "application/json");
+            // 8. Execute POST request to the given URL
+            HttpResponse httpResponse = httpclient.execute(httpPUT);
+            // 9. receive response as inputStream
+            inputStream = httpResponse.getEntity().getContent();
+
+            // 10. convert inputstream to string
+            if(inputStream != null)
+                result = convertInputStreamToString(inputStream);
+            else
+                result = "Did not work!";
+        } catch (Exception e) {
+            Log.d("InputStream", e.getLocalizedMessage());
+        }
+
+        return result;
+*/
+
+
         try {
 
             // 1. create HttpClient
             HttpClient httpclient = new DefaultHttpClient();
 
-            // 2. make POST request to the given URL
+            // 2. make PUT request to the given URL
             HttpPut httpPut = new HttpPut(url);
 
             String json = "";
 
             // 3. build jsonObject
             JSONObject jsonObject = new JSONObject();
-            jsonObject.accumulate("idrutes", userId);
-            jsonObject.accumulate("rutmida", route_lenght);
-            jsonObject.accumulate("rutnom", routeName);
-            jsonObject.accumulate("rutdescripcio", routeDescription);
-            jsonObject.accumulate("rutvaloracio", routeAssessment);
-            jsonObject.accumulate("rutcreador", userId);
-            jsonObject.accumulate("rutlocals", listLocalNameInRoute);
-            jsonObject.accumulate("rutdata", routeDate);
+            //jsonObject.accumulate("idrutes", routeId);
+            //jsonObject.put("rutmida", route_lenght);
+            jsonObject.put("rutnom", routeName);
+            jsonObject.put("rutdescripcio", routeDescription);
+           // jsonObject.put("rutvaloracio", routeAssessment);
+            //jsonObject.put("rutcreador", userId);
+            //jsonObject.put("rutlocals", listLocalNameInRoute);
+            //jsonObject.put("rutdata", null);//routeDate
 
 
             // 4. convert JSONObject to JSON to String
@@ -668,15 +860,16 @@ public class createEditRouteActivity extends Activity implements View.OnClickLis
             // 5. set json to StringEntity
             StringEntity se = new StringEntity(json);
 
-            // 6. set httpPost Entity
+            // 6. set httpPut Entity
             httpPut.setEntity(se);
 
             // 7. Set some headers to inform server about the type of the content
             httpPut.setHeader("Accept", "application/json");
             httpPut.setHeader("Content-type", "application/json");
 
-            // 8. Execute POST request to the given URL
+            // 8. Execute PUT request to the given URL
             HttpResponse httpResponse = httpclient.execute(httpPut);
+            //ResponseObject:: org.apache.http.conn.HttpHostConnectException: Connection to http://localhost refused
 
             // 9. receive response as inputStream
             inputStream = httpResponse.getEntity().getContent();
@@ -690,64 +883,10 @@ public class createEditRouteActivity extends Activity implements View.OnClickLis
         } catch (Exception e) {
             Log.d("InputStream", e.getLocalizedMessage());
         }
-
+        Log.d("InputStream", result.toString());
         // 11. return result
         return result;
     }
-    private class HttpAsyncTask extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... urls) {
-
-            return POST(urls[0]);
-        }
-        // onPostExecute displays the results of the AsyncTask.
-        @Override
-        protected void onPostExecute(String result) {
-            Toast.makeText(getBaseContext(), "¡Se ha creado la ruta correctamente!", Toast.LENGTH_LONG).show();
-            typeF = "rutes";
-            downloadDataFromApi();
-        }
-    }
-
-    private class HttpAsyncTaskUpdate extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... urls) {
-
-            return PUT(urls[0]);
-        }
-        // onPostExecute displays the results of the AsyncTask.
-        @Override
-        protected void onPostExecute(String result) {
-            Toast.makeText(getBaseContext(), "¡Se han aplicado los cambios a la ruta!", Toast.LENGTH_LONG).show();
-            finish();
-        }
-    }
-    public boolean isConnected(){
-        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Activity.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isConnected())
-            return true;
-        else
-            return false;
-    }
-
-    private static String convertInputStreamToString(InputStream inputStream) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader( new InputStreamReader(inputStream));
-        String line = "";
-        String result = "";
-        while((line = bufferedReader.readLine()) != null)
-            result += line;
-
-        inputStream.close();
-        return result;
-
-    }
-
-
-
-
-
-
 
     public static String DELETE (String url){
         InputStream inputStream = null;
@@ -783,19 +922,7 @@ public class createEditRouteActivity extends Activity implements View.OnClickLis
         // 11. return result
         return result;
     }
-    private class HttpAsyncTaskDelete extends AsyncTask<String, Void, String> {
-        @Override
-        protected String doInBackground(String... urls) {
 
-            return DELETE(urls[0]);
-        }
-        // onPostExecute displays the results of the AsyncTask.
-        @Override
-        protected void onPostExecute(String result) {
-            Toast.makeText(getBaseContext(), "¡Se ha eliminado la ruta!", Toast.LENGTH_LONG).show();
-            finish();
-        }
-    }
 
 
 
