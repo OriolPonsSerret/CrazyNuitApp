@@ -223,6 +223,7 @@ public class routesActivity extends AppCompatActivity implements View.OnClickLis
         bundle.putString("description",routeDescription);
         bundle.putString("assessment",routeAssessment);
         bundle.putString("creator",routeCreator);
+        bundle.putString("user_email", userEmail);
         Intent intent = new Intent(this, routesContentActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);

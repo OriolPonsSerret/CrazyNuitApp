@@ -173,6 +173,7 @@ public class routesProfileFragment extends Fragment {
         bundle.putString("description",routeDescription);
         bundle.putString("assessment",routeAssessment);
         bundle.putString("creator",routeCreator);
+        bundle.putString("user_email", profileActivity.userEmail);
         Intent intent = new Intent(getActivity(), routesContentActivity.class);
         intent.putExtras(bundle);
         getActivity().startActivity(intent);

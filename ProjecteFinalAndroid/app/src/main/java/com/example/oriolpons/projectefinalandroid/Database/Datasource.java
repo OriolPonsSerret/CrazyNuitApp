@@ -70,14 +70,16 @@ public class Datasource {
     public static final String ROUTES_CITY = "city";
     public static final String ROUTES_LOCALS = "rute_locals";
     public static final String ROUTES_DATE = "route_date";
-    public static final String ROUTES_FAVOURITE = "favourite";
+    //public static final String ROUTES_FAVOURITE = "favourite";
 
-
-    public static final String table_ACHIEVEMENTS= "routes";
+    public static final String table_ACHIEVEMENTS= "achievements";
     public static final String ACHIEVEMENTS_ID = "_id";
     public static final String ACHIEVEMENTS_NAME = "name";
     public static final String ACHIEVEMENTS_DESCRIPTION = "description";
 
+    public static final String table_FAVOURITEROUTES= "favouriteroutes";
+    public static final String FAVOURITEROUTES_ID = "_id";
+    public static final String FAVOURITEROUTES_IDUSER = "id_user";
 
     private DatabaseHelper dbHelper;
     private SQLiteDatabase dbW, dbR;
@@ -217,34 +219,40 @@ public class Datasource {
     }
 
     public Cursor filterRoutes(String city, String order, String routeName, int route_lenghtmin, int route_lenght) {
-        return dbR.rawQuery("SELECT " + ROUTES_ID + ", " + ROUTES_LENGHT +", " + ROUTES_NAME + ", " + ROUTES_DESCRIPTION + ", " + ROUTES_ASSESSMENT + ", " + ROUTES_CREATOR + ", " + ROUTES_CITY + ", " + ROUTES_LOCALS + ", " + ROUTES_DATE + ", " + ROUTES_FAVOURITE +
+        return dbR.rawQuery("SELECT " + ROUTES_ID + ", " + ROUTES_LENGHT +", " + ROUTES_NAME + ", " + ROUTES_DESCRIPTION + ", " + ROUTES_ASSESSMENT + ", " + ROUTES_CREATOR + ", " + ROUTES_CITY + ", " + ROUTES_LOCALS + ", " + ROUTES_DATE +
                 " FROM " + table_ROUTES +
                 " WHERE UPPER(" +  ROUTES_CITY + ") LIKE UPPER ('" + city +"') AND UPPER(" +  ROUTES_NAME + ") LIKE UPPER ('%" + routeName +"%') AND " +  ROUTES_LENGHT + " > " + route_lenghtmin + " AND " +  ROUTES_LENGHT + " <= " + route_lenght  +
                 " ORDER BY " + ROUTES_ASSESSMENT + " " + order, null);
     }
     public Cursor filterRoutesUser(String city, String order, String routeName, int route_lenghtmin, int route_lenght, int idCreator) {
-        return dbR.rawQuery("SELECT " + ROUTES_ID + ", " + ROUTES_LENGHT +", " + ROUTES_NAME + ", " + ROUTES_DESCRIPTION + ", " + ROUTES_ASSESSMENT + ", " + ROUTES_CREATOR + ", " + ROUTES_CITY + ", " + ROUTES_LOCALS + ", " + ROUTES_DATE + ", " + ROUTES_FAVOURITE +
+        return dbR.rawQuery("SELECT " + ROUTES_ID + ", " + ROUTES_LENGHT +", " + ROUTES_NAME + ", " + ROUTES_DESCRIPTION + ", " + ROUTES_ASSESSMENT + ", " + ROUTES_CREATOR + ", " + ROUTES_CITY + ", " + ROUTES_LOCALS + ", " + ROUTES_DATE +
                 " FROM " + table_ROUTES +
                 " WHERE UPPER(" +  ROUTES_CITY + ") LIKE UPPER ('" + city +"') AND UPPER(" +  ROUTES_NAME + ") LIKE UPPER ('%" + routeName +"%') AND " +  ROUTES_CREATOR + " LIKE " + idCreator +" AND " +  ROUTES_LENGHT + " > " + route_lenghtmin + " AND " +  ROUTES_LENGHT + " <= " + route_lenght  +
                 " ORDER BY " + ROUTES_ASSESSMENT + " " + order, null);
     }
 
     public Cursor showAllRoutesUser(int idCreator) {
-        return dbR.rawQuery("SELECT " + ROUTES_ID + ", " + ROUTES_LENGHT +", " + ROUTES_NAME + ", " + ROUTES_DESCRIPTION + ", " + ROUTES_ASSESSMENT + ", " + ROUTES_CREATOR + ", " + ROUTES_CITY + ", " + ROUTES_LOCALS + ", " + ROUTES_DATE + ", " + ROUTES_FAVOURITE +
+        return dbR.rawQuery("SELECT " + ROUTES_ID + ", " + ROUTES_LENGHT +", " + ROUTES_NAME + ", " + ROUTES_DESCRIPTION + ", " + ROUTES_ASSESSMENT + ", " + ROUTES_CREATOR + ", " + ROUTES_CITY + ", " + ROUTES_LOCALS + ", " + ROUTES_DATE +
                 " FROM " + table_ROUTES +
                 " WHERE UPPER(" +  ROUTES_CREATOR + ") LIKE " + idCreator+
                 " ORDER BY " + ROUTES_LENGHT + " ASC", null);
     }
-    public Cursor filterFavRoutes(String city, String order, String routeName, int route_lenghtmin, int route_lenght) {
-        return dbR.rawQuery("SELECT " + ROUTES_ID + ", " + ROUTES_LENGHT +", " + ROUTES_NAME + ", " + ROUTES_DESCRIPTION + ", " + ROUTES_ASSESSMENT + ", " + ROUTES_CREATOR + ", " + ROUTES_CITY + ", " + ROUTES_LOCALS + ", " + ROUTES_DATE + ", " + ROUTES_FAVOURITE +
+    public Cursor filterFavRoutes(String city, String order, String routeName, int route_lenghtmin, int route_lenght, int routeId) {
+        return dbR.rawQuery("SELECT " + ROUTES_ID + ", " + ROUTES_LENGHT +", " + ROUTES_NAME + ", " + ROUTES_DESCRIPTION + ", " + ROUTES_ASSESSMENT + ", " + ROUTES_CREATOR + ", " + ROUTES_CITY + ", " + ROUTES_LOCALS + ", " + ROUTES_DATE +
                 " FROM " + table_ROUTES +
-                " WHERE UPPER(" +  ROUTES_CITY + ") LIKE UPPER ('" + city +"') AND UPPER(" +  ROUTES_NAME + ") LIKE UPPER ('%" + routeName +"%') AND " +  ROUTES_LENGHT + " > " + route_lenghtmin + " AND " +  ROUTES_LENGHT + " <= " + route_lenght  + " AND UPPER(" +  ROUTES_FAVOURITE + ") LIKE UPPER ('TRUE')" +
+                " WHERE UPPER(" +  ROUTES_CITY + ") LIKE UPPER ('" + city +"') AND UPPER(" +  ROUTES_NAME + ") LIKE UPPER ('%" + routeName +"%') AND " +  ROUTES_LENGHT + " > " + route_lenghtmin + " AND " +  ROUTES_LENGHT + " <= " + route_lenght + " AND " +  ROUTES_ID + " LIKE " + routeId +
                 " ORDER BY " + ROUTES_ASSESSMENT + " " + order, null);
     }
 
 
+    public Cursor searchFavRoutes(int userId) {
+        return dbR.rawQuery("SELECT " + FAVOURITEROUTES_ID +
+                " FROM " + table_FAVOURITEROUTES +
+                " WHERE " +  FAVOURITEROUTES_IDUSER + " LIKE " + userId, null);
+    }
+
     public Cursor getRouteInformation(int id) {
-        return dbR.rawQuery("SELECT " + ROUTES_LENGHT +", " + ROUTES_NAME + ", " + ROUTES_DESCRIPTION + ", " + ROUTES_ASSESSMENT + ", " + ROUTES_CREATOR + ", " + ROUTES_CITY + ", " + ROUTES_LOCALS + ", " + ROUTES_DATE + ", " + ROUTES_FAVOURITE +
+        return dbR.rawQuery("SELECT " + ROUTES_LENGHT +", " + ROUTES_NAME + ", " + ROUTES_DESCRIPTION + ", " + ROUTES_ASSESSMENT + ", " + ROUTES_CREATOR + ", " + ROUTES_CITY + ", " + ROUTES_LOCALS + ", " + ROUTES_DATE +
                 " FROM " + table_ROUTES +
                 " WHERE " +  ROUTES_ID + " LIKE " + id , null);
     }
@@ -344,7 +352,7 @@ public class Datasource {
 
         dbW.update(table_USER,values, USER_EMAIL + " = ?", new String[] { String.valueOf(email) });
     }
-    public void userUpdatePhonenumber(String email, int phonenumber) {
+    public void userUpdatePhonenumber(String email, String phonenumber) {
         ContentValues values = new ContentValues();
         values.put(USER_PHONENUMBER, phonenumber);
 
@@ -473,7 +481,7 @@ public class Datasource {
         values.put(ROUTES_CITY, city);
         values.put(ROUTES_LOCALS, locals);
         values.put(ROUTES_DATE, date);
-        values.put(ROUTES_FAVOURITE, date);
+        //values.put(ROUTES_FAVOURITE, date);
 
         dbW.update(table_ROUTES,values, ROUTES_ID + " = ?", new String[] { String.valueOf(id) });
     }
@@ -485,14 +493,8 @@ public class Datasource {
 
         dbW.update(table_ROUTES,values, ROUTES_ID + " = ?", new String[] { String.valueOf(id) });
     }
-    /*
-    public void updateRoutesCreatorWhereNameChanged(String oldName, String NewName){
-        ContentValues values = new ContentValues();
-        values.put(ROUTES_CREATOR, NewName);
 
-        dbW.update(table_ROUTES,values, ROUTES_CREATOR + " = ?", new String[] { String.valueOf(oldName) });
-    }
-*/
+
 
     public void achievementAddedByJson(int id, String name, String description) {
         ContentValues values = new ContentValues();
@@ -511,12 +513,15 @@ public class Datasource {
     }
 
 
-    public void routesAddOrRemoveFavourite(int id, String favourite) {
+    public void addFavourite(int idRoute, int idUser) {
         ContentValues values = new ContentValues();
-        values.put(ROUTES_FAVOURITE, favourite);
+        values.put(FAVOURITEROUTES_ID, idRoute);
+        values.put(FAVOURITEROUTES_IDUSER, idUser);
 
-        dbW.update(table_ROUTES,values, ROUTES_ID + " = ?", new String[] { String.valueOf(id) });
+        dbW.insert(table_FAVOURITEROUTES, null, values);
     }
+
+
 
 
 //---------------------------------------------------------------------------------------------------------------
@@ -610,6 +615,15 @@ public class Datasource {
         return exists;
     }
 
+    public boolean routesFavAskExist(int routeId, int userId) {
+        Cursor c = dbR.rawQuery("SELECT " + FAVOURITEROUTES_ID  + ", " + FAVOURITEROUTES_IDUSER +
+                " FROM " + table_FAVOURITEROUTES +
+                " WHERE " +  FAVOURITEROUTES_ID + " LIKE " + routeId + " AND " +  FAVOURITEROUTES_IDUSER + " LIKE " + userId, null);
+        boolean exists = c.moveToFirst();
+        c.close();
+        return exists;
+    }
+
     public boolean routesAskExistName(String name) {
         Cursor c = dbR.rawQuery("SELECT " + ROUTES_NAME  +
                 " FROM " + table_ROUTES +
@@ -636,5 +650,9 @@ public class Datasource {
 
     public void routesDelete(int id) {
         dbW.delete(table_ROUTES,ROUTES_ID + " = ?", new String[] { String.valueOf(id) });
+    }
+
+    public void removeFavourite(int idRoute, int idUser) {
+        dbW.delete(table_FAVOURITEROUTES,FAVOURITEROUTES_ID + " = ? AND " + FAVOURITEROUTES_IDUSER + " = ?", new String[] { String.valueOf(idRoute), String.valueOf(idUser) });
     }
 }

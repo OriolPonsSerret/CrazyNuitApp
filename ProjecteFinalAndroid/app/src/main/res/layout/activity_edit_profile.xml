@@ -96,6 +96,8 @@
             android:orientation="vertical"
             android:paddingTop="15dp">
 
+
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -137,7 +139,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:padding="15dp">
+                android:padding="15dp"
+                android:visibility="gone">
 
                 <Button
                     android:id="@+id/btnPassword"
@@ -147,6 +150,24 @@
                     android:background="@drawable/button_custom"
                     android:padding="20dp"
                     android:text="CONTRASEÑA"
+                    android:textColor="@android:color/background_light"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:padding="15dp">
+
+                <Button
+                    android:id="@+id/btnTelephone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_custom"
+                    android:padding="20dp"
+                    android:text="TELÉFONO"
                     android:textColor="@android:color/background_light"
                     android:textStyle="bold" />
             </LinearLayout>

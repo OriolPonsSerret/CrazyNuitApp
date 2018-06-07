@@ -26,8 +26,8 @@ public class routesContentActivity extends AppCompatActivity implements View.OnC
     private com.example.oriolpons.projectefinalandroid.Adapters.adapterLocal AdapterLocal;
     private RecyclerView recyclerLocals;
 
-    private String localName, localDescription, localAssessment, city, rute_locals, route_date, favourite = "false";
-    private int id, route_lenght;
+    private String userEmail = "", localName, localDescription, localAssessment, city, rute_locals, route_date, favourite = "false";
+    private int routeid, route_lenght, userId = 0;
     private Datasource bd;
     private String[] locals;
 
@@ -65,8 +65,8 @@ public class routesContentActivity extends AppCompatActivity implements View.OnC
             }
         });
 
-        id = this.getIntent().getExtras().getInt("id");
-        Cursor cursor = bd.getRouteInformation(id);
+        routeid = this.getIntent().getExtras().getInt("id");
+        Cursor cursor = bd.getRouteInformation(routeid);
         while(cursor.moveToNext()) {
             route_lenght = cursor.getInt(0);
             txtTitle.setText(cursor.getString(1));
@@ -81,9 +81,12 @@ public class routesContentActivity extends AppCompatActivity implements View.OnC
             city = cursor.getString(5);
             rute_locals = cursor.getString(6);
             route_date = cursor.getString(7);
-            favourite = cursor.getString(8);
         }
-
+        userEmail = this.getIntent().getExtras().getString("user_email");
+        cursor = bd.getUserInformationByEmail(userEmail);
+        while(cursor.moveToNext()){
+            userId = cursor.getInt(0);
+        }
         /*
         String routeName = this.getIntent().getExtras().getString("name");
         String routeDescription = this.getIntent().getExtras().getString("description");
@@ -107,20 +110,18 @@ public class routesContentActivity extends AppCompatActivity implements View.OnC
         });
         recyclerLocals.setAdapter(AdapterLocal);
 
-
-/*
-        if (favourite.equals("FALSE")){
-            btnAddFav.setVisibility(View.VISIBLE);
-            btnRemoveFav.setVisibility(View.GONE);
-        }else{
+        if(bd.routesFavAskExist(routeid, userId)){
             btnAddFav.setVisibility(View.GONE);
             btnRemoveFav.setVisibility(View.VISIBLE);
-
         }
-*/
-       setLocalsInRoute();
+        else{
+            btnAddFav.setVisibility(View.VISIBLE);
+            btnRemoveFav.setVisibility(View.GONE);
+        }
 
-        getSupportActionBar().setTitle("Contenido de la ruta");
+
+       setLocalsInRoute();
+       getSupportActionBar().setTitle("Contenido de la ruta");
     }
 
     private void setLocalsInRoute() {
@@ -201,12 +202,12 @@ public class routesContentActivity extends AppCompatActivity implements View.OnC
         if (btnRemoveFav.getVisibility() == View.GONE){
             btnAddFav.setVisibility(View.GONE);
             btnRemoveFav.setVisibility(View.VISIBLE);
-            bd.routesAddOrRemoveFavourite(id, "TRUE");
+            bd.addFavourite(routeid, userId);
         }
         else{
             btnAddFav.setVisibility(View.VISIBLE);
             btnRemoveFav.setVisibility(View.GONE);
-            bd.routesAddOrRemoveFavourite(id, "FALSE");
+            bd.removeFavourite(routeid, userId);
         }
     }
 

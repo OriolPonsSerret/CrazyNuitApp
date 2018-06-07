@@ -43,9 +43,9 @@ public class favRoutesActivity extends AppCompatActivity implements View.OnClick
 
     private Datasource bd;
     private String assessmentFilter = "ASC", typeOfRouteFilter = "short", cityOfRouteFilter= "Mataró", URL =  "http://localhost/ApiCrazyNuit/public/api/";
-    private int cityOfRouteFilterPosition = 0, RouteLenghtMin = 0, RouteLenght = 0, routeId;
+    private int cityOfRouteFilterPosition = 0, RouteLenghtMin = 0, RouteLenght = 0, routeId, userId;
     private String userEmail = "";
-
+    //private int[] localsListId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -131,6 +131,10 @@ public class favRoutesActivity extends AppCompatActivity implements View.OnClick
         spCity.setAdapter(adapter);
 
         userEmail = this.getIntent().getExtras().getString("user_email");
+        Cursor cursor = bd.getUserInformationByEmail(userEmail);
+        while(cursor.moveToNext()) {
+            userId = cursor.getInt(0);
+        }
 
         filterConfig();
         clearData();
@@ -148,6 +152,7 @@ public class favRoutesActivity extends AppCompatActivity implements View.OnClick
         bundle.putString("description",routeDescription);
         bundle.putString("assessment",routeAssessment);
         bundle.putString("creator",routeCreator);
+        bundle.putString("user_email", userEmail);
         Intent intent = new Intent(this, routesContentActivity.class);
         intent.putExtras(bundle);
         startActivity(intent);
@@ -343,7 +348,7 @@ public class favRoutesActivity extends AppCompatActivity implements View.OnClick
     private void exampleRoutes() {
 
         Cursor cursor;
-        int id;
+        int id, index = 0;
         String measure = "", name, description, creator, city, rute_locals, route_date, favourite;
         Double assessment, entrance_price;
         int route_lenght;
@@ -365,32 +370,40 @@ public class favRoutesActivity extends AppCompatActivity implements View.OnClick
             }
         }
 
-        cursor = bd.filterFavRoutes(cityOfRouteFilter, assessmentFilter, NameFilter, RouteLenghtMin, RouteLenght);
-        while(cursor.moveToNext()){
-            id = cursor.getInt(0);
-            route_lenght = cursor.getInt(1);
-            name = cursor.getString(2);
-            description = cursor.getString(3);
-            assessment = cursor.getDouble(4);
-            creator = cursor.getString(5);
-            city = cursor.getString(6);
-            rute_locals = cursor.getString(7);
-            route_date = cursor.getString(8);
-            favourite = cursor.getString(9);
+        Cursor cursor2 = bd.searchFavRoutes(userId);
+        while(cursor2.moveToNext()){
+            //localsListId [index] = ;
+            //index++;
 
-            if (route_lenght <= 3){
-                measure = "short";
-            }else{
-                if (route_lenght <= 6){
-                    measure = "halfways";
-                }else{
-                    if (route_lenght <= 10){
-                        measure = "long";
+            //for (int i = 0; i < localsListId.length;i++){
+
+                cursor = bd.filterFavRoutes(cityOfRouteFilter, assessmentFilter, NameFilter, RouteLenghtMin, RouteLenght, cursor2.getInt(0));
+                while(cursor.moveToNext()){
+                    id = cursor.getInt(0);
+                    route_lenght = cursor.getInt(1);
+                    name = cursor.getString(2);
+                    description = cursor.getString(3);
+                    assessment = cursor.getDouble(4);
+                    creator = cursor.getString(5);
+                    city = cursor.getString(6);
+                    rute_locals = cursor.getString(7);
+                    route_date = cursor.getString(8);
+
+                    if (route_lenght <= 3){
+                        measure = "short";
+                    }else{
+                        if (route_lenght <= 6){
+                            measure = "halfways";
+                        }else{
+                            if (route_lenght <= 10){
+                                measure = "long";
+                            }
+                        }
                     }
-                }
-            }
 
-            listRoutes.add(new routes(id, measure, name, description, creator, assessment, city, 0));
+                    listRoutes.add(new routes(id, measure, name, description, creator, assessment, city, 0));
+                }
+            //}
         }
     }
 

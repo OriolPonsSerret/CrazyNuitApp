@@ -91,14 +91,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                         "creator INTEGER NOT NULL, " +
                         "city TEXT NOT NULL, " +
                         "rute_locals TEXT, " +
-                        "route_date TEXT, " +
-                        "favourite TEXT)";
+                        "route_date TEXT)";
         db.execSQL(CREATE_TABLE);
 
         CREATE_TABLE =
                 "CREATE TABLE achievements ( _id INTEGER PRIMARY KEY, " +
                         "name TEXT NOT NULL, " +
                         "description TEXT NOT NULL)";
+        db.execSQL(CREATE_TABLE);
+
+        CREATE_TABLE =
+                "CREATE TABLE favouriteroutes ( _id INTEGER UNIQUE, " +
+                        "id_user INTEGER)";
         db.execSQL(CREATE_TABLE);
 /*
         CREATE_TABLE =
