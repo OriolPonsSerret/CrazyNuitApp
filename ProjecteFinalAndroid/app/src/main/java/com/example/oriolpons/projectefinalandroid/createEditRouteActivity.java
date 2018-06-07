@@ -26,6 +26,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.oriolpons.projectefinalandroid.Adapters.adapterLocal;
 import com.example.oriolpons.projectefinalandroid.Database.Datasource;
 import com.example.oriolpons.projectefinalandroid.Models.local;
 import com.example.oriolpons.projectefinalandroid.Adapters.adapterLocalAdd;
@@ -62,12 +63,14 @@ public class createEditRouteActivity extends Activity implements View.OnClickLis
     private TextView txtCity, txtLocalsRoute, edtRouteName, edtRouteDescription;
     private ImageButton btnBack, btnDelete;
     private Button btnAccept;
-    private ArrayList<local> listLocalGlobal, listLocalRoute;
-    private RecyclerView LocalsGlobal, LocalsInMyRoute;
+    private ArrayList<local> listLocalGlobal, listLocalRoute, listLocals;
+    private RecyclerView LocalsGlobal, LocalsInMyRoute, recyclerLocals;
     private com.example.oriolpons.projectefinalandroid.Adapters.adapterLocalList adapterLocalList;
     private com.example.oriolpons.projectefinalandroid.Adapters.adapterLocalAdd adapterLocalAdd;
-    private String typeF = "restaurants", url = "http://10.0.2.2/ApiCrazyNuit/public/api/", localName, cityOfLocalFilter = "Mataró", assessmentFilter = "DESC", NameFilter = "", typeOfLocalFilter;
+    private com.example.oriolpons.projectefinalandroid.Adapters.adapterLocal adapterLocal;
+    private String localDescription, localAssessment, typeF = "restaurants", url = "http://10.0.2.2/ApiCrazyNuit/public/api/", localName, cityOfLocalFilter = "Mataró", assessmentFilter = "DESC", NameFilter = "", typeOfLocalFilter;
     private Datasource bd;
+    private String[] locals;
 
     //Locals
     private Long id;
@@ -87,8 +90,10 @@ public class createEditRouteActivity extends Activity implements View.OnClickLis
         setContentView(R.layout.activity_create_edit_route);
         bd = new Datasource(this);
 
+        listLocals = new ArrayList<>();
         listLocalGlobal = new ArrayList<>();
         listLocalRoute = new ArrayList<>();
+
         txtLocalsRoute = (TextView) findViewById(R.id.txtLocalsRoute);
         txtCity = (TextView) findViewById(R.id.txtCity);
         edtRouteName = (TextView) findViewById(R.id.edtRouteName);
@@ -97,11 +102,12 @@ public class createEditRouteActivity extends Activity implements View.OnClickLis
         layoutCity = (LinearLayout) findViewById(R.id.layoutCity);
         layoutRoute = (LinearLayout) findViewById(R.id.layoutRoute);
 
-
         LocalsGlobal = (RecyclerView) findViewById(R.id.LocalsGlobal);
         LocalsGlobal.setLayoutManager(new LinearLayoutManager(this));
         LocalsInMyRoute = (RecyclerView) findViewById(R.id.LocalsInMyRoute);
         LocalsInMyRoute.setLayoutManager(new LinearLayoutManager(this));
+        recyclerLocals = (RecyclerView) findViewById(R.id.recyclerLocals);
+        recyclerLocals.setLayoutManager(new LinearLayoutManager(this));
 
         btnBack = (ImageButton) findViewById(R.id.btnBack);
         btnBack.setOnClickListener(this);
@@ -166,8 +172,22 @@ public class createEditRouteActivity extends Activity implements View.OnClickLis
         });
         LocalsInMyRoute.setAdapter(adapterLocalList);
 
+
+
+        adapterLocal = new adapterLocal(listLocals);
+        adapterLocal.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                /*localName = listLocals.get(recyclerLocals.getChildAdapterPosition(view)).getName();
+                localDescription = listLocals.get(recyclerLocals.getChildAdapterPosition(view)).getDescription();
+                localAssessment = listLocals.get(recyclerLocals.getChildAdapterPosition(view)).getAssessment() + "/5";*/
+            }
+        });
+        recyclerLocals.setAdapter(adapterLocal);
+
         routeId = this.getIntent().getExtras().getInt("id");
         cityOfLocalFilter = this.getIntent().getExtras().getString("city");
+
 
 
         if(isConnected()){
@@ -179,7 +199,13 @@ public class createEditRouteActivity extends Activity implements View.OnClickLis
             edtRouteName.setText(routeName);
             edtRouteDescription.setText(routeDescription);
 
+
             Cursor cursor = bd.getRouteInformation(routeId);
+            while(cursor.moveToNext()) {
+                route_lenght = cursor.getInt(0);
+                locals = cursor.getString(6).split(",");
+            }
+            cursor = bd.getRouteInformation(routeId);
             while(cursor.moveToNext()){
                 route_lenght = cursor.getInt(0);
                 routeName = cursor.getString(1);
@@ -189,6 +215,7 @@ public class createEditRouteActivity extends Activity implements View.OnClickLis
                 listLocalNameInRoute = cursor.getString(5);
                 routeDate = cursor.getString(6);
             }
+            setLocalsInRoute();
 
             txtCity.setVisibility(View.GONE);
             txtLocalsRoute.setVisibility(View.GONE);
@@ -196,6 +223,7 @@ public class createEditRouteActivity extends Activity implements View.OnClickLis
             layoutCity.setVisibility(View.GONE);
             LocalsGlobal.setVisibility(View.GONE);
             LocalsInMyRoute.setVisibility(View.GONE);
+            recyclerLocals.setVisibility(View.VISIBLE);
         }
         else{
             btnDelete.setVisibility(View.GONE);
@@ -626,6 +654,74 @@ public class createEditRouteActivity extends Activity implements View.OnClickLis
     private void downloadDataFromApi() {
         getJsonData getJson = new getJsonData();
         getJson.execute();
+    }
+
+
+
+
+    private void setLocalsInRoute() {
+        long localId = 0;
+        int localcategory = 0;
+        String localtype = "", localname = "", localdescription = "", localaddress = "", localopening_hours = "", localschedule_close = "", localgastronomy = "", localentrance_price = "";
+        Double localassessment = 0.0;
+        for (int i = 0; i < locals.length;i++){
+            if (bd.restaurantsAskExistByName(locals[i])){
+                Cursor cursor3 = bd.getRestaurantsInformationByName(locals[i]);
+                while(cursor3.moveToNext()) {
+                    localId = cursor3.getLong(0);
+                    localtype = "restaurants";
+                    localname = cursor3.getString(1);
+                    localdescription = cursor3.getString(2);
+                    localassessment = cursor3.getDouble(3);
+                    localaddress = cursor3.getString(4);
+                    localopening_hours = cursor3.getString(5);
+                    localschedule_close = cursor3.getString(6);
+                    localgastronomy = cursor3.getString(7);
+                    localcategory = cursor3.getInt(8);
+                    localentrance_price = "";
+                    listLocals.add(new local(localId, localtype, localname, localdescription, localassessment, localaddress, localopening_hours, localschedule_close, localgastronomy, localcategory, localentrance_price, 0));
+                }
+            }
+            else{
+                if (bd.pubsAskExistByName(locals[i])){
+                    Cursor cursor3 = bd.getPubsInformationByName(locals[i]);
+                    while(cursor3.moveToNext()) {
+                        localId = cursor3.getLong(0);
+                        localtype = "pubs";
+                        localname = cursor3.getString(1);
+                        localdescription = cursor3.getString(2);
+                        localassessment = cursor3.getDouble(3);
+                        localaddress = cursor3.getString(4);
+                        localopening_hours = cursor3.getString(5);
+                        localschedule_close = cursor3.getString(6);
+                        localgastronomy = "";
+                        localcategory = 0;
+                        localentrance_price = "";
+                        listLocals.add(new local(localId, localtype, localname, localdescription, localassessment, localaddress, localopening_hours, localschedule_close, localgastronomy, localcategory, localentrance_price, 0));
+                    }
+                }else{
+                    if (bd.discoAskExistByName(locals[i])){
+                        Cursor cursor3 = bd.getDiscosInformationByName(locals[i]);
+                        while(cursor3.moveToNext()) {
+                            localId = cursor3.getLong(0);
+                            localtype = "discoteques";
+                            localname = cursor3.getString(1);
+                            localdescription = cursor3.getString(2);
+                            localassessment = cursor3.getDouble(3);
+                            localaddress = cursor3.getString(4);
+                            localopening_hours = cursor3.getString(5);
+                            localschedule_close = cursor3.getString(6);
+                            localgastronomy = "";
+                            localcategory = 0;
+                            localentrance_price = cursor3.getString(7);
+                            listLocals.add(new local(localId, localtype, localname, localdescription, localassessment, localaddress, localopening_hours, localschedule_close, localgastronomy, localcategory, localentrance_price, 0));
+                        }
+                    }
+                }
+            }
+        }
+
+
     }
 
 

@@ -104,7 +104,7 @@ public class routesContentActivity extends AppCompatActivity implements View.OnC
             public void onClick(View view) {
                 localName = listLocals.get(recyclerLocals.getChildAdapterPosition(view)).getName();
                 localDescription = listLocals.get(recyclerLocals.getChildAdapterPosition(view)).getDescription();
-                localAssessment = listLocals.get(recyclerLocals.getChildAdapterPosition(view)).getAssessment() + "/5 - 1 votos";
+                localAssessment = listLocals.get(recyclerLocals.getChildAdapterPosition(view)).getAssessment() + "/5";
                 intentLocalContent();
             }
         });
