@@ -19,14 +19,14 @@ import java.util.ArrayList;
 
 public class routesContentActivity extends AppCompatActivity implements View.OnClickListener{
 
-    private FloatingActionButton btnAddFav, btnRemoveFav;
+    private FloatingActionButton btnAddFav, btnRemoveFav, btnProfile;
     private TextView txtTitle, txtDescription, txtAssessment, txtCreator;
     private ImageButton btnBack;
     private ArrayList<local> listLocals;
     private com.example.oriolpons.projectefinalandroid.Adapters.adapterLocal AdapterLocal;
     private RecyclerView recyclerLocals;
 
-    private String userEmail = "", localName, localDescription, localAssessment, city, rute_locals, route_date, favourite = "false";
+    private String userName = "", userEmail = "", localName, localDescription, localAssessment, city, rute_locals, route_date, favourite = "false";
     private int routeid, route_lenght, userId = 0;
     private Datasource bd;
     private String[] locals;
@@ -65,6 +65,14 @@ public class routesContentActivity extends AppCompatActivity implements View.OnC
             }
         });
 
+        btnProfile = (FloatingActionButton) findViewById(R.id.btnProfile);
+        btnProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                intentUserProfile();
+            }
+        });
+
         routeid = this.getIntent().getExtras().getInt("id");
         Cursor cursor = bd.getRouteInformation(routeid);
         while(cursor.moveToNext()) {
@@ -76,7 +84,8 @@ public class routesContentActivity extends AppCompatActivity implements View.OnC
 
             Cursor cursor2 = bd.getUserInformationById(cursor.getInt(4));
             while(cursor2.moveToNext()){
-                txtCreator.setText(cursor2.getString(1));
+                userName = cursor2.getString(1);
+                txtCreator.setText(userName);
             }
             city = cursor.getString(5);
             rute_locals = cursor.getString(6);
@@ -221,11 +230,22 @@ public class routesContentActivity extends AppCompatActivity implements View.OnC
         startActivity(intent);
     }
 
-    private void exampleLocal() {
+    private void intentUserProfile(){
+        String type = "";
 
-        for(int index = 0; index<= 3; index++){
-
-            listLocals.add(new local(index,"restaurant","local " + index+ ".", "Un local muy entretenido.",  index + 0.0, null, null, null, null,0, null,0));
+        Cursor cursor = bd.getUserInformationByName(userName);
+        while(cursor.moveToNext()){
+            if (userEmail.equals(cursor.getString(3))){
+                type = "me";
+            }else{type = "another";}
         }
+
+        Bundle bundle = new Bundle();
+        bundle.putString("type", type);
+        bundle.putString("userName",userName);
+        bundle.putString("user_email", userEmail);
+        Intent intent = new Intent(this, profileActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }
