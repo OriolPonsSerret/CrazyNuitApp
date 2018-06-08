@@ -101,8 +101,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE);
 
         CREATE_TABLE =
-                "CREATE TABLE favouriteroutes ( _id INTEGER UNIQUE, " +
-                        "id_user INTEGER)";
+                "CREATE TABLE favouriteroutes ( _id INTEGER, " +
+                        "id_user INTEGER, " +
+                        "FOREIGN KEY (_id) REFERENCES routes(_id)," +
+                        "FOREIGN KEY (id_user) REFERENCES user(_id))";
+        db.execSQL(CREATE_TABLE);
+
+        CREATE_TABLE =
+                "CREATE TABLE follow ( _id INTEGER NOT NULL, " +
+                        "id_user INTEGER NOT NULL," +
+                        "FOREIGN KEY (_id) REFERENCES user(_id)," +
+                        "FOREIGN KEY (id_user) REFERENCES user(_id)," +
+                        "PRIMARY KEY (_id, id_user))";
         db.execSQL(CREATE_TABLE);
 /*
         CREATE_TABLE =

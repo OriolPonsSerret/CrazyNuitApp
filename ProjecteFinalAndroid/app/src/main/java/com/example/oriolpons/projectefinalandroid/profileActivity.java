@@ -59,6 +59,7 @@ public class profileActivity extends AppCompatActivity implements View.OnClickLi
     private String name = "", description = "", bornDate = "", email = "", telephone = "";
     public static String type = "", userEmail = "", userName = "", anotherUserName = "", anotherDescription = "";
     public static int userId;
+    public static int userIdFollowed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,16 +137,29 @@ public class profileActivity extends AppCompatActivity implements View.OnClickLi
         if (type.equals("another")){
             anotherUserName = this.getIntent().getExtras().getString("userName");
             setValuesAnotherProfile();
+
             btnUserProfile.setEnabled(true);
             btnLogOut.setVisibility(View.GONE);
             btnEditProfile.setVisibility(View.GONE);
-            btnFollow.setVisibility(View.VISIBLE);
+
+            if(bd.followAskExist(userIdFollowed, userId)){
+                btnFollow.setVisibility(View.GONE);
+                btnUnfollow.setVisibility(View.VISIBLE);
+            }
+            else{
+                btnFollow.setVisibility(View.VISIBLE);
+                btnUnfollow.setVisibility(View.GONE);
+            }
         }
         else{
             userName = this.getIntent().getExtras().getString("userName");
             setValuesMyProfile();
             btnUserProfile.setEnabled(false);
         }
+
+
+
+
 
         btnRoutesProfile.setEnabled(false);
         buttonSelected();
@@ -180,6 +194,7 @@ public class profileActivity extends AppCompatActivity implements View.OnClickLi
     private void setValuesAnotherProfile() {
         cursor = bd.getUserInformationByName(anotherUserName);
         while(cursor.moveToNext()){
+            userIdFollowed = cursor.getInt(0);
             anotherUserName = cursor.getString(1);
             anotherDescription = cursor.getString(2);
         }
@@ -210,10 +225,12 @@ public class profileActivity extends AppCompatActivity implements View.OnClickLi
         if (btnUnfollow.getVisibility() == View.GONE){
             btnFollow.setVisibility(View.GONE);
             btnUnfollow.setVisibility(View.VISIBLE);
+            bd.follow(userIdFollowed, userId);
         }
         else{
             btnFollow.setVisibility(View.VISIBLE);
             btnUnfollow.setVisibility(View.GONE);
+            bd.unfollow(userIdFollowed, userId);
         }
     }
 

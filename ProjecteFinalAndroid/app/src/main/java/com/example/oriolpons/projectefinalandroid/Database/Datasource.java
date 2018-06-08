@@ -81,6 +81,10 @@ public class Datasource {
     public static final String FAVOURITEROUTES_ID = "_id";
     public static final String FAVOURITEROUTES_IDUSER = "id_user";
 
+    public static final String table_FOLLOW= "follow";
+    public static final String FOLLOW_ID = "_id";
+    public static final String FOLLOW_IDUSER = "id_user";
+
     private DatabaseHelper dbHelper;
     private SQLiteDatabase dbW, dbR;
 
@@ -250,6 +254,24 @@ public class Datasource {
                 " FROM " + table_FAVOURITEROUTES +
                 " WHERE " +  FAVOURITEROUTES_IDUSER + " LIKE " + userId, null);
     }
+
+    public Cursor searchFollowing(int userId) {
+        return dbR.rawQuery("SELECT " + FOLLOW_ID +
+                " FROM " + table_FOLLOW +
+                " WHERE " +  FOLLOW_IDUSER + " LIKE " + userId, null);
+    }
+    public Cursor searchFollowed(int userId) {
+        return dbR.rawQuery("SELECT " + FOLLOW_IDUSER +
+                " FROM " + table_FOLLOW +
+                " WHERE " +  FOLLOW_ID + " LIKE " + userId, null);
+    }
+
+    public Cursor filterUserById(int userId) {
+        return dbR.rawQuery("SELECT " + USER_ID + ", " + USER_USERNAME + ", " + USER_DESCRIPTION +
+                " FROM " + table_USER +
+                " WHERE " +  USER_ID + " LIKE " + userId, null);
+    }
+
 
     public Cursor getRouteInformation(int id) {
         return dbR.rawQuery("SELECT " + ROUTES_LENGHT +", " + ROUTES_NAME + ", " + ROUTES_DESCRIPTION + ", " + ROUTES_ASSESSMENT + ", " + ROUTES_CREATOR + ", " + ROUTES_CITY + ", " + ROUTES_LOCALS + ", " + ROUTES_DATE +
@@ -521,7 +543,13 @@ public class Datasource {
         dbW.insert(table_FAVOURITEROUTES, null, values);
     }
 
+    public void follow(int idUserFollowed, int idUser) {
+        ContentValues values = new ContentValues();
+        values.put(FOLLOW_ID, idUserFollowed); //He is Followed by another User
+        values.put(FOLLOW_IDUSER, idUser);
 
+        dbW.insert(table_FOLLOW, null, values);
+    }
 
 
 //---------------------------------------------------------------------------------------------------------------
@@ -624,6 +652,15 @@ public class Datasource {
         return exists;
     }
 
+    public boolean followAskExist(int userIdFollowed, int userId) {
+        Cursor c = dbR.rawQuery("SELECT " + FOLLOW_ID  + ", " + FOLLOW_IDUSER +
+                " FROM " + table_FOLLOW +
+                " WHERE " +  FOLLOW_ID + " LIKE " + userIdFollowed + " AND " +  FOLLOW_IDUSER + " LIKE " + userId, null);
+        boolean exists = c.moveToFirst();
+        c.close();
+        return exists;
+    }
+
     public boolean routesAskExistName(String name) {
         Cursor c = dbR.rawQuery("SELECT " + ROUTES_NAME  +
                 " FROM " + table_ROUTES +
@@ -654,5 +691,9 @@ public class Datasource {
 
     public void removeFavourite(int idRoute, int idUser) {
         dbW.delete(table_FAVOURITEROUTES,FAVOURITEROUTES_ID + " = ? AND " + FAVOURITEROUTES_IDUSER + " = ?", new String[] { String.valueOf(idRoute), String.valueOf(idUser) });
+    }
+
+    public void unfollow(int idUserFollowed, int idUser) {
+        dbW.delete(table_FOLLOW,FOLLOW_ID + " = ? AND " + FOLLOW_IDUSER + " = ?", new String[] { String.valueOf(idUserFollowed), String.valueOf(idUser) });
     }
 }

@@ -2,6 +2,7 @@ package com.example.oriolpons.projectefinalandroid.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.oriolpons.projectefinalandroid.Models.routes;
 import com.example.oriolpons.projectefinalandroid.R;
 import com.example.oriolpons.projectefinalandroid.Adapters.adapterUser;
 import com.example.oriolpons.projectefinalandroid.profileActivity;
@@ -86,7 +88,7 @@ public class followingProfileFragment extends Fragment {
 
         txtFollowingNumber = view.findViewById(R.id.txtFollowingNumber);
 
-        exampleUsers();
+        showUsers();
 
         adapterUser Adapter = new adapterUser(listUsers);
         Adapter.setOnClickListener(new View.OnClickListener() {
@@ -148,8 +150,16 @@ public class followingProfileFragment extends Fragment {
 
 
     private void intentUserProfile() {
+        String type = "";
+        Cursor cursor = profileActivity.bd.getUserInformationByName(userName);
+        while(cursor.moveToNext()){
+            if (profileActivity.userEmail.equals(cursor.getString(3))){
+                type = "me";
+            }else{type = "another";}
+        }
+
         Bundle bundle = new Bundle();
-        bundle.putString("type","another");
+        bundle.putString("type", type);
         bundle.putString("userName",userName);
         bundle.putString("user_email", profileActivity.userEmail);
         Intent intent = new Intent(getActivity(), profileActivity.class);
@@ -157,11 +167,31 @@ public class followingProfileFragment extends Fragment {
         getActivity().startActivity(intent);
     }
 
-    private void exampleUsers() {
+    private void showUsers() {
 
-        for(int index = 0; index<= 3; index++){
+        Cursor cursor, cursor2;
+        int id;
+        String name, description;
 
-            listUsers.add(new user(index,"Usuario nº" + index+ ".", "El mejor usuario de esta app."));
+        if (profileActivity.type.equals("another")){
+            cursor2 = profileActivity.bd.searchFollowing(profileActivity.userIdFollowed);
+        }
+        else{
+            cursor2 = profileActivity.bd.searchFollowing(profileActivity.userId);
+        }
+
+        while(cursor2.moveToNext()){
+
+            cursor = profileActivity.bd.filterUserById(cursor2.getInt(0));
+            while(cursor.moveToNext()){
+                id = cursor.getInt(0);
+                name = cursor.getString(1);
+                description = cursor.getString(2);
+
+
+                listUsers.add(new user(id, name, description));
+            }
+            //}
         }
 
         txtFollowingNumber.setText(listUsers.size() + "");

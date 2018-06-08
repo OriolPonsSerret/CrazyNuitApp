@@ -2,6 +2,7 @@ package com.example.oriolpons.projectefinalandroid.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -40,7 +41,7 @@ public class followerProfileFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private ArrayList<user> listUsers;
     private RecyclerView recyclerView;
-    private String name = "";
+    private String userName = "";
     private TextView txtFollowerNumber;
 
     public followerProfileFragment() {
@@ -86,13 +87,13 @@ public class followerProfileFragment extends Fragment {
 
         txtFollowerNumber = view.findViewById(R.id.txtFollowerNumber);
 
-        exampleUsers();
+        showUsers();
 
         adapterUser Adapter = new adapterUser(listUsers);
         Adapter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                name = listUsers.get(recyclerView.getChildAdapterPosition(view)).getName();
+                userName = listUsers.get(recyclerView.getChildAdapterPosition(view)).getName();
                 intentUserProfile();
             }
         });
@@ -144,19 +145,49 @@ public class followerProfileFragment extends Fragment {
 
 
     private void intentUserProfile() {
+        String type = "";
+        Cursor cursor = profileActivity.bd.getUserInformationByName(userName);
+        while(cursor.moveToNext()){
+            if (profileActivity.userEmail.equals(cursor.getString(3))){
+                type = "me";
+            }else{type = "another";}
+        }
+
         Bundle bundle = new Bundle();
-        bundle.putString("type","another");
-        bundle.putString("userName",name);
+        bundle.putString("type", type);
+        bundle.putString("userName",userName);
         bundle.putString("user_email", profileActivity.userEmail);
         Intent intent = new Intent(getActivity(), profileActivity.class);
         intent.putExtras(bundle);
         getActivity().startActivity(intent);
     }
 
-    private void exampleUsers() {
-        int id = profileActivity.userId;
+    private void showUsers() {
 
-        listUsers.add(new user(0,"Pere", "El senpai de tus sueños."));
+        Cursor cursor, cursor2;
+        int id;
+        String name, description;
+
+        if (profileActivity.type.equals("another")){
+            cursor2 = profileActivity.bd.searchFollowed(profileActivity.userIdFollowed);
+        }
+        else{
+            cursor2 = profileActivity.bd.searchFollowed(profileActivity.userId);
+        }
+
+        while(cursor2.moveToNext()){
+
+            cursor = profileActivity.bd.filterUserById(cursor2.getInt(0));
+            while(cursor.moveToNext()){
+                id = cursor.getInt(0);
+                name = cursor.getString(1);
+                description = cursor.getString(2);
+
+
+                listUsers.add(new user(id, name, description));
+            }
+            //}
+        }
 
         txtFollowerNumber.setText(listUsers.size() + "");
     }

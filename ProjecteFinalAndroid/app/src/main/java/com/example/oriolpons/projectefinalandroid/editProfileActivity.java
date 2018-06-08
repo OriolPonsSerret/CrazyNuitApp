@@ -427,7 +427,7 @@ public class editProfileActivity extends AppCompatActivity implements View.OnCli
         // onPostExecute displays the results of the AsyncTask.
         @Override
         protected void onPostExecute(String result) {
-            Toast.makeText(getBaseContext(), result.toString(), Toast.LENGTH_LONG).show();
+            //Toast.makeText(getBaseContext(), result.toString(), Toast.LENGTH_LONG).show();
             Toast.makeText(getBaseContext(), "¡Se han guardado los cambios!", Toast.LENGTH_LONG).show();
             getJsonData getJson = new getJsonData();
             getJson.execute();
